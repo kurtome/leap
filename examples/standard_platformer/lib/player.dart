@@ -41,7 +41,7 @@ class Player extends JumperCharacter {
 
     resetPosition();
 
-    walkSpeed = map.tileSizePx * 7;
+    walkSpeed = map.tileSize * 7;
     minJumpImpulse = world.gravity * 0.6;
 
     return super.onLoad();
