@@ -9,7 +9,6 @@ import 'package:leap/leap.dart';
 /// Any [PhysicalEntity] added anywhere in the [LeapGame] component tree
 /// will automatically be part of the world via [physicals]
 class LeapWorld extends PositionComponent with HasGameRef<LeapGame> {
-
   /// Tile size (width and height) in pixels
   double tileSize;
 

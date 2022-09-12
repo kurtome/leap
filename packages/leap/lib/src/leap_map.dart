@@ -7,7 +7,6 @@ import 'package:tiled/tiled.dart';
 /// This component encapsulates the Tiled map, and in particular builds the
 /// grid of ground tiles that make up the terrain of the game.
 class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
-
   /// Tile size (width and height) in pixels
   final double tileSize;
 
@@ -99,7 +98,7 @@ class LeapMapGroundTile extends PhysicalEntity {
   int get hazardDamage {
     if (isHazard) {
       final damageProperty =
-      tile.properties.firstWhere((p) => p.name == 'Damage');
+          tile.properties.firstWhere((p) => p.name == 'Damage');
       return int.parse(damageProperty.value);
     } else {
       return 0;
@@ -160,12 +159,12 @@ class LeapMapGroundTile extends PhysicalEntity {
 
   /// Builds the tile grid full of ground tiles based on [groundLayer]
   static List<List<LeapMapGroundTile?>> generate(
-      TiledMap tileMap,
-      TileLayer groundLayer,
-      ) {
+    TiledMap tileMap,
+    TileLayer groundLayer,
+  ) {
     final groundTiles = List.generate(
       groundLayer.width,
-          (int _i) => List<LeapMapGroundTile?>.filled(groundLayer.height, null),
+      (int _i) => List<LeapMapGroundTile?>.filled(groundLayer.height, null),
     );
     for (var x = 0; x < groundLayer.width; x++) {
       for (var y = 0; y < groundLayer.height; y++) {
