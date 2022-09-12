@@ -6,8 +6,8 @@ the [Flame engine](https://flame-engine.org/).
 ## WARNING library under development
 
 Be aware that this is still under development and is likely to change frequently, every release
-could introduce breaking changes up until a `v1.0.0` release (which may never happen as this
-is a solo endeavour currently).
+could introduce breaking changes up until a `v1.0.0` release (which may never happen as this is a
+solo endeavour currently).
 
 ## Features
 
@@ -157,6 +157,9 @@ own special behavior for tiles or objects.
 
 ## Contributing
 
-1. Ensure any changes pass `melos analyze` and `melos test`.
+1. Ensure any changes pass:
+    - `melos format`
+    - `melos analyze`
+    - `melos test`
 2. Start your PR title with a [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/)
    type (feat:, fix: etc).
