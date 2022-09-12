@@ -5,6 +5,7 @@ import 'package:flame/input.dart';
 import 'package:flutter/services.dart';
 import 'package:leap/leap.dart';
 
+/// Combines touch screen and keyboard input into one API.
 class SimpleCombinedInput extends Component with HasGameRef<LeapGame> {
   late final SimpleTapInput _tapInput;
   late final SimpleKeyboardInput _keyboardInput;

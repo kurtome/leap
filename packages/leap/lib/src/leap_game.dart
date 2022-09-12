@@ -17,6 +17,7 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     world.input.appStateChanged();
   }
 
+  /// Tile size (width and height) in pixels
   double get tileSize => world.tileSize;
 
   /// Initializes and loads the [world] and [map] components with a Tiled map,
