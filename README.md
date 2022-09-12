@@ -30,7 +30,7 @@ box, and special handling can be done for tile grid aligned components (such as 
 
 #### Efficient collision detection
 
-[!image](http://higherorderfun.com/blog/wp-content/uploads/2012/05/Mega_Man_X_tiles.png)
+![image](http://higherorderfun.com/blog/wp-content/uploads/2012/05/Mega_Man_X_tiles.png)
 
 Essentially all physical objects (`PhsyicalComponent`) in the game have axis-aligned bounding boxes
 (AABBs) for hitboxes, determined by their `size` and `position`. The hitbox doesn't necessarily need

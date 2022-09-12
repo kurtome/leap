@@ -2,7 +2,7 @@
 
 Example project to demonstrate a complete platformer game with Leap using Flame and Tiled.
 
-[!image](screenshot.png)
+![image](screenshot.png)
 
 ### Sprites & Audio Credits
 
