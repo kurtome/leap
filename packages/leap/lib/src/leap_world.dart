@@ -3,11 +3,19 @@ import 'dart:math' as math;
 import 'package:flame/components.dart';
 import 'package:leap/leap.dart';
 
-/// Component that manages all of the [PhysicalEntity] for applying
-/// gravity, etc.
+/// The world component encapsulates the physics engine
+/// and all of the [PhysicalEntity] components.
+///
+/// Any [PhysicalEntity] added anywhere in the [LeapGame] component tree
+/// will automatically be part of the world via [physicals]
 class LeapWorld extends PositionComponent with HasGameRef<LeapGame> {
+  /// Tile size (width and height) in pixels
   double tileSize;
+
+  /// Gravity to apply to physical components per-second
   double gravity = 0;
+
+  /// Maximum velocity of physical components per-second
   double maxVelocity = 0;
 
   // TODO(kurtome): Remove this from the world object so it can be configured

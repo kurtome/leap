@@ -44,7 +44,8 @@ class PhysicalEntity extends Entity
 
   LeapWorld get world => gameRef.world;
 
-  double get tileSizePx => gameRef.tileSize;
+  /// Tile size (width and height) in pixels
+  double get tileSize => gameRef.tileSize;
 
   bool get isAlive => health > 0;
 
@@ -116,22 +117,22 @@ class PhysicalEntity extends Entity
 
   /// horizontal grid coordinate of the leftmost point on this
   int get gridLeft {
-    return (left / tileSizePx).floor();
+    return (left / tileSize).floor();
   }
 
   /// horizontal coordinate of the rightmost point on this
   int get gridRight {
-    return (right / tileSizePx).ceil();
+    return (right / tileSize).ceil();
   }
 
   /// vertical grid coordinate of the topmost point on this
   int get gridTop {
-    return (top / tileSizePx).floor();
+    return (top / tileSize).floor();
   }
 
   /// vertical grid coordinate of the bottommost point on this
   int get gridBottom {
-    return (bottom / tileSizePx).ceil();
+    return (bottom / tileSize).ceil();
   }
 
   /// horizontal middle point
