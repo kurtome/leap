@@ -6,8 +6,8 @@ the [Flame engine](https://flame-engine.org/).
 ## WARNING library under development
 
 Be aware that this is still under development and is likely to change frequently, every release
-could introduce breaking changes up until a `v1.0.0` release (which may never happen as this
-is a solo endeavour currently).
+could introduce breaking changes up until a `v1.0.0` release (which may never happen as this is a
+solo endeavour currently).
 
 ## Features
 
@@ -30,7 +30,7 @@ box, and special handling can be done for tile grid aligned components (such as 
 
 #### Efficient collision detection
 
-[!image](http://higherorderfun.com/blog/wp-content/uploads/2012/05/Mega_Man_X_tiles.png)
+![image](http://higherorderfun.com/blog/wp-content/uploads/2012/05/Mega_Man_X_tiles.png)
 
 Essentially all physical objects (`PhsyicalComponent`) in the game have axis-aligned bounding boxes
 (AABBs) for hitboxes, determined by their `size` and `position`. The hitbox doesn't necessarily need
@@ -157,6 +157,9 @@ own special behavior for tiles or objects.
 
 ## Contributing
 
-1. Ensure any changes pass `melos analyze` and `melos test`.
+1. Ensure any changes pass:
+    - `melos format`
+    - `melos analyze`
+    - `melos test`
 2. Start your PR title with a [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/)
    type (feat:, fix: etc).
