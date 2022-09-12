@@ -4,6 +4,8 @@ import 'package:leap/leap.dart';
 import 'package:leap/src/physical_behaviors/collision_info.dart';
 import 'package:leap/src/physical_behaviors/physical_behavior.dart';
 
+/// Contains all the logic for the collision detection system,
+/// updates the [velocity], [x], [y], and [collisionInfo] of the as needed.
 class CollisionDetectionBehavior extends PhysicalBehavior {
   final CollisionInfo prevCollisionInfo = CollisionInfo();
 
