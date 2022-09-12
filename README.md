@@ -3,6 +3,12 @@
 An opinionated toolkit for creating 2D platformers on top of
 the [Flame engine](https://flame-engine.org/).
 
+## WARNING library under development
+
+Be aware that this is still under development and is likely to change frequently, every release
+could introduce breaking changes up until a `v1.0.0` release (which may never happen as this
+is a solo endeavour currently).
+
 ## Features
 
 ### Level creation via Tiled
