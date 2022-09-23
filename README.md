@@ -19,8 +19,8 @@ layers.
 
 ### Physics
 
-The crux of this physics engine is based on this post
-[The guide to implementing 2D platformers](http://higherorderfun.com/blog/2012/05/20/the-guide-to-implementing-2d-platformers/)
+The crux of this physics engine is based on this post The guide to implementing 2D platformers:
+http://higherorderfun.com/blog/2012/05/20/the-guide-to-implementing-2d-platformers/
 
 The "Type #2: Tile Based (Smooth)" section outlines the overall algorithm.
 
@@ -30,7 +30,7 @@ box, and special handling can be done for tile grid aligned components (such as 
 
 #### Efficient collision detection
 
-![image](http://higherorderfun.com/blog/wp-content/uploads/2012/05/Mega_Man_X_tiles.png)
+![image](docs/images/megaman_tile_grid.png)
 
 Essentially all physical objects (`PhsyicalComponent`) in the game have axis-aligned bounding boxes
 (AABBs) for hitboxes, determined by their `size` and `position`. The hitbox doesn't necessarily need
