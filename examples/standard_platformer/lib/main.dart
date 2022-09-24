@@ -15,6 +15,7 @@ void main() {
 class ExamplePlatformerLeapGame extends LeapGame
     with HasTappables, HasKeyboardHandlerComponents {
   late final Player player;
+  late final SimpleCombinedInput input;
 
   @override
   Future<void> onLoad() async {
@@ -23,6 +24,8 @@ class ExamplePlatformerLeapGame extends LeapGame
     await loadWorldAndMap('map.tmx', 16);
     setFixedViewportInTiles(32, 16);
 
+    input = SimpleCombinedInput();
+    add(input);
     player = Player();
     add(player);
     camera.followComponent(player);
@@ -40,7 +43,7 @@ class ExamplePlatformerLeapGame extends LeapGame
     super.update(dt);
 
     // on web we need to wait for a user interaction before playing any sound
-    if (world.input.justPressed && !FlameAudio.bgm.isPlaying) {
+    if (input.justPressed && !FlameAudio.bgm.isPlaying) {
       FlameAudio.bgm.play('village_music.mp3');
     }
   }

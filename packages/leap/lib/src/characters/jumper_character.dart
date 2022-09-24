@@ -1,8 +1,8 @@
 import 'package:flame/components.dart';
+import 'package:leap/leap.dart';
 import 'package:leap/src/characters/jumper_behavior.dart';
-import 'package:leap/src/physical_entity.dart';
 
-class JumperCharacter extends PhysicalEntity {
+class JumperCharacter<TGame extends LeapGame> extends PhysicalEntity<TGame> {
   bool faceLeft = false;
   bool jumping = false;
   bool walking = false;

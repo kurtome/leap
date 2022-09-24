@@ -79,7 +79,11 @@ class LeapMapGroundTile extends PhysicalEntity {
 
   /// Coordinates on the tile grid
   final int gridX, gridY;
+
+  /// Topmost point on the left side, important for slopes
   double? leftTop;
+
+  /// Topmost point on the right side, important for slopes
   double? rightTop;
 
   /// Is this a sloped section of ground? If so, this is handled specially

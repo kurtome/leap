@@ -18,10 +18,6 @@ class LeapWorld extends PositionComponent with HasGameRef<LeapGame> {
   /// Maximum velocity of physical components per-second
   double maxVelocity = 0;
 
-  // TODO(kurtome): Remove this from the world object so it can be configured
-  //                per-game.
-  late final SimpleCombinedInput input;
-
   LeapWorld({
     this.tileSize = 16,
   });
@@ -34,9 +30,6 @@ class LeapWorld extends PositionComponent with HasGameRef<LeapGame> {
 
     width = map.width;
     height = map.height;
-
-    input = SimpleCombinedInput();
-    add(input);
 
     gravity = tileSize * 32;
     maxVelocity = tileSize * 20;
@@ -53,6 +46,7 @@ class LeapWorld extends PositionComponent with HasGameRef<LeapGame> {
     super.update(dt);
   }
 
+  /// All the physical entities in the game
   Iterable<PhysicalEntity> get physicals =>
       gameRef.trackedComponents<PhysicalEntity>().where((p) => !p.isRemoving);
 

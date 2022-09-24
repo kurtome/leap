@@ -4,15 +4,21 @@ import 'package:flame/components.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/services.dart';
 import 'package:leap/leap.dart';
+import 'package:leap/src/utils/lifecycle_state_aware.dart';
 
 /// Combines touch screen and keyboard input into one API.
-class SimpleCombinedInput extends Component with HasGameRef<LeapGame> {
+class SimpleCombinedInput extends Component
+    with HasGameRef<LeapGame>, AppLifecycleAware {
   late final SimpleTapInput _tapInput;
   late final SimpleKeyboardInput _keyboardInput;
   double pressedTime = 0;
   bool justPressed = false;
 
-  void appStateChanged() {
+  @override
+  void appLifecycleStateChanged(
+    AppLifecycleState previous,
+    AppLifecycleState current,
+  ) {
     // when the app is backgrounded or foregrounded, reset inputs to avoid
     // any weirdness with tap/key state getting out of sync
     _tapInput.reset();
