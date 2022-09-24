@@ -5,7 +5,9 @@ import 'package:leap/leap.dart';
 
 import 'package:leap_standard_platformer/coin.dart';
 
-class Player extends JumperCharacter {
+import 'package:leap_standard_platformer/main.dart';
+
+class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   int coins = 0;
   double deadTime = 0;
   double timeHoldingJump = 0;
@@ -29,7 +31,7 @@ class Player extends JumperCharacter {
 
   @override
   Future<void> onLoad() async {
-    _input = world.input;
+    _input = gameRef.input;
     _spawn = map.playerSpawn;
 
     // size controls player hitbox, which should be slightly smaller than

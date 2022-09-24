@@ -11,8 +11,8 @@ import 'package:leap/src/utils/has_tracked_components.dart';
 ///
 /// [static] components can be collided with but never move and have a much
 /// smaller performance impact on the game loop.
-class PhysicalEntity extends Entity
-    with HasGameRef<LeapGame>, TrackedComponent<PhysicalEntity, LeapGame> {
+class PhysicalEntity<TGame extends LeapGame> extends Entity
+    with HasGameRef<TGame>, TrackedComponent<PhysicalEntity, TGame> {
   /// Position object to store the x/y components
   final Vector2 velocity = Vector2.zero();
 
@@ -28,9 +28,9 @@ class PhysicalEntity extends Entity
   /// Multiplier on standard gravity, see [LeapWorld]
   double gravityRate = 1;
 
+  /// When health reaches 0, [isDead] will be true. This needs to be
+  /// used by child classes to have any effect
   int health;
-
-  double? _tmpDebugTime = 0;
 
   PhysicalEntity({
     this.health = 10,
@@ -47,28 +47,11 @@ class PhysicalEntity extends Entity
   /// Tile size (width and height) in pixels
   double get tileSize => gameRef.tileSize;
 
+  /// Whether or not this is "alive" (or not destroyed) in the game
   bool get isAlive => health > 0;
 
+  /// Whether or not this is "dead" (or destroyed) in the game
   bool get isDead => !isAlive;
-
-  void tmpDebug() {
-    _tmpDebugTime = 0;
-    debugMode = true;
-  }
-
-  @override
-  void update(double dt) {
-    super.update(dt);
-
-    if (_tmpDebugTime != null) {
-      if (_tmpDebugTime! > 0.01) {
-        _tmpDebugTime = null;
-        debugMode = false;
-      } else {
-        _tmpDebugTime = _tmpDebugTime! + dt;
-      }
-    }
-  }
 
   /// leftmost point
   double get left {
