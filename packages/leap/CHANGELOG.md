@@ -1,3 +1,7 @@
+## 0.0.3
+
+ - **FEAT**: uncoupling input implementation ([#5](https://github.com/kurtome/leap/issues/5)). ([bb2fdd26](https://github.com/kurtome/leap/commit/bb2fdd2679de13efa394fe8270ba68f395e350ab))
+
 ## 0.0.2
 
  - **FEAT**: add CollisionDetectionBehavior docs ([#3](https://github.com/kurtome/leap/issues/3)). ([21e0ffd0](https://github.com/kurtome/leap/commit/21e0ffd06ec696e8abbfa9d08ce7ae2b74cf5927))

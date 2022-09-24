@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2022-09-24
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`leap` - `v0.0.3`](#leap---v003)
+
+---
+
+#### `leap` - `v0.0.3`
+
+ - **FEAT**: uncoupling input implementation ([#5](https://github.com/kurtome/leap/issues/5)). ([bb2fdd26](https://github.com/kurtome/leap/commit/bb2fdd2679de13efa394fe8270ba68f395e350ab))
+
+
 ## 2022-09-11
 
 ### Changes
