@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2022-12-19
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`leap` - `v0.1.0`](#leap---v010)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `leap` - `v0.1.0`
+
+ - **BREAKING** **FEAT**: updating to flame 1.5 ([#6](https://github.com/kurtome/leap/issues/6)). ([a1c345c8](https://github.com/kurtome/leap/commit/a1c345c89709ebed5adc4eaec722a8a9abcea8c3))
+
+
 ## 2022-09-24
 
 ### Changes

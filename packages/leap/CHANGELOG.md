@@ -1,3 +1,9 @@
+## 0.1.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FEAT**: updating to flame 1.5 ([#6](https://github.com/kurtome/leap/issues/6)). ([a1c345c8](https://github.com/kurtome/leap/commit/a1c345c89709ebed5adc4eaec722a8a9abcea8c3))
+
 ## 0.0.3
 
  - **FEAT**: uncoupling input implementation ([#5](https://github.com/kurtome/leap/issues/5)). ([bb2fdd26](https://github.com/kurtome/leap/commit/bb2fdd2679de13efa394fe8270ba68f395e350ab))
