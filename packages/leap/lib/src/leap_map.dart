@@ -2,7 +2,6 @@ import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:leap/src/leap_game.dart';
 import 'package:leap/src/physical_entity.dart';
-import 'package:tiled/tiled.dart';
 
 /// This component encapsulates the Tiled map, and in particular builds the
 /// grid of ground tiles that make up the terrain of the game.
@@ -81,10 +80,10 @@ class LeapMapGroundTile extends PhysicalEntity {
   final int gridX, gridY;
 
   /// Topmost point on the left side, important for slopes
-  double? leftTop;
+  int? leftTop;
 
   /// Topmost point on the right side, important for slopes
-  double? rightTop;
+  int? rightTop;
 
   /// Is this a sloped section of ground? If so, this is handled specially
   /// in collision detection to ensure player (or other characters) can walk
@@ -100,28 +99,14 @@ class LeapMapGroundTile extends PhysicalEntity {
 
   /// Damage to apply when colliding and [isHazard]
   int get hazardDamage {
-    if (isHazard) {
-      final damageProperty =
-          tile.properties.firstWhere((p) => p.name == 'Damage');
-      return int.parse(damageProperty.value);
-    } else {
-      return 0;
-    }
+    return tile.properties.getValue<int>('Damage') ?? 0;
   }
 
   LeapMapGroundTile(this.tile, this.gridX, this.gridY)
       : super(static: true, collisionType: CollisionType.tilemapGround) {
     isSlope = tile.type == 'Slope';
-    for (final element in tile.properties) {
-      switch (element.name) {
-        case 'RightTop':
-          rightTop = double.tryParse(element.value);
-          break;
-        case 'LeftTop':
-          leftTop = double.tryParse(element.value);
-          break;
-      }
-    }
+    rightTop = tile.properties.getValue<int>('RightTop');
+    leftTop = tile.properties.getValue<int>('LeftTop');
   }
 
   @override
@@ -176,7 +161,7 @@ class LeapMapGroundTile extends PhysicalEntity {
         if (gid == 0) {
           continue;
         }
-        final tile = tileMap.tileByGid(gid);
+        final tile = tileMap.tileByGid(gid)!;
         groundTiles[x][y] = LeapMapGroundTile(tile, x, y);
       }
     }
