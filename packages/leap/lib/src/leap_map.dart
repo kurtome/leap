@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
+import 'package:leap/src/entities/entities.dart';
 import 'package:leap/src/leap_game.dart';
-import 'package:leap/src/physical_entity.dart';
 
 /// This component encapsulates the Tiled map, and in particular builds the
 /// grid of ground tiles that make up the terrain of the game.

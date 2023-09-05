@@ -15,7 +15,7 @@ class WelcomeDialog extends TextBoxComponent {
     ],
   );
 
-  WelcomeDialog(Camera camera)
+  WelcomeDialog(CameraComponent camera)
       : super(
           text: 'Welcome to Leap! '
               'To control your character, either tap left/right on your '
@@ -29,9 +29,8 @@ class WelcomeDialog extends TextBoxComponent {
             dismissDelay: 3,
           ),
         ) {
-    positionType = PositionType.viewport;
-    x = camera.viewport.effectiveSize.x * 0.5;
-    y = camera.viewport.effectiveSize.y * 0.9;
+    x = camera.viewport.size.x * 0.5;
+    y = camera.viewport.size.y * 0.9;
     rect = Rect.fromLTWH(0, 0, width, height);
   }
 

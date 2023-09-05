@@ -1,10 +1,10 @@
 import 'dart:ui';
 
 import 'package:flame/components.dart';
-import 'package:flame/input.dart';
+import 'package:flame/events.dart';
 import 'package:flutter/services.dart';
-import 'package:leap/leap.dart';
-import 'package:leap/src/utils/lifecycle_state_aware.dart';
+import 'package:leap/src/leap_game.dart';
+import 'package:leap/src/mixins/mixins.dart';
 
 /// Combines touch screen and keyboard input into one API.
 class SimpleCombinedInput extends Component
@@ -60,17 +60,25 @@ class SimpleCombinedInput extends Component
 }
 
 class SimpleTapInput extends PositionComponent
-    with Tappable, HasGameRef<LeapGame> {
-  TapDownInfo? downEvent;
-  TapUpInfo? upEvent;
+    with TapCallbacks, HasGameRef<LeapGame> {
+  SimpleTapInput({
+    this.upEvent,
+    this.downEvent,
+  });
+
+  TapUpEvent? upEvent;
+  TapDownEvent? downEvent;
 
   @override
   bool get debugMode => true;
 
   bool get isPressed => downEvent != null && upEvent == null;
 
-  bool get isPressedLeft =>
-      isPressed && downEvent!.eventPosition.global.x < gameRef.canvasSize.x / 2;
+  bool get isPressedLeft {
+    final upEventInfo = upEvent?.asInfo(game);
+    return isPressed &&
+        upEventInfo!.eventPosition.global.x < gameRef.canvasSize.x / 2;
+  }
 
   bool get isPressedRight => isPressed && !isPressedLeft;
 
@@ -81,20 +89,20 @@ class SimpleTapInput extends PositionComponent
   }
 
   @override
-  bool onTapUp(TapUpInfo event) {
+  bool onTapUp(TapUpEvent event) {
     upEvent = event;
     return true;
   }
 
   @override
-  bool onTapDown(TapDownInfo event) {
+  bool onTapDown(TapDownEvent event) {
     downEvent = event;
     upEvent = null;
     return true;
   }
 
   @override
-  bool onTapCancel() {
+  bool onTapCancel(TapCancelEvent event) {
     reset();
     return true;
   }

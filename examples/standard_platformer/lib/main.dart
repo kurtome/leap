@@ -1,5 +1,6 @@
+import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
-import 'package:flame/input.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/widgets.dart' hide Animation, Image;
 import 'package:leap/leap.dart';
@@ -13,22 +14,26 @@ void main() {
 }
 
 class ExamplePlatformerLeapGame extends LeapGame
-    with HasTappables, HasKeyboardHandlerComponents {
+    with TapCallbacks, HasKeyboardHandlerComponents {
   late final Player player;
   late final SimpleCombinedInput input;
+  late final CameraComponent camera;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
 
-    await loadWorldAndMap('map.tmx', 16);
-    setFixedViewportInTiles(32, 16);
+    await loadWorldAndMap(
+      tileSize: 16,
+      tiledMapPath: 'map.tmx',
+    );
 
     input = SimpleCombinedInput();
     add(input);
     player = Player();
     add(player);
-    camera.followComponent(player);
+    camera = CameraComponent();
+    camera.follow(player);
     if (!FlameAudio.bgm.isPlaying) {
       FlameAudio.bgm.play('village_music.mp3');
     }

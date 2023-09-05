@@ -1,43 +1,64 @@
 import 'package:flame/components.dart';
 import 'package:flame_behaviors/flame_behaviors.dart';
 import 'package:leap/leap.dart';
-import 'package:leap/src/physical_behaviors/collision_detection_behavior.dart';
-import 'package:leap/src/physical_behaviors/collision_info.dart';
-import 'package:leap/src/physical_behaviors/velocity_behavior.dart';
-import 'package:leap/src/utils/has_tracked_components.dart';
+import 'package:leap/src/mixins/mixins.dart';
+import 'package:leap/src/physical_behaviors/physical_behaviors.dart';
+
+/// See full implementation in [CollisionDetectionBehavior].
+enum CollisionType {
+  /// Ignored by collision detection.
+  none,
+
+  /// Processed as part of the [LeapMap], must be a [LeapMapGroundTile].
+  ///
+  /// The collision detection implementation is much more efficient than
+  /// [standard] because it only looks at tiles adjacent to the entity being
+  /// processed.
+  tilemapGround,
+
+  /// Any non-static entity will check if it collides with this on every game
+  /// loop. Since the collision detection system is all axis-aligned bounding
+  /// boxes, this is still pretty efficient.
+  standard,
+}
 
 /// A component which has a physical representation in the world, with
 /// collision detection, movement, etc.
 ///
 /// [static] components can be collided with but never move and have a much
 /// smaller performance impact on the game loop.
-class PhysicalEntity<TGame extends LeapGame> extends Entity
+class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
     with HasGameRef<TGame>, TrackedComponent<PhysicalEntity, TGame> {
-  /// Position object to store the x/y components
-  final Vector2 velocity = Vector2.zero();
-
-  /// Position object to store the x/y components
+  /// Position object to store the x/y components.
   final bool static;
 
-  /// Collision detection tags
+  /// Collision detection tags.
   final CollisionType collisionType;
 
-  /// Collision detection status from the latest [update]
-  CollisionInfo collisionInfo = CollisionInfo();
+  /// Position object to store the x/y components.
+  final Vector2 velocity = Vector2.zero();
 
-  /// Multiplier on standard gravity, see [LeapWorld]
+  /// Collision detection status from the latest [update].
+  final CollisionInfo collisionInfo = CollisionInfo();
+
+  /// Multiplier on standard gravity, see [LeapWorld].
   double gravityRate = 1;
 
-  /// When health reaches 0, [isDead] will be true. This needs to be
-  /// used by child classes to have any effect
+  /// When health reaches 0, [isDead] will be true.
+  /// This needs to be used by child classes to have any effect.
   int health;
 
   PhysicalEntity({
     this.health = 10,
     this.static = false,
     this.collisionType = CollisionType.none,
-    Iterable<Behavior>? behaviors,
-  }) : super(behaviors: _physicalBehaviors(static, behaviors));
+    Iterable<Behavior<PhysicalEntity>>? behaviors,
+  }) : super(
+          behaviors: _physicalBehaviors(
+            static: static,
+            extra: behaviors,
+          ),
+        );
 
   /// NOTE: Can only be accessed after component tree has been to the [LeapGame]
   LeapMap get map => gameRef.map;
@@ -129,32 +150,16 @@ class PhysicalEntity<TGame extends LeapGame> extends Entity
   }
 }
 
-Iterable<Behavior>? _physicalBehaviors(bool static, Iterable<Behavior>? extra) {
-  final List<Behavior<Entity>> behaviors;
-  if (static) {
-    behaviors = <Behavior>[];
-  } else {
-    behaviors = [CollisionDetectionBehavior(), VelocityBehavior()];
+Iterable<Behavior>? _physicalBehaviors({
+  required bool static,
+  required Iterable<Behavior<PositionedEntity>>? extra,
+}) {
+  final behaviors = <Behavior<PositionedEntity>>[];
+  if (!static) {
+    behaviors.addAll([CollisionDetectionBehavior(), VelocityBehavior()]);
   }
   if (extra != null) {
     behaviors.addAll(extra);
   }
   return behaviors;
-}
-
-/// See full implementation in [CollisionDetectionBehavior]
-enum CollisionType {
-  /// Ignored by collision detection
-  none,
-
-  /// Processed as part of the [LeapMap], must be a [LeapMapGroundTile].
-  /// The collision detection implementation is much more efficient than
-  /// [standard] because it only looks at tiles adjacent to the entity being
-  /// processed.
-  tilemapGround,
-
-  /// Any non-static entity will check if it collides with this on every game
-  /// loop. Since the collision detection system is all axis-aligned bounding
-  /// boxes, this is still pretty efficient.
-  standard,
 }
