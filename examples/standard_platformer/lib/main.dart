@@ -17,7 +17,9 @@ class ExamplePlatformerLeapGame extends LeapGame
     with TapCallbacks, HasKeyboardHandlerComponents {
   late final Player player;
   late final SimpleCombinedInput input;
-  late final CameraComponent camera;
+
+  @override
+  late final CameraComponent cameraComponent;
 
   @override
   Future<void> onLoad() async {
@@ -32,14 +34,14 @@ class ExamplePlatformerLeapGame extends LeapGame
     add(input);
     player = Player();
     add(player);
-    camera = CameraComponent();
-    camera.follow(player);
+    cameraComponent = CameraComponent();
+    cameraComponent.follow(player);
     if (!FlameAudio.bgm.isPlaying) {
       FlameAudio.bgm.play('village_music.mp3');
     }
 
     add(Hud());
-    add(WelcomeDialog(camera));
+    add(WelcomeDialog(cameraComponent));
     await Coin.loadAllInMap(map);
   }
 

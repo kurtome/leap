@@ -71,80 +71,76 @@ class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// Whether or not this is "alive" (or not destroyed) in the game
   bool get isAlive => health > 0;
 
-  /// Whether or not this is "dead" (or destroyed) in the game
+  /// Whether or not this is "dead" (or destroyed) in the game.
   bool get isDead => !isAlive;
 
-  /// leftmost point
+  /// Leftmost point.
   double get left {
     return x;
   }
 
-  /// set leftmost point
   set left(double newLeft) {
     x = newLeft;
   }
 
-  /// rightmost point
+  /// Rightmost point.
   double get right {
     return x + width;
   }
 
-  /// set rightmost point
   set right(double newRight) {
     x = newRight - width;
   }
 
   /// Defined so it can be overridden by slopes, relative top takes into
   /// account the topmost point that could intersect [other] based on its
-  /// horizontal position
+  /// horizontal position.
   double relativeTop(PhysicalEntity other) => top;
 
-  /// topmost point
+  /// Topmost point.
   double get top {
     return y;
   }
 
-  /// set topmost point by setting [y]
   set top(double newTop) {
     y = newTop;
   }
 
-  /// bottommost point
+  /// Bottommost point.
   double get bottom {
     return y + height;
   }
 
-  /// set bottommost point by setting [y]
   set bottom(double newBottom) {
     y = newBottom - height;
   }
 
-  /// horizontal grid coordinate of the leftmost point on this
+  /// Horizontal grid coordinate of the leftmost point on this.
   int get gridLeft {
     return (left / tileSize).floor();
   }
 
-  /// horizontal coordinate of the rightmost point on this
+  /// Horizontal coordinate of the rightmost point on this.
   int get gridRight {
     return (right / tileSize).ceil();
   }
 
-  /// vertical grid coordinate of the topmost point on this
+  /// Vertical grid coordinate of the topmost point on this.
   int get gridTop {
     return (top / tileSize).floor();
   }
 
-  /// vertical grid coordinate of the bottommost point on this
+  /// Vertical grid coordinate of the bottommost point on this.
   int get gridBottom {
     return (bottom / tileSize).ceil();
   }
 
-  /// horizontal middle point
+  /// Horizontal middle point.
   double get centerX {
     return x + (width / 2);
   }
 
-  /// vertical middle point
+  /// Vertical middle point.
   double get centerY {
     return y + (height / 2);
   }

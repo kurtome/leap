@@ -5,11 +5,12 @@ import 'package:leap/leap.dart';
 import 'package:tiled/tiled.dart';
 
 class Coin extends PhysicalEntity {
-  final TiledObject tiledObject;
-
-  Coin(this.tiledObject, SpriteAnimation animation)
-      : super(static: true, collisionType: CollisionType.standard) {
-    size = Vector2.all(16);
+  Coin({
+    required this.tiledObject,
+    required SpriteAnimation animation,
+  }) : super(static: true, collisionType: CollisionType.standard) {
+    tiledObject.width = 16;
+    tiledObject.height = 16;
     priority = 2;
 
     anchor = Anchor.center;
@@ -24,10 +25,11 @@ class Coin extends PhysicalEntity {
     );
   }
 
+  final TiledObject tiledObject;
+
   @override
   void onRemove() {
     super.onRemove();
-
     FlameAudio.play('coin.wav');
   }
 
@@ -47,7 +49,7 @@ class Coin extends PhysicalEntity {
     // We are 100% sure that an object layer named `AnimatedCoins`
     // exists in the example `map.tmx`.
     for (final obj in objGroup.objects) {
-      map.add(Coin(obj, spriteAnimation));
+      map.add(Coin(tiledObject: obj, animation: spriteAnimation));
     }
   }
 }

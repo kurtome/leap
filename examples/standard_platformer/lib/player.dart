@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_audio/flame_audio.dart';
@@ -29,26 +27,19 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   PositionComponent? get spriteAnimation => _playerAnimation;
 
   @override
-  void render(Canvas c) => super.render(c);
-
-  @override
   Future<void> onLoad() async {
     _input = gameRef.input;
     _spawn = map.playerSpawn;
-
+    _playerAnimation = PlayerSpriteAnimation();
     // Size controls player hitbox, which should be slightly smaller than
     // visual size of the sprite.
-    size = Vector2(10, 20);
-
-    _playerAnimation = PlayerSpriteAnimation();
+    _playerAnimation.size = Vector2(10, 20);
     add(_playerAnimation);
 
     resetPosition();
 
     walkSpeed = map.tileSize * 7;
     minJumpImpulse = world.gravity * 0.6;
-
-    return super.onLoad();
   }
 
   @override
@@ -87,8 +78,8 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   }
 
   void resetPosition() {
-    x = _spawn.x;
-    y = _spawn.y;
+    _playerAnimation.position.x = _spawn.x;
+    _playerAnimation.position.y = _spawn.y;
     velocity.x = 0;
     velocity.y = 0;
     lastGroundXVelocity = 0;

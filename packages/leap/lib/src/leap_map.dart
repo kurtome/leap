@@ -77,7 +77,8 @@ class LeapMapGroundTile extends PhysicalEntity {
   final Tile tile;
 
   /// Coordinates on the tile grid
-  final int gridX, gridY;
+  final int gridX;
+  final int gridY;
 
   /// Topmost point on the left side, important for slopes
   int? leftTop;
@@ -153,8 +154,9 @@ class LeapMapGroundTile extends PhysicalEntity {
   ) {
     final groundTiles = List.generate(
       groundLayer.width,
-      (int _i) => List<LeapMapGroundTile?>.filled(groundLayer.height, null),
+      (_) => List<LeapMapGroundTile?>.filled(groundLayer.height, null),
     );
+
     for (var x = 0; x < groundLayer.width; x++) {
       for (var y = 0; y < groundLayer.height; y++) {
         final gid = groundLayer.tileData![y][x].tile;
