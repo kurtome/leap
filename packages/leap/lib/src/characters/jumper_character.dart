@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
-import 'package:leap/leap.dart';
 import 'package:leap/src/characters/jumper_behavior.dart';
+import 'package:leap/src/entities/entities.dart';
+import 'package:leap/src/leap_game.dart';
 
 class JumperCharacter<TGame extends LeapGame> extends PhysicalEntity<TGame> {
   JumperCharacter({

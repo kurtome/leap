@@ -28,9 +28,10 @@ class WelcomeDialog extends TextBoxComponent {
             dismissDelay: 3,
           ),
         ) {
+    rect = Rect.fromLTWH(0, 0, width, height);
     x = camera.viewport.size.x * 0.5;
     y = camera.viewport.size.y * 0.9;
-    rect = Rect.fromLTWH(0, 0, width, height);
+    camera.viewport.add(this);
   }
 
   final bgPaint = Paint()..color = Colors.blueGrey.withOpacity(0.8);

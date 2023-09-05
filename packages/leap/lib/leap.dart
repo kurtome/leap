@@ -1,4 +1,4 @@
-export 'src/characters/jumper_character.dart';
+export 'src/characters/characters.dart';
 export 'src/entities/entities.dart';
 export 'src/input.dart';
 export 'src/leap_game.dart';

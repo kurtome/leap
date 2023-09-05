@@ -1,1 +1,2 @@
-export 'characters.dart';
+export 'jumper_behavior.dart';
+export 'jumper_character.dart';

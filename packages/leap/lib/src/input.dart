@@ -117,12 +117,12 @@ class SimpleKeyboardInput extends Component with KeyboardHandler {
   final leftKeys = {
     PhysicalKeyboardKey.arrowLeft,
     PhysicalKeyboardKey.keyA,
-    PhysicalKeyboardKey.keyH
+    PhysicalKeyboardKey.keyH,
   };
   final rightKeys = {
     PhysicalKeyboardKey.arrowRight,
     PhysicalKeyboardKey.keyD,
-    PhysicalKeyboardKey.keyL
+    PhysicalKeyboardKey.keyL,
   };
 
   late final Set<PhysicalKeyboardKey> relevantKeys;
