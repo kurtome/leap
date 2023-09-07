@@ -8,9 +8,6 @@ class Hud extends PositionComponent with HasGameRef<ExamplePlatformerLeapGame> {
     textComponent = TextComponent(textRenderer: textPaint);
     add(textComponent);
 
-    cameraComponent = gameRef.cameraComponent;
-    cameraComponent.viewport.add(this);
-
     x = 16;
     y = 4;
   }

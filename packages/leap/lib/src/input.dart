@@ -19,8 +19,8 @@ class SimpleCombinedInput extends Component
     AppLifecycleState previous,
     AppLifecycleState current,
   ) {
-    // when the app is backgrounded or foregrounded, reset inputs to avoid
-    // any weirdness with tap/key state getting out of sync
+    // When the app is backgrounded or foregrounded, reset inputs to avoid
+    // any weirdness with tap/key state getting out of sync.
     _tapInput.reset();
     _keyboardInput.keysDown.clear();
     pressedTime = 0;
@@ -114,12 +114,15 @@ class SimpleTapInput extends PositionComponent
 }
 
 class SimpleKeyboardInput extends Component with KeyboardHandler {
-  final leftKeys = {
+  SimpleKeyboardInput() : relevantKeys = leftKeys.union(rightKeys);
+
+  static final leftKeys = {
     PhysicalKeyboardKey.arrowLeft,
     PhysicalKeyboardKey.keyA,
     PhysicalKeyboardKey.keyH,
   };
-  final rightKeys = {
+
+  static final rightKeys = {
     PhysicalKeyboardKey.arrowRight,
     PhysicalKeyboardKey.keyD,
     PhysicalKeyboardKey.keyL,
@@ -127,11 +130,7 @@ class SimpleKeyboardInput extends Component with KeyboardHandler {
 
   late final Set<PhysicalKeyboardKey> relevantKeys;
 
-  SimpleKeyboardInput() {
-    relevantKeys = leftKeys.union(rightKeys);
-  }
-
-  Set<PhysicalKeyboardKey> keysDown = {};
+  final Set<PhysicalKeyboardKey> keysDown = {};
 
   bool get isPressed => keysDown.isNotEmpty;
 
@@ -143,7 +142,7 @@ class SimpleKeyboardInput extends Component with KeyboardHandler {
 
   @override
   bool onKeyEvent(RawKeyEvent keyEvent, Set<LogicalKeyboardKey> keysPressed) {
-    // ignore irrelevant keys
+    // Ignore irrelevant keys.
     if (relevantKeys.contains(keyEvent.physicalKey)) {
       if (keyEvent is RawKeyDownEvent) {
         keysDown.add(keyEvent.physicalKey);

@@ -5,7 +5,6 @@ import 'package:flame/game.dart';
 import 'package:leap/src/entities/entities.dart';
 import 'package:leap/src/leap_map.dart';
 import 'package:leap/src/leap_world.dart';
-
 import 'package:leap/src/mixins/mixins.dart';
 
 /// A [FlameGame] with all the Leap built-ins.
