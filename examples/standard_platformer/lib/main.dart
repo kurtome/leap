@@ -1,5 +1,5 @@
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
-import 'package:flame/input.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/widgets.dart' hide Animation, Image;
 import 'package:leap/leap.dart';
@@ -9,32 +9,48 @@ import 'package:leap_standard_platformer/player.dart';
 import 'package:leap_standard_platformer/welcome_dialog.dart';
 
 void main() {
-  runApp(GameWidget(game: ExamplePlatformerLeapGame()));
+  runApp(
+    GameWidget(
+      game: ExamplePlatformerLeapGame(),
+    ),
+  );
 }
 
 class ExamplePlatformerLeapGame extends LeapGame
-    with HasTappables, HasKeyboardHandlerComponents {
+    with TapCallbacks, HasKeyboardHandlerComponents {
   late final Player player;
   late final SimpleCombinedInput input;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-
-    await loadWorldAndMap('map.tmx', 16);
-    setFixedViewportInTiles(32, 16);
+    await loadWorldAndMap(
+      tileSize: 16,
+      tiledMapPath: 'map.tmx',
+    );
 
     input = SimpleCombinedInput();
     add(input);
+
     player = Player();
     add(player);
-    camera.followComponent(player);
+
+    cameraComponent.follow(player);
+
     if (!FlameAudio.bgm.isPlaying) {
       FlameAudio.bgm.play('village_music.mp3');
     }
 
-    add(Hud());
-    add(WelcomeDialog(camera));
+    cameraComponent.viewport.add(Hud());
+    cameraComponent.viewport.add(
+      WelcomeDialog(
+        position: Vector2(
+          cameraComponent.viewport.size.x * 0.5,
+          cameraComponent.viewport.size.y * 0.9,
+        ),
+      ),
+    );
+
     await Coin.loadAllInMap(map);
   }
 
@@ -42,7 +58,7 @@ class ExamplePlatformerLeapGame extends LeapGame
   void update(double dt) {
     super.update(dt);
 
-    // on web we need to wait for a user interaction before playing any sound
+    // On web, we need to wait for a user interaction before playing any sound.
     if (input.justPressed && !FlameAudio.bgm.isPlaying) {
       FlameAudio.bgm.play('village_music.mp3');
     }

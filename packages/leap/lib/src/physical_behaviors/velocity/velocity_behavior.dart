@@ -8,18 +8,18 @@ class VelocityBehavior extends PhysicalBehavior {
     super.update(dt);
 
     if (collisionInfo.up) {
-      // Set the top of this to the bottom of the collision on top
+      // Set the top of this to the bottom of the collision on top.
       velocity.y = 0;
       top = collisionInfo.upCollision!.bottom;
     }
     if (collisionInfo.down) {
-      // Set the bottom of this to the top of the collision underneath
+      // Set the bottom of this to the top of the collision underneath.
       velocity.y = 0;
       bottom = collisionInfo.downCollision!.relativeTop(parent);
     }
     if (collisionInfo.right) {
       if (collisionInfo.rightCollision!.isSlopeFromLeft) {
-        // Special handling for jumping while walking uphill
+        // Special handling for jumping while walking uphill.
         bottom = math.min(
           bottom,
           collisionInfo.rightCollision!.relativeTop(parent),
@@ -31,7 +31,7 @@ class VelocityBehavior extends PhysicalBehavior {
     }
     if (collisionInfo.left) {
       if (collisionInfo.leftCollision!.isSlopeFromRight) {
-        // Special handling for jumping while walking uphill
+        // Special handling for jumping while walking uphill.
         bottom = math.min(
           bottom,
           collisionInfo.leftCollision!.relativeTop(parent),
@@ -42,8 +42,8 @@ class VelocityBehavior extends PhysicalBehavior {
       }
     }
 
-    // Velocity has been updated by collision detection, so it's ok to
-    // apply it now
+    // Velocity has been updated by collision detection,
+    // so it's ok to apply it now.
     x += velocity.x * dt;
     y += velocity.y * dt;
   }

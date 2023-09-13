@@ -1,119 +1,46 @@
 import 'package:flame/components.dart';
+import 'package:flame/sprite.dart';
 import 'package:flame_audio/flame_audio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:leap/leap.dart';
-
 import 'package:leap_standard_platformer/coin.dart';
-
 import 'package:leap_standard_platformer/main.dart';
 
 class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
+  Player({super.health = initialHealth});
+
+  static const initialHealth = 1;
+
+  late final Vector2 _spawn;
+  late final SimpleCombinedInput _input;
+  late final PlayerSpriteAnimation _playerAnimation;
+
   int coins = 0;
   double deadTime = 0;
   double timeHoldingJump = 0;
   bool didEnemyBop = false;
-  late final SimpleCombinedInput _input;
-  late final Vector2 _spawn;
 
-  static const initialHealth = 1;
-
-  Player({super.health = initialHealth});
-
-  late PlayerSpriteAnimation _playerAnimation;
+  /// Render on top of the map tiles.
+  @override
+  int get priority => 1;
 
   @override
   PositionComponent? get spriteAnimation => _playerAnimation;
 
   @override
-  void render(Canvas c) {
-    super.render(c);
-  }
-
-  @override
   Future<void> onLoad() async {
     _input = gameRef.input;
     _spawn = map.playerSpawn;
-
-    // size controls player hitbox, which should be slightly smaller than
-    // visual size of the sprite
-    size = Vector2(10, 20);
-
     _playerAnimation = PlayerSpriteAnimation();
+    // Size controls player hitbox, which should be slightly smaller than
+    // visual size of the sprite.
+    _playerAnimation.size = Vector2(10, 20);
     add(_playerAnimation);
 
     resetPosition();
 
     walkSpeed = map.tileSize * 7;
     minJumpImpulse = world.gravity * 0.6;
-
-    return super.onLoad();
   }
-
-  void resetPosition() {
-    x = _spawn.x;
-    y = _spawn.y;
-    velocity.x = 0;
-    velocity.y = 0;
-    lastGroundXVelocity = 0;
-    faceLeft = false;
-
-    FlameAudio.play('spawn.wav');
-  }
-
-  void updateHandleInput(double dt) {
-    if (isAlive) {
-      // keep jumping if started
-      if (jumping && _input.isPressed && timeHoldingJump < maxJumpHoldTime) {
-        jumping = true;
-        timeHoldingJump += dt;
-      } else {
-        jumping = false;
-        timeHoldingJump = 0;
-      }
-    }
-
-    if (_input.justPressed && _input.isPressedLeft) {
-      // tapped left
-      if (walking) {
-        if (faceLeft) {
-          // already moving left
-          if (isOnGround) {
-            jumping = true;
-          }
-        } else {
-          // moving right, stop
-          walking = false;
-          faceLeft = true;
-        }
-      } else {
-        // standing still
-        walking = true;
-        faceLeft = true;
-      }
-    } else if (_input.justPressed && _input.isPressedRight) {
-      // tapped right
-      if (walking) {
-        if (!faceLeft) {
-          // already moving right
-          if (isOnGround) {
-            jumping = true;
-          }
-        } else {
-          // moving left, stop
-          walking = false;
-          faceLeft = false;
-        }
-      } else {
-        // standing still
-        walking = true;
-        faceLeft = false;
-      }
-    }
-  }
-
-  /// Render on top of the map tiles.
-  @override
-  int get priority => 1;
 
   @override
   void update(double dt) {
@@ -150,19 +77,81 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
     }
   }
 
+  void resetPosition() {
+    _playerAnimation.position.x = _spawn.x;
+    _playerAnimation.position.y = _spawn.y;
+    velocity.x = 0;
+    velocity.y = 0;
+    lastGroundXVelocity = 0;
+    faceLeft = false;
+
+    FlameAudio.play('spawn.wav');
+  }
+
+  void updateHandleInput(double dt) {
+    if (isAlive) {
+      // Keep jumping if started.
+      if (jumping && _input.isPressed && timeHoldingJump < maxJumpHoldTime) {
+        jumping = true;
+        timeHoldingJump += dt;
+      } else {
+        jumping = false;
+        timeHoldingJump = 0;
+      }
+    }
+
+    if (_input.justPressed && _input.isPressedLeft) {
+      // Tapped left.
+      if (walking) {
+        if (faceLeft) {
+          // Already moving left.
+          if (isOnGround) {
+            jumping = true;
+          }
+        } else {
+          // Moving right, stop.
+          walking = false;
+          faceLeft = true;
+        }
+      } else {
+        // Standing still.
+        walking = true;
+        faceLeft = true;
+      }
+    } else if (_input.justPressed && _input.isPressedRight) {
+      // Tapped right.
+      if (walking) {
+        if (!faceLeft) {
+          // Already moving right.
+          if (isOnGround) {
+            jumping = true;
+          }
+        } else {
+          // Moving left, stop.
+          walking = false;
+          faceLeft = false;
+        }
+      } else {
+        // Standing still.
+        walking = true;
+        faceLeft = false;
+      }
+    }
+  }
+
   void updateAnimation() {
     if (isDead) {
       _playerAnimation.die();
     } else {
       if (isOnGround) {
-        // on the ground
+        // On the ground.
         if (velocity.x.abs() > 0) {
           _playerAnimation.walk();
         } else {
           _playerAnimation.idle();
         }
       } else {
-        // in the air
+        // In the air.
         if (velocity.y > (world.maxVelocity / 4)) {
           _playerAnimation.fall();
         } else if (velocity.y < 0) {
@@ -197,13 +186,13 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
 
 class PlayerSpriteAnimation extends PositionComponent
     with HasGameRef<LeapGame> {
-  late SpriteAnimationComponent _animationComponent;
-
-  late SpriteAnimation _idleAnimation;
-  late SpriteAnimation _walkAnimation;
-  late SpriteAnimation _jumpAnimation;
-  late SpriteAnimation _fallAnimation;
-  late SpriteAnimation _deathAnimation;
+  late final SpriteAnimationTicker _ticker;
+  late final SpriteAnimationComponent _animationComponent;
+  late final SpriteAnimation _idleAnimation;
+  late final SpriteAnimation _walkAnimation;
+  late final SpriteAnimation _jumpAnimation;
+  late final SpriteAnimation _fallAnimation;
+  late final SpriteAnimation _deathAnimation;
 
   @override
   Future<void>? onLoad() async {
@@ -272,8 +261,10 @@ class PlayerSpriteAnimation extends PositionComponent
       // bottom aligned so the player's feet touch the ground.
       position: Vector2(-12, -12),
     );
-    add(_animationComponent);
 
+    _ticker = _animationComponent.animation!.createTicker();
+
+    add(_animationComponent);
     idle();
 
     return super.onLoad();
@@ -282,35 +273,35 @@ class PlayerSpriteAnimation extends PositionComponent
   void idle() {
     if (_animationComponent.animation != _idleAnimation) {
       _animationComponent.animation = _idleAnimation;
-      _animationComponent.animation!.reset();
+      _ticker.reset();
     }
   }
 
   void walk() {
     if (_animationComponent.animation != _walkAnimation) {
       _animationComponent.animation = _walkAnimation;
-      _animationComponent.animation!.reset();
+      _ticker.reset();
     }
   }
 
   void jump() {
     if (_animationComponent.animation != _jumpAnimation) {
       _animationComponent.animation = _jumpAnimation;
-      _animationComponent.animation!.reset();
+      _ticker.reset();
     }
   }
 
   void fall() {
     if (_animationComponent.animation != _fallAnimation) {
       _animationComponent.animation = _fallAnimation;
-      _animationComponent.animation!.reset();
+      _ticker.reset();
     }
   }
 
   void die() {
     if (_animationComponent.animation != _deathAnimation) {
       _animationComponent.animation = _deathAnimation;
-      _animationComponent.animation!.reset();
+      _ticker.reset();
     }
   }
 }

@@ -1,31 +1,31 @@
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
+import 'package:leap/src/entities/entities.dart';
 import 'package:leap/src/leap_game.dart';
-import 'package:leap/src/physical_entity.dart';
 
 /// This component encapsulates the Tiled map, and in particular builds the
 /// grid of ground tiles that make up the terrain of the game.
 class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
-  /// Tile size (width and height) in pixels
+  LeapMap({required this.tileSize, required this.tiledMap}) {
+    groundLayer = getTileLayer<TileLayer>('Ground')!;
+
+    // Size of the map component is based on the tile map's grid.
+    width = tiledMap.tileMap.map.width * tileSize;
+    height = tiledMap.tileMap.map.height * tileSize;
+  }
+
+  /// Tile size (width and height) in pixels.
   final double tileSize;
 
-  /// The Tiled map
+  /// The Tiled map.
   final TiledComponent tiledMap;
 
-  /// The layer used to populate game terrain
+  /// The layer used to populate game terrain.
   late TileLayer groundLayer;
 
   /// Grid of ground tile from the [groundLayer], will be null for any grid
   /// cell that doesn't have a tile in the layer.
   late List<List<LeapMapGroundTile?>> groundTiles;
-
-  LeapMap(this.tileSize, this.tiledMap) {
-    groundLayer = getTileLayer<TileLayer>('Ground')!;
-
-    // Size of the map component is based on the tile map's grid
-    width = tiledMap.tileMap.map.width * tileSize;
-    height = tiledMap.tileMap.map.height * tileSize;
-  }
 
   @override
   void onMount() {
@@ -41,12 +41,12 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
     return super.onMount();
   }
 
-  /// Convenience method for accessing Tiled layers in the [tiledMap]
+  /// Convenience method for accessing Tiled layers in the [tiledMap].
   T? getTileLayer<T extends Layer>(String name) {
     return tiledMap.tileMap.getLayer<T>(name);
   }
 
-  /// Spawn location for the player
+  /// Spawn location for the player.
   Vector2 get playerSpawn {
     final metadataLayer = tiledMap.tileMap.getLayer<ObjectGroup>('Metadata');
     if (metadataLayer != null) {
@@ -64,7 +64,10 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
       tiledMapPath,
       Vector2.all(tileSize),
     );
-    return LeapMap(tileSize, tiledMap);
+    return LeapMap(
+      tileSize: tileSize,
+      tiledMap: tiledMap,
+    );
   }
 }
 
@@ -72,17 +75,18 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
 /// [TiledComponent] handles drawing the tile images.
 ///
 /// For the purposes of collision detection, the hitbox is assumed to be the
-/// entire tile (except when [isSlope] is true).
+/// entire tile (except when [isSlope] is `true`).
 class LeapMapGroundTile extends PhysicalEntity {
   final Tile tile;
 
-  /// Coordinates on the tile grid
-  final int gridX, gridY;
+  /// Coordinates on the tile grid.
+  final int gridX;
+  final int gridY;
 
-  /// Topmost point on the left side, important for slopes
+  /// Topmost point on the left side, important for slopes.
   int? leftTop;
 
-  /// Topmost point on the right side, important for slopes
+  /// Topmost point on the right side, important for slopes.
   int? rightTop;
 
   /// Is this a sloped section of ground? If so, this is handled specially
@@ -90,14 +94,14 @@ class LeapMapGroundTile extends PhysicalEntity {
   /// up and down it properly.
   late bool isSlope;
 
-  /// Hazards (like spikes) damage on collision
+  /// Hazards (like spikes) damage on collision.
   bool get isHazard => tile.class_ == 'Hazard';
 
   /// Platforms only collide from above so the player can jump through them
-  /// and land on top
+  /// and land on top.
   bool get isPlatform => tile.class_ == 'Platform';
 
-  /// Damage to apply when colliding and [isHazard]
+  /// Damage to apply when colliding and [isHazard].
   int get hazardDamage {
     return tile.properties.getValue<int>('Damage') ?? 0;
   }
@@ -117,18 +121,18 @@ class LeapMapGroundTile extends PhysicalEntity {
     position = Vector2(tileSize * gridX, tileSize * gridY);
   }
 
-  /// Is this a slop going up from left-to-right
+  /// Is this a slop going up from left-to-right.
   bool get isSlopeFromLeft {
     return isSlope && (leftTop! < rightTop!);
   }
 
-  /// Is this a slop going up from right-to-left
+  /// Is this a slop going up from right-to-left.
   bool get isSlopeFromRight {
     return isSlope && (leftTop! > rightTop!);
   }
 
   /// The topmost point on this slope that current is within the
-  /// horizontal bounds of [other]
+  /// horizontal bounds of [other].
   @override
   double relativeTop(PhysicalEntity other) {
     if (isSlopeFromLeft) {
@@ -146,15 +150,16 @@ class LeapMapGroundTile extends PhysicalEntity {
     return top;
   }
 
-  /// Builds the tile grid full of ground tiles based on [groundLayer]
+  /// Builds the tile grid full of ground tiles based on [groundLayer].
   static List<List<LeapMapGroundTile?>> generate(
     TiledMap tileMap,
     TileLayer groundLayer,
   ) {
     final groundTiles = List.generate(
       groundLayer.width,
-      (int _i) => List<LeapMapGroundTile?>.filled(groundLayer.height, null),
+      (_) => List<LeapMapGroundTile?>.filled(groundLayer.height, null),
     );
+
     for (var x = 0; x < groundLayer.width; x++) {
       for (var y = 0; y < groundLayer.height; y++) {
         final gid = groundLayer.tileData![y][x].tile;
