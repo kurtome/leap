@@ -75,9 +75,13 @@ class SimpleTapInput extends PositionComponent
   bool get isPressed => downEvent != null && upEvent == null;
 
   bool get isPressedLeft {
+    print(upEvent);
     final upEventInfo = upEvent?.asInfo(game);
-    return isPressed &&
-        upEventInfo!.eventPosition.global.x < gameRef.canvasSize.x / 2;
+    if (upEventInfo != null) {
+      return isPressed &&
+          upEventInfo.eventPosition.global.x < gameRef.canvasSize.x / 2;
+    }
+    return false;
   }
 
   bool get isPressedRight => isPressed && !isPressedLeft;
@@ -90,6 +94,7 @@ class SimpleTapInput extends PositionComponent
 
   @override
   bool onTapUp(TapUpEvent event) {
+    print(event);
     upEvent = event;
     return true;
   }
@@ -108,6 +113,7 @@ class SimpleTapInput extends PositionComponent
   }
 
   void reset() {
+    print('reset');
     downEvent = null;
     upEvent = null;
   }
