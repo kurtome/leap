@@ -7,7 +7,7 @@ class CollisionInfo {
     this.downCollision,
     this.leftCollision,
     this.rightCollision,
-    this.otherCollisions = const [],
+    this.otherCollisions,
   });
 
   /// Component that this is colliding with on top.
@@ -23,7 +23,7 @@ class CollisionInfo {
   LeapMapGroundTile? rightCollision;
 
   /// Non-map collisions.
-  final List<PhysicalEntity> otherCollisions;
+  List<PhysicalEntity>? otherCollisions;
 
   /// Is currently colliding on top
   bool get up => upCollision != null;
@@ -53,7 +53,7 @@ class CollisionInfo {
     downCollision = null;
     leftCollision = null;
     rightCollision = null;
-    otherCollisions.clear();
+    otherCollisions = null;
   }
 
   void copyFrom(CollisionInfo collisionInfo) {
@@ -62,7 +62,7 @@ class CollisionInfo {
     leftCollision = collisionInfo.leftCollision;
     rightCollision = collisionInfo.rightCollision;
 
-    otherCollisions.clear();
-    otherCollisions.addAll(collisionInfo.otherCollisions);
+    otherCollisions?.clear();
+    otherCollisions?.addAll(collisionInfo.otherCollisions ?? []);
   }
 }

@@ -175,7 +175,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
       velocity.y = -minJumpImpulse;
     }
 
-    for (final other in collisionInfo.otherCollisions) {
+    for (final other in collisionInfo.otherCollisions ?? const []) {
       if (other is Coin) {
         other.removeFromParent();
         coins++;

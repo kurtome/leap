@@ -50,6 +50,8 @@ class LeapGame extends FlameGame with HasTrackedComponents {
       height: tileSize * map.height,
     );
 
-    await addAll([map, world, cameraComponent]);
+    world.add(map);
+
+    await addAll([world, cameraComponent]);
   }
 }

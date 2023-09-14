@@ -52,7 +52,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         world.physicals.where((p) => p.collisionType == CollisionType.standard);
     for (final other in nonMapCollidables) {
       if (intersects(other)) {
-        collisionInfo.otherCollisions.add(other);
+        collisionInfo.otherCollisions?.add(other);
       }
     }
   }
