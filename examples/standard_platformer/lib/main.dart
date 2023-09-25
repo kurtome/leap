@@ -27,14 +27,15 @@ class ExamplePlatformerLeapGame extends LeapGame
     await loadWorldAndMap(
       tileSize: 16,
       tiledMapPath: 'map.tmx',
+      tileCameraWidth: 32,
+      tileCameraHeight: 16,
     );
 
     input = SimpleCombinedInput();
     add(input);
 
     player = Player();
-    add(player);
-
+    cameraComponent.world?.add(player);
     cameraComponent.follow(player);
 
     if (!FlameAudio.bgm.isPlaying) {

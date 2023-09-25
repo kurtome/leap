@@ -75,7 +75,6 @@ class SimpleTapInput extends PositionComponent
   bool get isPressed => downEvent != null && upEvent == null;
 
   bool get isPressedLeft {
-    print(upEvent);
     final upEventInfo = upEvent?.asInfo(game);
     if (upEventInfo != null) {
       return isPressed &&
@@ -88,13 +87,12 @@ class SimpleTapInput extends PositionComponent
 
   @override
   Future<void> onLoad() async {
-    size = gameRef.world.size;
+    size = gameRef.leapWorld.map.size;
     return super.onLoad();
   }
 
   @override
   bool onTapUp(TapUpEvent event) {
-    print(event);
     upEvent = event;
     return true;
   }
@@ -113,7 +111,6 @@ class SimpleTapInput extends PositionComponent
   }
 
   void reset() {
-    print('reset');
     downEvent = null;
     upEvent = null;
   }

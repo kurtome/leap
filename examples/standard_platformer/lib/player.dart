@@ -33,7 +33,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
     _playerAnimation = PlayerSpriteAnimation();
     // Size controls player hitbox, which should be slightly smaller than
     // visual size of the sprite.
-    _playerAnimation.size = Vector2(10, 20);
+    size = Vector2(10, 20);
     add(_playerAnimation);
 
     resetPosition();
@@ -78,8 +78,8 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   }
 
   void resetPosition() {
-    _playerAnimation.position.x = _spawn.x;
-    _playerAnimation.position.y = _spawn.y;
+    x = _spawn.x;
+    y = _spawn.y;
     velocity.x = 0;
     velocity.y = 0;
     lastGroundXVelocity = 0;
@@ -260,12 +260,11 @@ class PlayerSpriteAnimation extends PositionComponent
       // This should be visually x-axis centered over the parent, and y-axis
       // bottom aligned so the player's feet touch the ground.
       position: Vector2(-12, -12),
+      animation: _idleAnimation,
     );
 
     _ticker = _animationComponent.animation!.createTicker();
-
     add(_animationComponent);
-    idle();
 
     return super.onLoad();
   }
