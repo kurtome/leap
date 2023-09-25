@@ -42,7 +42,7 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     // These two classes reference each other, so the order matters here to
     // load properly.
     world = LeapWorld(tileSize: tileSize);
-    map = await LeapMap.load('map.tmx', tileSize);
+    map = await LeapMap.load(tiledMapPath, tileSize);
 
     // Default the camera size to the bounds of the Tiled map.
     cameraComponent = CameraComponent.withFixedResolution(
