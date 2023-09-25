@@ -16,8 +16,6 @@ class LeapGame extends FlameGame with HasTrackedComponents {
 
   late final LeapMap leapMap;
 
-  late final LeapWorld leapWorld;
-
   final double tileSize;
 
   AppLifecycleState appState;
@@ -33,9 +31,9 @@ class LeapGame extends FlameGame with HasTrackedComponents {
   }
 
   /// All the physical entities in the world.
-  Iterable<PhysicalEntity> get physicals => leapWorld.physicals;
+  Iterable<PhysicalEntity> get physicals => (world as LeapWorld).physicals;
 
-  /// Initializes and loads the [leapWorld] and [leapMap] components
+  /// Initializes and loads the [world] and [leapMap] components
   /// with a Tiled map.
   ///
   /// The map file should be loaded from "assets/tiled/[tiledMapPath]",
@@ -59,6 +57,6 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     // load properly.
     leapMap = await LeapMap.load(tiledMapPath, tileSize);
 
-    await world.addAll([leapMap, leapWorld]);
+    await world.add(leapMap);
   }
 }

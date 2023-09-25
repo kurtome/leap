@@ -4,7 +4,7 @@ import 'package:flame/components.dart';
 import 'package:leap/leap.dart';
 
 /// The world component encapsulates the physics engine
-/// and all of the [PhysicalEntity] components.
+/// and all of the [World] components.
 ///
 /// Any [PhysicalEntity] added anywhere in the [LeapGame] component tree
 /// will automatically be part of the world via [physicals].
