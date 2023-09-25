@@ -11,13 +11,17 @@ import 'package:leap_standard_platformer/welcome_dialog.dart';
 void main() {
   runApp(
     GameWidget(
-      game: ExamplePlatformerLeapGame(),
+      game: ExamplePlatformerLeapGame(
+        tileSize: 16,
+      ),
     ),
   );
 }
 
 class ExamplePlatformerLeapGame extends LeapGame
     with TapCallbacks, HasKeyboardHandlerComponents {
+  ExamplePlatformerLeapGame({required super.tileSize});
+
   late final Player player;
   late final SimpleCombinedInput input;
 
@@ -25,7 +29,6 @@ class ExamplePlatformerLeapGame extends LeapGame
   Future<void> onLoad() async {
     await super.onLoad();
     await loadWorldAndMap(
-      tileSize: 16,
       tiledMapPath: 'map.tmx',
       tileCameraWidth: 32,
       tileCameraHeight: 16,
@@ -35,24 +38,24 @@ class ExamplePlatformerLeapGame extends LeapGame
     add(input);
 
     player = Player();
-    cameraComponent.world?.add(player);
-    cameraComponent.follow(player);
+    camera.world!.add(player);
+    camera.follow(player);
 
     if (!FlameAudio.bgm.isPlaying) {
       FlameAudio.bgm.play('village_music.mp3');
     }
 
-    cameraComponent.viewport.add(Hud());
-    cameraComponent.viewport.add(
+    camera.viewport.add(Hud());
+    camera.viewport.add(
       WelcomeDialog(
         position: Vector2(
-          cameraComponent.viewport.size.x * 0.5,
-          cameraComponent.viewport.size.y * 0.9,
+          camera.viewport.size.x * 0.5,
+          camera.viewport.size.y * 0.9,
         ),
       ),
     );
 
-    await Coin.loadAllInMap(map);
+    await Coin.loadAllInMap(leapMap);
   }
 
   @override

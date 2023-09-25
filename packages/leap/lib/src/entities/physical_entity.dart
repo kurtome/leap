@@ -61,7 +61,7 @@ class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
         );
 
   /// NOTE: Can only be accessed after component tree has been to the [LeapGame]
-  LeapMap get map => gameRef.map;
+  LeapMap get map => gameRef.leapMap;
 
   LeapWorld get world => gameRef.leapWorld;
 
