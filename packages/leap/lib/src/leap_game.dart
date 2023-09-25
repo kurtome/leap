@@ -12,7 +12,7 @@ class LeapGame extends FlameGame with HasTrackedComponents {
   LeapGame() : appState = AppLifecycleState.resumed;
 
   late final LeapMap map;
-  late final LeapWorld world;
+  late final LeapWorld leapWorld;
   late final CameraComponent cameraComponent;
   AppLifecycleState appState;
 
@@ -27,31 +27,36 @@ class LeapGame extends FlameGame with HasTrackedComponents {
   }
 
   /// Tile size (width and height) in pixels.
-  double get tileSize => world.tileSize;
+  double get tileSize => leapWorld.tileSize;
 
   /// All the physical entities in the world.
-  Iterable<PhysicalEntity> get physicals => world.physicals;
+  Iterable<PhysicalEntity> get physicals => leapWorld.physicals;
 
-  /// Initializes and loads the [world] and [map] components with a Tiled map,
+  /// Initializes and loads the [leapWorld] and [map] components with a Tiled map,
   /// the map file is loaded from "assets/tiled/[tiledMapPath]", and should
   /// use tile size [tileSize].
   Future<void> loadWorldAndMap({
     required String tiledMapPath,
     required double tileSize,
+    required int tileCameraWidth,
+    required int tileCameraHeight,
   }) async {
-    // These two classes reference each other, so the order matters here to
-    // load properly.
-    world = LeapWorld(tileSize: tileSize);
-    map = await LeapMap.load(tiledMapPath, tileSize);
+    final flameWorld = World();
+    await add(flameWorld);
 
     // Default the camera size to the bounds of the Tiled map.
     cameraComponent = CameraComponent.withFixedResolution(
-      width: tileSize * map.width,
-      height: tileSize * map.height,
+      width: tileSize * tileCameraWidth,
+      height: tileSize * tileCameraHeight,
+      world: flameWorld,
     );
+    await add(cameraComponent);
 
-    world.add(map);
+    // These two classes reference each other, so the order matters here to
+    // load properly.
+    leapWorld = LeapWorld(tileSize: tileSize);
+    map = await LeapMap.load(tiledMapPath, tileSize);
 
-    await addAll([world, cameraComponent]);
+    await flameWorld.addAll([map, leapWorld]);
   }
 }

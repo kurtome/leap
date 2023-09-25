@@ -48,11 +48,13 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     // of them is efficient (we intentionally don't do this for ground tiles for
     // that reason)
 
-    final nonMapCollidables =
-        world.physicals.where((p) => p.collisionType == CollisionType.standard);
+    final nonMapCollidables = world.physicals.where(
+      (p) => p.collisionType == CollisionType.standard,
+    );
     for (final other in nonMapCollidables) {
       if (intersects(other)) {
-        collisionInfo.otherCollisions?.add(other);
+        collisionInfo.otherCollisions ??= [];
+        collisionInfo.otherCollisions!.add(other);
       }
     }
   }

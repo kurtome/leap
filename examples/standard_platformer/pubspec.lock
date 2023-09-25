@@ -5,10 +5,10 @@ packages:
     dependency: transitive
     description:
       name: archive
-      sha256: "49b1fad315e57ab0bbc15bcbb874e83116a1d78f77ebd500a4af6c9407d6b28e"
+      sha256: "20071638cbe4e5964a427cfa0e86dce55d060bc7d82d56f3554095d7239a8765"
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.8"
+    version: "3.4.2"
   async:
     dependency: transitive
     description:
@@ -125,18 +125,18 @@ packages:
     dependency: "direct main"
     description:
       name: flame
-      sha256: bd2b45f9fc0ec4939031b85c0b0a97cf09357c12ecd072d44389a4c577a2c0f0
+      sha256: f1ed45b49db36f6650882900f3216516d5c2628400bad8b4e92d83c116d79b12
       url: "https://pub.dev"
     source: hosted
-    version: "1.8.2"
+    version: "1.9.1"
   flame_audio:
     dependency: "direct main"
     description:
       name: flame_audio
-      sha256: "62c98d1541ecd023e8b549e0fd7f5e5b2026724f3289b44bd272959d170c8bba"
+      sha256: "2b21fb18587e4591ed2523ea26f88078e9927b6f6ed0768f24a531f0ea7a1a36"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.5"
+    version: "2.1.1"
   flame_behaviors:
     dependency: transitive
     description:
@@ -149,18 +149,18 @@ packages:
     dependency: "direct dev"
     description:
       name: flame_lint
-      sha256: "216a327ecc169b8fa1286598485f9ec243b9d0c0e4f24127794b12f5cebe71f7"
+      sha256: "49ed8ba7b4ef666ea0e9ff4c63b12091140258ee88953f482e46b8d9c51df067"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   flame_tiled:
     dependency: "direct main"
     description:
       name: flame_tiled
-      sha256: "8d8e0a4e14019a3eb161c772b6fafa26377df3fc3261e5edd9dfc9ba96346163"
+      sha256: c3e651e9e3b9c7dae32fbe9e696076bb7532efb42bdffcb8f641e834da84be0b
       url: "https://pub.dev"
     source: hosted
-    version: "1.13.0"
+    version: "1.14.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -222,10 +222,10 @@ packages:
     dependency: transitive
     description:
       name: ordered_set
-      sha256: "3fedcc9121b3ba24c0a84f32da2989c42e36c159b73feadbc2f402dc55966b81"
+      sha256: "3858c7d84619edfab87c3e367584648020903187edb70b52697646f4b2a93022"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.1"
+    version: "5.0.2"
   path:
     dependency: transitive
     description:
@@ -395,10 +395,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: "9e82a402b7f3d518fb9c02d0e9ae45952df31b9bf34d77baf19da2de03fc2aaa"
+      sha256: c97defd418eef4ec88c0d1652cdce84b9f7b63dd7198e266d06ac1710d527067
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.7"
+    version: "5.0.8"
   xdg_directories:
     dependency: transitive
     description:

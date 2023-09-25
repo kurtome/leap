@@ -7,10 +7,10 @@ import 'package:tiled/tiled.dart';
 class Coin extends PhysicalEntity {
   Coin({
     required this.tiledObject,
-    required SpriteAnimation animation,
+    required this.animation,
   }) : super(static: true, collisionType: CollisionType.standard) {
-    tiledObject.width = 16;
-    tiledObject.height = 16;
+    width = 16;
+    height = 16;
     priority = 2;
 
     anchor = Anchor.center;
@@ -26,10 +26,12 @@ class Coin extends PhysicalEntity {
   }
 
   final TiledObject tiledObject;
+  final SpriteAnimation animation;
 
   @override
   void onRemove() {
     super.onRemove();
+    animation.stepTime = 0.2;
     FlameAudio.play('coin.wav');
   }
 

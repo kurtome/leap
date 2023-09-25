@@ -4,11 +4,11 @@ import 'package:flame/components.dart';
 import 'package:leap/leap.dart';
 
 /// The world component encapsulates the physics engine
-/// and all of the [PhysicalEntity] components.
+/// and all of the [World] components.
 ///
 /// Any [PhysicalEntity] added anywhere in the [LeapGame] component tree
 /// will automatically be part of the world via [physicals].
-class LeapWorld extends PositionComponent with HasGameRef<LeapGame> {
+class LeapWorld extends World with HasGameRef<LeapGame> {
   LeapWorld({
     this.tileSize = 16,
     this.gravity = 0,
@@ -29,8 +29,6 @@ class LeapWorld extends PositionComponent with HasGameRef<LeapGame> {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    width = map.width;
-    height = map.height;
     gravity = tileSize * 32;
     maxVelocity = tileSize * 20;
   }
