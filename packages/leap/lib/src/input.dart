@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/services.dart';
-import 'package:leap/src/leap_game.dart';
+import 'package:leap/leap.dart';
 import 'package:leap/src/mixins/mixins.dart';
 
 /// Combines touch screen and keyboard input into one API.
@@ -87,7 +87,7 @@ class SimpleTapInput extends PositionComponent
 
   @override
   Future<void> onLoad() async {
-    size = gameRef.leapWorld.map.size;
+    size = (gameRef.world as LeapWorld).map.size;
     return super.onLoad();
   }
 

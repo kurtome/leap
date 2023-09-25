@@ -9,11 +9,15 @@ import 'package:leap/src/mixins/mixins.dart';
 
 /// A [FlameGame] with all the Leap built-ins.
 class LeapGame extends FlameGame with HasTrackedComponents {
-  LeapGame() : appState = AppLifecycleState.resumed;
+  LeapGame({
+    required this.tileSize,
+    this.appState = AppLifecycleState.resumed,
+  }) : super(world: LeapWorld(tileSize: tileSize));
 
-  late final LeapMap map;
-  late final LeapWorld leapWorld;
-  late final CameraComponent cameraComponent;
+  late final LeapMap leapMap;
+
+  final double tileSize;
+
   AppLifecycleState appState;
 
   @override
@@ -21,42 +25,38 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     super.lifecycleStateChange(state);
     final oldAppState = appState;
     appState = state;
-    for (final c in children.query<AppLifecycleAware>()) {
-      c.appLifecycleStateChanged(oldAppState, state);
+    for (final child in children.query<AppLifecycleAware>()) {
+      child.appLifecycleStateChanged(oldAppState, state);
     }
   }
 
-  /// Tile size (width and height) in pixels.
-  double get tileSize => leapWorld.tileSize;
-
   /// All the physical entities in the world.
-  Iterable<PhysicalEntity> get physicals => leapWorld.physicals;
+  Iterable<PhysicalEntity> get physicals => (world as LeapWorld).physicals;
 
-  /// Initializes and loads the [leapWorld] and [map] components with a Tiled map,
-  /// the map file is loaded from "assets/tiled/[tiledMapPath]", and should
-  /// use tile size [tileSize].
+  /// Initializes and loads the [world] and [leapMap] components
+  /// with a Tiled map.
+  ///
+  /// The map file should be loaded from "assets/tiled/[tiledMapPath]",
+  /// and use tile size [tileSize].
   Future<void> loadWorldAndMap({
     required String tiledMapPath,
-    required double tileSize,
     required int tileCameraWidth,
     required int tileCameraHeight,
   }) async {
-    final flameWorld = World();
-    await add(flameWorld);
+    await add(world);
 
     // Default the camera size to the bounds of the Tiled map.
-    cameraComponent = CameraComponent.withFixedResolution(
+    camera = CameraComponent.withFixedResolution(
       width: tileSize * tileCameraWidth,
       height: tileSize * tileCameraHeight,
-      world: flameWorld,
+      world: world,
     );
-    await add(cameraComponent);
+    await add(camera);
 
     // These two classes reference each other, so the order matters here to
     // load properly.
-    leapWorld = LeapWorld(tileSize: tileSize);
-    map = await LeapMap.load(tiledMapPath, tileSize);
+    leapMap = await LeapMap.load(tiledMapPath, tileSize);
 
-    await flameWorld.addAll([map, leapWorld]);
+    await world.add(leapMap);
   }
 }

@@ -24,7 +24,7 @@ class LeapWorld extends World with HasGameRef<LeapGame> {
   /// Maximum velocity of physical components per-second.
   late double maxVelocity;
 
-  LeapMap get map => gameRef.map;
+  LeapMap get map => gameRef.leapMap;
 
   @override
   Future<void> onLoad() async {
