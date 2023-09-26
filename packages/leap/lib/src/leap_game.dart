@@ -14,9 +14,9 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     this.appState = AppLifecycleState.resumed,
   }) : super(world: LeapWorld(tileSize: tileSize));
 
-  late final LeapMap leapMap;
-
   final double tileSize;
+
+  late final LeapMap leapMap;
 
   AppLifecycleState appState;
 
@@ -36,22 +36,19 @@ class LeapGame extends FlameGame with HasTrackedComponents {
   /// Initializes and loads the [world] and [leapMap] components
   /// with a Tiled map.
   ///
-  /// The map file should be loaded from "assets/tiled/[tiledMapPath]",
+  /// The map file should be loaded from "assets/tiles/[tiledMapPath]",
   /// and use tile size [tileSize].
   Future<void> loadWorldAndMap({
     required String tiledMapPath,
     required int tileCameraWidth,
     required int tileCameraHeight,
   }) async {
-    await add(world);
-
     // Default the camera size to the bounds of the Tiled map.
     camera = CameraComponent.withFixedResolution(
       width: tileSize * tileCameraWidth,
       height: tileSize * tileCameraHeight,
       world: world,
     );
-    await add(camera);
 
     // These two classes reference each other, so the order matters here to
     // load properly.
