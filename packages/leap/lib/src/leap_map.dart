@@ -59,10 +59,15 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
     }
   }
 
-  static Future<LeapMap> load(String tiledMapPath, double tileSize) async {
+  static Future<LeapMap> load({
+    required double tileSize,
+    required String tiledMapPath,
+    String prefix = '',
+  }) async {
     final tiledMap = await TiledComponent.load(
       tiledMapPath,
       Vector2.all(tileSize),
+      prefix: prefix,
     );
     return LeapMap(
       tileSize: tileSize,
