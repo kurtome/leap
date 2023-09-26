@@ -7,7 +7,7 @@ import 'package:leap/src/leap_game.dart';
 /// grid of ground tiles that make up the terrain of the game.
 class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
   LeapMap({required this.tileSize, required this.tiledMap}) {
-    groundLayer = getTileLayer<TileLayer>('Ground')!;
+    groundLayer = getTileLayer<TileLayer>('Ground');
 
     // Size of the map component is based on the tile map's grid.
     width = tiledMap.tileMap.map.width * tileSize;
@@ -29,7 +29,10 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
 
   @override
   void onMount() {
-    groundTiles = LeapMapGroundTile.generate(tiledMap.tileMap.map, groundLayer);
+    groundTiles = LeapMapGroundTile.generate(
+      tiledMap.tileMap.map,
+      groundLayer,
+    );
     add(tiledMap);
     for (final column in groundTiles) {
       for (final groundTile in column) {
@@ -42,16 +45,41 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
   }
 
   /// Convenience method for accessing Tiled layers in the [tiledMap].
-  T? getTileLayer<T extends Layer>(String name) {
-    return tiledMap.tileMap.getLayer<T>(name);
+  T getTileLayer<T extends Layer>(String name) {
+    // First try to find the layer with the exact name.
+    final layer = tiledMap.tileMap.getLayer<T>(name);
+    if (layer != null) {
+      return layer;
+    }
+
+    // Then try to find the layer with the name in all lower case.
+    final nameLowerCased = name.toLowerCase();
+    if (tiledMap.tileMap.getLayer<T>(nameLowerCased) != null) {
+      return tiledMap.tileMap.getLayer<T>(nameLowerCased)!;
+    }
+
+    // Then try to find the layer with the name in all upper case.
+    final nameUpperCased = name.toUpperCase();
+    if (tiledMap.tileMap.getLayer<T>(nameUpperCased) != null) {
+      return tiledMap.tileMap.getLayer<T>(nameUpperCased)!;
+    }
+
+    // Finally, throw an error if the layer can't be found.
+    Error.throwWithStackTrace(
+      Exception(
+        'Layer $name not found, check the Tiled map for the correct name.',
+      ),
+      StackTrace.current,
+    );
   }
 
   /// Spawn location for the player.
   Vector2 get playerSpawn {
     final metadataLayer = tiledMap.tileMap.getLayer<ObjectGroup>('Metadata');
     if (metadataLayer != null) {
-      final spawn = metadataLayer.objects
-          .firstWhere((obj) => obj.class_ == 'PlayerSpawn');
+      final spawn = metadataLayer.objects.firstWhere(
+        (obj) => obj.class_ == 'PlayerSpawn',
+      );
       return Vector2(spawn.x, spawn.y);
     } else {
       // Default to a couple tiles in from the upper left corner.
@@ -111,8 +139,11 @@ class LeapMapGroundTile extends PhysicalEntity {
     return tile.properties.getValue<int>('Damage') ?? 0;
   }
 
-  LeapMapGroundTile(this.tile, this.gridX, this.gridY)
-      : super(static: true, collisionType: CollisionType.tilemapGround) {
+  LeapMapGroundTile(
+    this.tile,
+    this.gridX,
+    this.gridY,
+  ) : super(static: true, collisionType: CollisionType.tilemapGround) {
     isSlope = tile.type == 'Slope';
     rightTop = tile.properties.getValue<int>('RightTop');
     leftTop = tile.properties.getValue<int>('LeftTop');
