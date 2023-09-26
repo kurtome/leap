@@ -52,7 +52,10 @@ class LeapGame extends FlameGame with HasTrackedComponents {
 
     // These two classes reference each other, so the order matters here to
     // load properly.
-    leapMap = await LeapMap.load(tiledMapPath, tileSize);
+    leapMap = await LeapMap.load(
+      tiledMapPath: tiledMapPath,
+      tileSize: tileSize,
+    );
 
     await world.add(leapMap);
   }
