@@ -36,7 +36,7 @@ class Coin extends PhysicalEntity {
   }
 
   static Future<void> loadAllInMap(LeapMap map) async {
-    final objGroup = map.getTileLayer<ObjectGroup>('AnimatedCoins')!;
+    final objGroup = map.getTileLayer<ObjectGroup>('AnimatedCoins');
     final tileset = await Flame.images.load('level_ice_tileset.png');
     final spriteAnimation = SpriteAnimation.fromFrameData(
       tileset,

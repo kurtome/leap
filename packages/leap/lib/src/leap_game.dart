@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flame/components.dart';
-import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:leap/src/entities/entities.dart';
 import 'package:leap/src/leap_map.dart';
@@ -41,16 +40,10 @@ class LeapGame extends FlameGame with HasTrackedComponents {
   /// and use tile size [tileSize].
   Future<void> loadWorldAndMap({
     required String tiledMapPath,
-    required int tileCameraWidth,
-    required int tileCameraHeight,
+    required CameraComponent camera,
     String prefix = 'assets/tiles/',
   }) async {
-    // Default the camera size to the bounds of the Tiled map.
-    camera = CameraComponent.withFixedResolution(
-      width: tileSize * tileCameraWidth,
-      height: tileSize * tileCameraHeight,
-      world: world,
-    );
+    camera.world = world;
 
     // These two classes reference each other, so the order matters here to
     // load properly.
@@ -61,14 +54,5 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     );
 
     await world.add(leapMap);
-
-    camera.setBounds(
-      Rectangle.fromLTRB(
-        0,
-        0,
-        leapMap.width,
-        leapMap.height,
-      ),
-    );
   }
 }

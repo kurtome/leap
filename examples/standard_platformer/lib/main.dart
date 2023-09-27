@@ -1,3 +1,4 @@
+import 'package:flame/camera.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame_audio/flame_audio.dart';
@@ -20,18 +21,28 @@ void main() {
 
 class ExamplePlatformerLeapGame extends LeapGame
     with TapCallbacks, HasKeyboardHandlerComponents {
-  ExamplePlatformerLeapGame({required super.tileSize});
+  ExamplePlatformerLeapGame({
+    required super.tileSize,
+  }) : resolution = Vector2(32, 16);
 
+  final Vector2 resolution;
   late final Player player;
   late final SimpleCombinedInput input;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+
+    // Default the camera size to the bounds of the Tiled map.
+    camera = CameraComponent.withFixedResolution(
+      world: world,
+      width: tileSize * resolution.x.toInt(),
+      height: tileSize * resolution.y.toInt(),
+    );
+
     await loadWorldAndMap(
+      camera: camera,
       tiledMapPath: 'map.tmx',
-      tileCameraWidth: 32,
-      tileCameraHeight: 16,
     );
 
     input = SimpleCombinedInput();
