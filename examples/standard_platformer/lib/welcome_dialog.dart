@@ -1,5 +1,4 @@
 import 'package:flame/components.dart';
-import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeDialog extends TextBoxComponent {
@@ -15,7 +14,7 @@ class WelcomeDialog extends TextBoxComponent {
     ],
   );
 
-  WelcomeDialog(Camera camera)
+  WelcomeDialog({super.position})
       : super(
           text: 'Welcome to Leap! '
               'To control your character, either tap left/right on your '
@@ -29,9 +28,6 @@ class WelcomeDialog extends TextBoxComponent {
             dismissDelay: 3,
           ),
         ) {
-    positionType = PositionType.viewport;
-    x = camera.viewport.effectiveSize.x * 0.5;
-    y = camera.viewport.effectiveSize.y * 0.9;
     rect = Rect.fromLTWH(0, 0, width, height);
   }
 

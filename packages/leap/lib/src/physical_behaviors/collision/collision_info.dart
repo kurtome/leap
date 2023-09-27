@@ -1,21 +1,29 @@
 import 'package:leap/leap.dart';
 
-/// Stores collision data for [PhysicalEntity]
+/// Stores collision data for [PhysicalEntity].
 class CollisionInfo {
-  /// Component that this is colliding with on top
+  CollisionInfo({
+    this.upCollision,
+    this.downCollision,
+    this.leftCollision,
+    this.rightCollision,
+    this.otherCollisions,
+  });
+
+  /// Component that this is colliding with on top.
   LeapMapGroundTile? upCollision;
 
-  /// Component that this is colliding with on bottom
+  /// Component that this is colliding with on bottom.
   LeapMapGroundTile? downCollision;
 
   /// Component that this is colliding with on left
   LeapMapGroundTile? leftCollision;
 
-  /// Component that this is colliding with on right
+  /// Component that this is colliding with on right.
   LeapMapGroundTile? rightCollision;
 
-  /// Non-map collisions
-  final List<PhysicalEntity> otherCollisions = [];
+  /// Non-map collisions.
+  List<PhysicalEntity>? otherCollisions;
 
   /// Is currently colliding on top
   bool get up => upCollision != null;
@@ -45,7 +53,7 @@ class CollisionInfo {
     downCollision = null;
     leftCollision = null;
     rightCollision = null;
-    otherCollisions.clear();
+    otherCollisions = null;
   }
 
   void copyFrom(CollisionInfo collisionInfo) {
@@ -54,7 +62,7 @@ class CollisionInfo {
     leftCollision = collisionInfo.leftCollision;
     rightCollision = collisionInfo.rightCollision;
 
-    otherCollisions.clear();
-    otherCollisions.addAll(collisionInfo.otherCollisions);
+    otherCollisions?.clear();
+    otherCollisions?.addAll(collisionInfo.otherCollisions ?? []);
   }
 }

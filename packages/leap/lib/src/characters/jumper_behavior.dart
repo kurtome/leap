@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:leap/leap.dart';
 import 'package:leap/src/characters/jumper_character.dart';
 import 'package:leap/src/physical_behaviors/physical_behavior.dart';
 

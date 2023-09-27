@@ -4,36 +4,25 @@ import 'package:flame/components.dart';
 import 'package:leap/leap.dart';
 
 /// The world component encapsulates the physics engine
-/// and all of the [PhysicalEntity] components.
+/// and all of the [World] components.
 ///
 /// Any [PhysicalEntity] added anywhere in the [LeapGame] component tree
-/// will automatically be part of the world via [physicals]
-class LeapWorld extends PositionComponent with HasGameRef<LeapGame> {
-  /// Tile size (width and height) in pixels
-  double tileSize;
+/// will automatically be part of the world via [physicals].
+class LeapWorld extends World with HasGameRef<LeapGame> {
+  LeapWorld({this.tileSize = 16})
+      : gravity = tileSize * 32,
+        maxVelocity = tileSize * 20;
 
-  /// Gravity to apply to physical components per-second
-  double gravity = 0;
+  /// Tile size (width and height) in pixels.
+  final double tileSize;
 
-  /// Maximum velocity of physical components per-second
-  double maxVelocity = 0;
+  /// Gravity to apply to physical components per-second.
+  late double gravity;
 
-  LeapWorld({
-    this.tileSize = 16,
-  });
+  /// Maximum velocity of physical components per-second.
+  late double maxVelocity;
 
-  LeapMap get map => gameRef.map;
-
-  @override
-  Future<void> onLoad() async {
-    await super.onLoad();
-
-    width = map.width;
-    height = map.height;
-
-    gravity = tileSize * 32;
-    maxVelocity = tileSize * 20;
-  }
+  LeapMap get map => gameRef.leapMap;
 
   @override
   void update(double dt) {
@@ -46,11 +35,14 @@ class LeapWorld extends PositionComponent with HasGameRef<LeapGame> {
     super.update(dt);
   }
 
-  /// All the physical entities in the game
-  Iterable<PhysicalEntity> get physicals =>
-      gameRef.trackedComponents<PhysicalEntity>().where((p) => !p.isRemoving);
+  /// Returns all the physical entities in the game.
+  Iterable<PhysicalEntity> get physicals {
+    return gameRef
+        .trackedComponents<PhysicalEntity>()
+        .where((p) => !p.isRemoving);
+  }
 
-  /// Whether or not [other] is outside of the world bounds
+  /// Whether or not [other] is outside of the world bounds.
   bool isOutside(PhysicalEntity other) {
     if (other.right < 0 || other.left > map.width) {
       return true;
@@ -61,6 +53,6 @@ class LeapWorld extends PositionComponent with HasGameRef<LeapGame> {
     return false;
   }
 
-  /// Whether or not [other] is inside of the world bounds
+  /// Whether or not [other] is inside of the world bounds.
   bool isInside(PhysicalEntity other) => !isOutside(other);
 }

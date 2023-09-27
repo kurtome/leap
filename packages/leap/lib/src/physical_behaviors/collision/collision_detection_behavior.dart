@@ -1,18 +1,22 @@
 import 'dart:math' as math;
 
-import 'package:leap/leap.dart';
-import 'package:leap/src/physical_behaviors/collision_info.dart';
-import 'package:leap/src/physical_behaviors/physical_behavior.dart';
+import 'package:leap/src/entities/entities.dart';
+import 'package:leap/src/leap_game.dart';
+import 'package:leap/src/leap_map.dart';
+import 'package:leap/src/physical_behaviors/physical_behaviors.dart';
 
 /// Contains all the logic for the collision detection system,
 /// updates the [velocity], [x], [y], and [collisionInfo] of the as needed.
 class CollisionDetectionBehavior extends PhysicalBehavior {
-  final CollisionInfo prevCollisionInfo = CollisionInfo();
+  CollisionDetectionBehavior() : prevCollisionInfo = CollisionInfo();
 
-  /// Used to store collision during detection
+  /// The previous collision information of the entity.
+  final CollisionInfo prevCollisionInfo;
+
+  /// Temporal hits list, used to store collision during detection.
   final List<LeapMapGroundTile> _tmpHits = [];
 
-  /// Used to test intersections
+  /// Used to test intersections.
   final _hitboxProxy = _HitboxProxyComponent();
 
   @override
@@ -44,11 +48,13 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     // of them is efficient (we intentionally don't do this for ground tiles for
     // that reason)
 
-    final nonMapCollidables =
-        world.physicals.where((p) => p.collisionType == CollisionType.standard);
+    final nonMapCollidables = world.physicals.where(
+      (p) => p.collisionType == CollisionType.standard,
+    );
     for (final other in nonMapCollidables) {
       if (intersects(other)) {
-        collisionInfo.otherCollisions.add(other);
+        collisionInfo.otherCollisions ??= [];
+        collisionInfo.otherCollisions!.add(other);
       }
     }
   }
@@ -66,7 +72,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     _proxyHitboxForHorizontalMovement(dt);
 
     if (velocity.x > 0) {
-      // moving right
+      // Moving right.
       _calculateTilemapHits((c) {
         return c.left <= _hitboxProxy.right &&
             c.right >= _hitboxProxy.right &&
@@ -78,7 +84,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         final firstRightHit = _tmpHits.first;
         if (firstRightHit.isSlopeFromLeft) {
           if (velocity.y >= 0) {
-            // Ignore slope underneath while moving upwards
+            // Ignore slope underneath while moving upwards.
             collisionInfo.downCollision = firstRightHit;
           } else {
             collisionInfo.rightCollision = firstRightHit;
@@ -89,8 +95,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
       }
     }
     if (velocity.x < 0) {
-      // moving left
-      // x += velocity.x * dt;
+      // Moving left.
       _calculateTilemapHits((c) {
         return c.left <= _hitboxProxy.left &&
             c.right >= _hitboxProxy.left &&
@@ -102,7 +107,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         final firstLeftHit = _tmpHits.first;
         if (firstLeftHit.isSlopeFromRight) {
           // Ignore slope underneath while moving upwards, should not collide
-          // on left
+          // on left.
           if (velocity.y >= 0) {
             collisionInfo.downCollision = firstLeftHit;
           } else {
@@ -117,14 +122,13 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     _proxyHitboxForVerticalMovement(dt);
 
     if (velocity.y > 0 &&
-        // already found down collision from a slope from horizontal movement
+        // Already found down collision from a slope from horizontal movement.
         !collisionInfo.down &&
         !collisionInfo.onSlope) {
-      // moving down
-
+      // Moving down.
       _calculateTilemapHits((c) {
         return c.bottom >= bottom &&
-            // bottom edge of this the below top of c
+            // Bottom edge of this the below top of c.
             c.relativeTop(_hitboxProxy) <= _hitboxProxy.bottom;
       });
 
@@ -143,11 +147,10 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     }
 
     if (velocity.y < 0) {
-      // moving up
-
+      // Moving up.
       _calculateTilemapHits((c) {
         return c.top <= top &&
-            // bottom edge of this the below top of c
+            // Bottom edge of this the below top of c.
             c.bottom >= _hitboxProxy.top &&
             !c.isPlatform;
       });
@@ -160,11 +163,11 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     }
 
     // When walking downhill, objects should stick to the slope they are
-    // currently on instead of walking off of it
+    // currently on instead of walking off of it.
     if (velocity.y > 0 && !collisionInfo.down && prevCollisionInfo.down) {
       final prevDown = prevCollisionInfo.downCollision!;
       if (velocity.x > 0) {
-        // Walking down slope to the right
+        // Walking down slope to the right.
         final nextSlopeYDelta = prevDown.rightTop == 0 ? 1 : 0;
         final nextSlope = map.groundTiles[prevDown.gridX + 1]
             [prevDown.gridY + nextSlopeYDelta];
@@ -174,7 +177,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
           collisionInfo.downCollision = nextSlope;
         }
       } else if (velocity.x < 0) {
-        // Walking down slope to the left
+        // Walking down slope to the left.
         final nextSlopeYDelta = prevDown.leftTop == 0 ? 1 : 0;
         final nextSlope = map.groundTiles[prevDown.gridX - 1]
             [prevDown.gridY + nextSlopeYDelta];
@@ -188,7 +191,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
   }
 
   void _proxyHitboxForVerticalMovement(double dt) {
-    // horizontal axis should be unchanged
+    // Horizontal axis should be unchanged.
     _hitboxProxy.x = x;
     _hitboxProxy.width = width;
 
@@ -201,7 +204,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
   }
 
   void _proxyHitboxForHorizontalMovement(double dt) {
-    // vertical axis should be unchanged
+    // Vertical axis should be unchanged.
     _hitboxProxy.y = y;
     _hitboxProxy.height = height;
 
@@ -216,11 +219,11 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
   void _calculateTilemapHits(bool Function(LeapMapGroundTile) filter) {
     _tmpHits.clear();
 
-    // Find the edges of the map
+    // Find the edges of the map.
     final maxXTile = map.groundTiles.length - 1;
     final maxYTile = map.groundTiles[0].length - 1;
 
-    // Find the edges of this physical component, in tile space
+    // Find the edges of this physical component, in tile space.
     final leftTile = math.max(0, _hitboxProxy.gridLeft - 1);
     final rightTile = math.min(maxXTile, _hitboxProxy.gridRight + 1);
     final topTile = math.max(0, _hitboxProxy.gridTop - 1);
@@ -242,7 +245,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
   static bool intersectsOther(PhysicalEntity a, PhysicalEntity b) {
     final bHeight = b.bottom - b.relativeTop(a);
     // This works by checking if the distance between the objects is less than
-    // their combined width (meaning they must overlap)
+    // their combined width (meaning they must overlap).
     return ((a.centerX - b.centerX).abs() * 2 < (a.width + b.width)) &&
         ((a.centerY - (b.bottom - (bHeight / 2))).abs() * 2 <
             (a.height + bHeight));
@@ -251,7 +254,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
   bool intersects(PhysicalEntity b) {
     final bHeight = b.bottom - b.relativeTop(parent);
     // This works by checking if the distance between the objects is less than
-    // their combined width (meaning they must overlap)
+    // their combined width (meaning they must overlap).
     return ((centerX - b.centerX).abs() * 2 < (width + b.width)) &&
         ((centerY - (b.bottom - (bHeight / 2))).abs() * 2 < (height + bHeight));
   }
@@ -260,7 +263,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
 /// Used by [CollisionDetectionBehavior] so it can manipulate width/height
 /// in order to calculate collision detection of a moving object without
 /// allowing it to pass through another object due to velocity or long
-/// time step
+/// time step.
 class _HitboxProxyComponent extends PhysicalEntity {
   _HitboxProxyComponent() : super(static: true);
 
