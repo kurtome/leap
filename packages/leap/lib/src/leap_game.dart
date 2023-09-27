@@ -42,7 +42,7 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     required String tiledMapPath,
     required int tileCameraWidth,
     required int tileCameraHeight,
-    String prefix = '',
+    String prefix = 'assets/tiles/',
   }) async {
     // Default the camera size to the bounds of the Tiled map.
     camera = CameraComponent.withFixedResolution(

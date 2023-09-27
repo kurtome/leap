@@ -46,25 +46,11 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
 
   /// Convenience method for accessing Tiled layers in the [tiledMap].
   T getTileLayer<T extends Layer>(String name) {
-    // First try to find the layer with the exact name.
     final layer = tiledMap.tileMap.getLayer<T>(name);
     if (layer != null) {
       return layer;
     }
 
-    // Then try to find the layer with the name in all lower case.
-    final nameLowerCased = name.toLowerCase();
-    if (tiledMap.tileMap.getLayer<T>(nameLowerCased) != null) {
-      return tiledMap.tileMap.getLayer<T>(nameLowerCased)!;
-    }
-
-    // Then try to find the layer with the name in all upper case.
-    final nameUpperCased = name.toUpperCase();
-    if (tiledMap.tileMap.getLayer<T>(nameUpperCased) != null) {
-      return tiledMap.tileMap.getLayer<T>(nameUpperCased)!;
-    }
-
-    // Finally, throw an error if the layer can't be found.
     Error.throwWithStackTrace(
       Exception(
         'Layer $name not found, check the Tiled map for the correct name.',
@@ -90,7 +76,7 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
   static Future<LeapMap> load({
     required double tileSize,
     required String tiledMapPath,
-    String prefix = '',
+    String prefix = 'assets/tiles/',
   }) async {
     final tiledMap = await TiledComponent.load(
       tiledMapPath,
