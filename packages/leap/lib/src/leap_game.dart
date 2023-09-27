@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flame/components.dart';
+import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:leap/src/entities/entities.dart';
 import 'package:leap/src/leap_map.dart';
@@ -60,5 +61,14 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     );
 
     await world.add(leapMap);
+
+    camera.setBounds(
+      Rectangle.fromLTRB(
+        0,
+        0,
+        leapMap.width,
+        leapMap.height,
+      ),
+    );
   }
 }
