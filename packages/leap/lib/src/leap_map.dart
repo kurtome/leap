@@ -1,5 +1,7 @@
+import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
+import 'package:flutter/services.dart';
 import 'package:leap/src/entities/entities.dart';
 import 'package:leap/src/leap_game.dart';
 
@@ -77,11 +79,15 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
     required double tileSize,
     required String tiledMapPath,
     String prefix = 'assets/tiles/',
+    AssetBundle? bundle,
+    Images? images,
   }) async {
     final tiledMap = await TiledComponent.load(
       tiledMapPath,
       Vector2.all(tileSize),
       prefix: prefix,
+      bundle: bundle,
+      images: images,
     );
     return LeapMap(
       tileSize: tileSize,
