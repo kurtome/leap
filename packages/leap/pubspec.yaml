@@ -8,9 +8,9 @@ environment:
   flutter: 3.13.2
 
 dependencies:
-  flame: ^1.9.1
+  flame: ^1.10.0
   flame_behaviors: ^0.2.0
-  flame_tiled: ^1.14.1
+  flame_tiled: ^1.15.0
   flutter:
     sdk: flutter
   tiled: ^0.10.1
@@ -21,11 +21,8 @@ dev_dependencies:
     sdk: flutter
 
 dependency_overrides:
-  flame:
+  flame_behaviors:
     git:
-      url: https://github.com/flame-engine/flame.git
-      path: packages/flame
-  flame_tiled:
-    git:
-      url: https://github.com/flame-engine/flame.git
-      path: packages/flame_tiled
+      url: https://github.com/VeryGoodOpenSource/flame_behaviors
+      ref: feat!(flame_behaviors)-migrate-to-flame-v1.8.0
+      path: packages/flame_behaviors
