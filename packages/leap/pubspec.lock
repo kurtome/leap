@@ -5,10 +5,10 @@ packages:
     dependency: transitive
     description:
       name: archive
-      sha256: "20071638cbe4e5964a427cfa0e86dce55d060bc7d82d56f3554095d7239a8765"
+      sha256: "7e0d52067d05f2e0324268097ba723b71cb41ac8a6a2b24d1edf9c536b987b03"
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.2"
+    version: "3.4.6"
   async:
     dependency: transitive
     description:
@@ -45,10 +45,10 @@ packages:
     dependency: transitive
     description:
       name: collection
-      sha256: ee67cb0715911d28db6bf4af1026078bd6f0128b07a5f66fb2ed94ec6783c09a
+      sha256: f092b211a4319e98e5ff58223576de6c2803db36221657b46c82574721240687
       url: "https://pub.dev"
     source: hosted
-    version: "1.18.0"
+    version: "1.17.2"
   convert:
     dependency: transitive
     description:
@@ -76,20 +76,20 @@ packages:
   flame:
     dependency: "direct main"
     description:
-      path: "packages/flame"
-      ref: HEAD
-      resolved-ref: cccae2e1476de456c15ee3779b746f5fe6dadee2
-      url: "https://github.com/flame-engine/flame.git"
-    source: git
-    version: "1.9.1"
+      name: flame
+      sha256: "042533edc7ded96c2a439b2eae1a905f2611447d0d106b33686b841371c8d8c5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.10.0"
   flame_behaviors:
     dependency: "direct main"
     description:
-      name: flame_behaviors
-      sha256: "64b6fba612388401d8380af2672eaabe3093108d19319eb12ecf11d9043db5b5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.0"
+      path: "packages/flame_behaviors"
+      ref: "feat!(flame_behaviors)-migrate-to-flame-v1.8.0"
+      resolved-ref: "9409a5d1bb9639beeeac592f615f4346dfb871e5"
+      url: "https://github.com/VeryGoodOpenSource/flame_behaviors"
+    source: git
+    version: "0.3.0"
   flame_lint:
     dependency: "direct dev"
     description:
@@ -101,12 +101,11 @@ packages:
   flame_tiled:
     dependency: "direct main"
     description:
-      path: "packages/flame_tiled"
-      ref: HEAD
-      resolved-ref: cccae2e1476de456c15ee3779b746f5fe6dadee2
-      url: "https://github.com/flame-engine/flame.git"
-    source: git
-    version: "1.14.1"
+      name: flame_tiled
+      sha256: "1d40c455612ed5a0b471bff5e86f06964f9be3039a8b69000359b4a27184d39e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.15.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -145,10 +144,10 @@ packages:
     dependency: transitive
     description:
       name: meta
-      sha256: a6e590c838b18133bb482a2745ad77c5bb7715fb0451209e1a7567d416678b8e
+      sha256: "3c74dbf8763d36539f114c799d8a2d87343b5067e9d796ca22b5eb8437090ee3"
       url: "https://pub.dev"
     source: hosted
-    version: "1.10.0"
+    version: "1.9.1"
   ordered_set:
     dependency: transitive
     description:
@@ -198,18 +197,18 @@ packages:
     dependency: transitive
     description:
       name: stack_trace
-      sha256: "73713990125a6d93122541237550ee3352a2d84baad52d375a4cad2eb9b7ce0b"
+      sha256: c3c7d8edb15bee7f0f74debd4b9c5f3c2ea86766fe4178eb2a18eb30a0bdaed5
       url: "https://pub.dev"
     source: hosted
-    version: "1.11.1"
+    version: "1.11.0"
   stream_channel:
     dependency: transitive
     description:
       name: stream_channel
-      sha256: ba2aa5d8cc609d96bbb2899c28934f9e1af5cddbd60a827822ea467161eb54e7
+      sha256: "83615bee9045c1d322bbbd1ba209b7a749c2cbcdcb3fdd1df8eb488b3279c1c8"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.1"
   string_scanner:
     dependency: transitive
     description:
@@ -230,10 +229,10 @@ packages:
     dependency: transitive
     description:
       name: test_api
-      sha256: "5c2f730018264d276c20e4f1503fd1308dfbbae39ec8ee63c5236311ac06954b"
+      sha256: "75760ffd7786fffdfb9597c35c5b27eaeec82be8edfb6d71d32651128ed7aab8"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.1"
+    version: "0.6.0"
   tiled:
     dependency: "direct main"
     description:
@@ -262,10 +261,10 @@ packages:
     dependency: transitive
     description:
       name: web
-      sha256: ccbbfbf29732ee1b391c4c6d13e7032d851f675f47365e81904e4c6fd669c854
+      sha256: dc8ccd225a2005c1be616fe02951e2e342092edf968cf0844220383757ef8f10
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.2-beta"
+    version: "0.1.4-beta"
   xml:
     dependency: transitive
     description:
@@ -275,5 +274,5 @@ packages:
     source: hosted
     version: "6.3.0"
 sdks:
-  dart: ">=3.2.0-194.0.dev <4.0.0"
+  dart: ">=3.1.0-185.0.dev <4.0.0"
   flutter: ">=3.13.2"
