@@ -2,7 +2,6 @@
 /// customize names and classes that Leap will look for
 /// when reading the map.
 class LeapOptions {
-
   const LeapOptions({
     this.groundLayerName = 'Ground',
     this.metadataLayerName = 'Metadata',

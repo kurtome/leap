@@ -132,7 +132,7 @@ class LeapMapGroundTile extends PhysicalEntity {
   /// Damage to apply when colliding and [isHazard].
   int get hazardDamage {
     final damage = tile.properties.getValue<int>(
-        LeapOptions.defaults.damageProperty,
+      LeapOptions.defaults.damageProperty,
     );
     return damage ?? 0;
   }
