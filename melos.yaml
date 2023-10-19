@@ -51,6 +51,8 @@ scripts:
   test:
     run: melos run test:select --no-select
     description: Run all Flutter tests in this project.
+    packageFilters:
+      scope: 'leap'
 
   coverage:
     run: |
