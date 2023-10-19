@@ -8,9 +8,9 @@ environment:
   flutter: 3.13.2
 
 dependencies:
-  flame: ^1.9.1
-  flame_behaviors: ^0.2.0
-  flame_tiled: ^1.14.1
+  flame: ^1.10.0
+  flame_behaviors: ^1.0.0
+  flame_tiled: ^1.15.0
   flutter:
     sdk: flutter
   tiled: ^0.10.1

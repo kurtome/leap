@@ -1,7 +1,9 @@
 import 'dart:ui';
 
+import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import 'package:flutter/services.dart';
 import 'package:leap/src/entities/entities.dart';
 import 'package:leap/src/leap_map.dart';
 import 'package:leap/src/leap_world.dart';
@@ -42,6 +44,8 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     required String tiledMapPath,
     required CameraComponent camera,
     String prefix = 'assets/tiles/',
+    AssetBundle? bundle,
+    Images? images,
   }) async {
     camera.world = world;
 
@@ -51,6 +55,8 @@ class LeapGame extends FlameGame with HasTrackedComponents {
       tileSize: tileSize,
       tiledMapPath: tiledMapPath,
       prefix: prefix,
+      bundle: bundle,
+      images: images,
     );
 
     await world.add(leapMap);

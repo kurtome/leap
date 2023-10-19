@@ -75,10 +75,8 @@ class SimpleTapInput extends PositionComponent
   bool get isPressed => downEvent != null && upEvent == null;
 
   bool get isPressedLeft {
-    final upEventInfo = upEvent?.asInfo(game);
-    if (upEventInfo != null) {
-      return isPressed &&
-          upEventInfo.eventPosition.global.x < gameRef.canvasSize.x / 2;
+    if (upEvent != null) {
+      return isPressed && upEvent!.devicePosition.x < gameRef.canvasSize.x / 2;
     }
     return false;
   }
