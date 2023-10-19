@@ -2,14 +2,15 @@ import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
 import 'package:flutter/services.dart';
-import 'package:leap/src/entities/entities.dart';
-import 'package:leap/src/leap_game.dart';
+import 'package:leap/leap.dart';
 
 /// This component encapsulates the Tiled map, and in particular builds the
 /// grid of ground tiles that make up the terrain of the game.
 class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
   LeapMap({required this.tileSize, required this.tiledMap}) {
-    groundLayer = getTileLayer<TileLayer>('Ground');
+    groundLayer = getTileLayer<TileLayer>(
+      LeapOptions.defaults.groundLayerName,
+    );
 
     // Size of the map component is based on the tile map's grid.
     width = tiledMap.tileMap.map.width * tileSize;
@@ -63,10 +64,12 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
 
   /// Spawn location for the player.
   Vector2 get playerSpawn {
-    final metadataLayer = tiledMap.tileMap.getLayer<ObjectGroup>('Metadata');
+    final metadataLayer = tiledMap.tileMap.getLayer<ObjectGroup>(
+      LeapOptions.defaults.metadataLayerName,
+    );
     if (metadataLayer != null) {
       final spawn = metadataLayer.objects.firstWhere(
-        (obj) => obj.class_ == 'PlayerSpawn',
+        (obj) => obj.class_ == LeapOptions.defaults.playerSpawnClass,
       );
       return Vector2(spawn.x, spawn.y);
     } else {
@@ -120,15 +123,18 @@ class LeapMapGroundTile extends PhysicalEntity {
   late bool isSlope;
 
   /// Hazards (like spikes) damage on collision.
-  bool get isHazard => tile.class_ == 'Hazard';
+  bool get isHazard => tile.class_ == LeapOptions.defaults.hazardClass;
 
   /// Platforms only collide from above so the player can jump through them
   /// and land on top.
-  bool get isPlatform => tile.class_ == 'Platform';
+  bool get isPlatform => tile.class_ == LeapOptions.defaults.platformClass;
 
   /// Damage to apply when colliding and [isHazard].
   int get hazardDamage {
-    return tile.properties.getValue<int>('Damage') ?? 0;
+    final damage = tile.properties.getValue<int>(
+        LeapOptions.defaults.damageProperty,
+    );
+    return damage ?? 0;
   }
 
   LeapMapGroundTile(
@@ -136,9 +142,13 @@ class LeapMapGroundTile extends PhysicalEntity {
     this.gridX,
     this.gridY,
   ) : super(static: true, collisionType: CollisionType.tilemapGround) {
-    isSlope = tile.type == 'Slope';
-    rightTop = tile.properties.getValue<int>('RightTop');
-    leftTop = tile.properties.getValue<int>('LeftTop');
+    isSlope = tile.type == LeapOptions.defaults.slopeType;
+    rightTop = tile.properties.getValue<int>(
+      LeapOptions.defaults.slopeRightTopProperty,
+    );
+    leftTop = tile.properties.getValue<int>(
+      LeapOptions.defaults.slopeLeftTopProperty,
+    );
   }
 
   @override
