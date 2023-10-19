@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-10-19
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`leap` - `v0.2.0`](#leap---v020)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `leap` - `v0.2.0`
+
+ - **FEAT**: allowing bundle and images loading customization ([#12](https://github.com/kurtome/leap/issues/12)). ([f412f38b](https://github.com/kurtome/leap/commit/f412f38b96f96e8c7308657a874183bc5c432275))
+ - **BREAKING** **FEAT**: upgrade to flame 1.9.1 ([#7](https://github.com/kurtome/leap/issues/7)). ([7b59cdcd](https://github.com/kurtome/leap/commit/7b59cdcdf0066760132f6c9bf78d4658f08d21a3))
+
+
 ## 2022-12-19
 
 ### Changes
