@@ -7,35 +7,78 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
+
+env:
+  FLUTTER_MIN_VERSION: '3.13.0'
+
 jobs:
   # BEGIN LINTING STAGE
   format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v1
-        with:
-          channel: 'stable'
-      - uses: flame-engine/flame-format-action@v1
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+      - uses: bluefireteam/melos-action@v2
+      - run: melos run format-check
 
   analyze:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v1
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
-      - uses: flame-engine/flame-analyze-action@v2
+          flutter-version: ${{env.FLUTTER_MIN_VERSION}}
+      - uses: bluefireteam/melos-action@v2
+      - name: "Analyze with lowest supported version"
+        uses: invertase/github-action-dart-analyzer@v2.0.0
+        with:
+          fatal-infos: true
+
+  analyze-latest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+      - uses: bluefireteam/melos-action@v2
+      - name: "Analyze with latest stable"
+        uses: invertase/github-action-dart-analyzer@v2.0.0
+        with:
+          fatal-infos: true
+
+  markdown-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm install -g markdownlint-cli
+      - run: markdownlint . -p .markdownlintignore -c .markdownlint.yaml
+
+  dcm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+      - uses: bluefireteam/melos-action@v2
+      - name: Install DCM
+        uses: CQLabs/setup-dcm@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run DCM
+        run: dcm analyze .
   # END LINTING STAGE
 
   # BEGIN TESTING STAGE
   test:
-    needs: [format, analyze]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v1
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
-      - uses: flame-engine/flame-test-action@v1
+          cache: true
+      - uses: bluefireteam/melos-action@v2
+      - name: Run tests
+        run: melos test
   # END TESTING STAGE
