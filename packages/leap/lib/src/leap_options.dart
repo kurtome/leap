@@ -2,9 +2,13 @@
 /// customize different options that Leap will use
 /// when reading the map.
 class LeapConfiguration {
+  const LeapConfiguration({
+    this.tiled = const TiledOptions(),
+  });
+
   /// The tiled options, change it to configure how Leap
   /// interpret the tiled map.
-  static TiledOptions tiled = const TiledOptions();
+  final TiledOptions tiled;
 }
 
 /// A configurable class specifically about Tiled names, classes and etc.
