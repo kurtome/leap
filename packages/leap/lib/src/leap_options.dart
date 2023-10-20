@@ -1,8 +1,15 @@
 /// A configurable class that allows the developer to
-/// customize names and classes that Leap will look for
+/// customize different options that Leap will use
 /// when reading the map.
-class LeapOptions {
-  const LeapOptions({
+class LeapConfiguration {
+  /// The tiled options, change it to configure how Leap
+  /// interpret the tiled map.
+  static TiledOptions tiled = const TiledOptions();
+}
+
+/// A configurable class specifically about Tiled names, classes and etc.
+class TiledOptions {
+  const TiledOptions({
     this.groundLayerName = 'Ground',
     this.metadataLayerName = 'Metadata',
     this.playerSpawnClass = 'PlayerSpawn',
@@ -13,9 +20,6 @@ class LeapOptions {
     this.slopeRightTopProperty = 'RightTop',
     this.slopeLeftTopProperty = 'LeftTop',
   });
-
-  /// The default options for Leap.
-  static LeapOptions defaults = const LeapOptions();
 
   /// Which layer name should be used for the player, defaults to "Ground".
   final String groundLayerName;

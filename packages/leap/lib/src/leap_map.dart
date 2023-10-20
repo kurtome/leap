@@ -9,7 +9,7 @@ import 'package:leap/leap.dart';
 class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
   LeapMap({required this.tileSize, required this.tiledMap}) {
     groundLayer = getTileLayer<TileLayer>(
-      LeapOptions.defaults.groundLayerName,
+      LeapConfiguration.tiled.groundLayerName,
     );
 
     // Size of the map component is based on the tile map's grid.
@@ -65,11 +65,11 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
   /// Spawn location for the player.
   Vector2 get playerSpawn {
     final metadataLayer = tiledMap.tileMap.getLayer<ObjectGroup>(
-      LeapOptions.defaults.metadataLayerName,
+      LeapConfiguration.tiled.metadataLayerName,
     );
     if (metadataLayer != null) {
       final spawn = metadataLayer.objects.firstWhere(
-        (obj) => obj.class_ == LeapOptions.defaults.playerSpawnClass,
+        (obj) => obj.class_ == LeapConfiguration.tiled.playerSpawnClass,
       );
       return Vector2(spawn.x, spawn.y);
     } else {
@@ -123,16 +123,16 @@ class LeapMapGroundTile extends PhysicalEntity {
   late bool isSlope;
 
   /// Hazards (like spikes) damage on collision.
-  bool get isHazard => tile.class_ == LeapOptions.defaults.hazardClass;
+  bool get isHazard => tile.class_ == LeapConfiguration.tiled.hazardClass;
 
   /// Platforms only collide from above so the player can jump through them
   /// and land on top.
-  bool get isPlatform => tile.class_ == LeapOptions.defaults.platformClass;
+  bool get isPlatform => tile.class_ == LeapConfiguration.tiled.platformClass;
 
   /// Damage to apply when colliding and [isHazard].
   int get hazardDamage {
     final damage = tile.properties.getValue<int>(
-      LeapOptions.defaults.damageProperty,
+      LeapConfiguration.tiled.damageProperty,
     );
     return damage ?? 0;
   }
@@ -142,12 +142,12 @@ class LeapMapGroundTile extends PhysicalEntity {
     this.gridX,
     this.gridY,
   ) : super(static: true, collisionType: CollisionType.tilemapGround) {
-    isSlope = tile.type == LeapOptions.defaults.slopeType;
+    isSlope = tile.type == LeapConfiguration.tiled.slopeType;
     rightTop = tile.properties.getValue<int>(
-      LeapOptions.defaults.slopeRightTopProperty,
+      LeapConfiguration.tiled.slopeRightTopProperty,
     );
     leftTop = tile.properties.getValue<int>(
-      LeapOptions.defaults.slopeLeftTopProperty,
+      LeapConfiguration.tiled.slopeLeftTopProperty,
     );
   }
 
