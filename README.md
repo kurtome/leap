@@ -149,10 +149,10 @@ own special behavior for tiles or objects.
 Even though the structure explained above should always be followed, the developer can ask Leap
 to use different classes, types, names.
 
-In order to do so, set a new `LeapOptions` to `LeapOptions.defaults` before loading a map:
+In order to do so, set a new `TiledOptions` to `LeapConfiguration.tiled` before loading a map:
 
 ```dart
-LeapOptions.defaults = const LeapOptions(
+LeapConfiguration.tiled = const TiledOptions(
     groundLayerName: 'Ground',
     metadataLayerName: 'Metadata',
     playerSpawnClass: 'PlayerSpawn',
