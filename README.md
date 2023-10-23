@@ -144,6 +144,35 @@ Any other layers will be rendered visually but have no impact on the game automa
 additional custom behavior by accessing the layers via `LeapGame.map.tiledMap` and integrating your
 own special behavior for tiles or objects.
 
+#### Customizing layer names and classes
+
+Even though the structure explained above should always be followed, the developer can ask Leap
+to use different classes, types, names.
+
+In order to do so, a custom `LeapConfiguration` can be passed to the game.
+
+Example:
+
+```dart
+class MyLeapGame extend Leap {
+  MyLeapGame() : super(
+    configuration: LeapConfiguration(
+      tiled: const TiledOptions(
+        groundLayerName: 'Ground',
+        metadataLayerName: 'Metadata',
+        playerSpawnClass: 'PlayerSpawn',
+        hazardClass: 'Hazard',
+        damageProperty: 'Damage',
+        platformClass: 'Platform',
+        slopeType: 'Slope',
+        slopeRightTopProperty: 'RightTop',
+        slopeLeftTopProperty: 'LeftTop',
+      ),
+    ),
+  );
+}
+```
+
 ## Roadmap 🚧
 
 - Improved collision detection API.

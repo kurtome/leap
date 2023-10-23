@@ -4,9 +4,7 @@ import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/services.dart';
-import 'package:leap/src/entities/entities.dart';
-import 'package:leap/src/leap_map.dart';
-import 'package:leap/src/leap_world.dart';
+import 'package:leap/leap.dart';
 import 'package:leap/src/mixins/mixins.dart';
 
 /// A [FlameGame] with all the Leap built-ins.
@@ -14,6 +12,7 @@ class LeapGame extends FlameGame with HasTrackedComponents {
   LeapGame({
     required this.tileSize,
     this.appState = AppLifecycleState.resumed,
+    this.configuration = const LeapConfiguration(),
   }) : super(world: LeapWorld(tileSize: tileSize));
 
   final double tileSize;
@@ -21,6 +20,8 @@ class LeapGame extends FlameGame with HasTrackedComponents {
   late final LeapMap leapMap;
 
   AppLifecycleState appState;
+
+  final LeapConfiguration configuration;
 
   @override
   void lifecycleStateChange(AppLifecycleState state) {
@@ -46,6 +47,7 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     String prefix = 'assets/tiles/',
     AssetBundle? bundle,
     Images? images,
+    LeapConfiguration configuration = const LeapConfiguration(),
   }) async {
     camera.world = world;
 
@@ -57,6 +59,7 @@ class LeapGame extends FlameGame with HasTrackedComponents {
       prefix: prefix,
       bundle: bundle,
       images: images,
+      tiledOptions: configuration.tiled,
     );
 
     await world.add(leapMap);
