@@ -149,29 +149,28 @@ own special behavior for tiles or objects.
 Even though the structure explained above should always be followed, the developer can ask Leap
 to use different classes, types, names.
 
-In order to do so, a custom `LeapConfiguration` can be passed whe loading a map (or instantiating it manually)
+In order to do so, a custom `LeapConfiguration` can be passed to the game.
 
 Example:
 
 ```dart
-final customConfiguration = LeapConfiguration(
-  tiled: const TiledOptions(
-    groundLayerName: 'Ground',
-    metadataLayerName: 'Metadata',
-    playerSpawnClass: 'PlayerSpawn',
-    hazardClass: 'Hazard',
-    damageProperty: 'Damage',
-    platformClass: 'Platform',
-    slopeType: 'Slope',
-    slopeRightTopProperty: 'RightTop',
-    slopeLeftTopProperty: 'LeftTop',
-  ),
-);
-
-await loadWorldAndMap(
-  ...,
-  configuration: customConfiguration,
-);
+class MyLeapGame extend Leap {
+  MyLeapGame() : super(
+    configuration: LeapConfiguration(
+      tiled: const TiledOptions(
+        groundLayerName: 'Ground',
+        metadataLayerName: 'Metadata',
+        playerSpawnClass: 'PlayerSpawn',
+        hazardClass: 'Hazard',
+        damageProperty: 'Damage',
+        platformClass: 'Platform',
+        slopeType: 'Slope',
+        slopeRightTopProperty: 'RightTop',
+        slopeLeftTopProperty: 'LeftTop',
+      ),
+    ),
+  );
+}
 ```
 
 ## Roadmap 🚧
