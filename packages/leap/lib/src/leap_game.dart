@@ -12,6 +12,7 @@ class LeapGame extends FlameGame with HasTrackedComponents {
   LeapGame({
     required this.tileSize,
     this.appState = AppLifecycleState.resumed,
+    this.configuration = const LeapConfiguration(),
   }) : super(world: LeapWorld(tileSize: tileSize));
 
   final double tileSize;
@@ -19,6 +20,8 @@ class LeapGame extends FlameGame with HasTrackedComponents {
   late final LeapMap leapMap;
 
   AppLifecycleState appState;
+
+  final LeapConfiguration configuration;
 
   @override
   void lifecycleStateChange(AppLifecycleState state) {
@@ -56,7 +59,7 @@ class LeapGame extends FlameGame with HasTrackedComponents {
       prefix: prefix,
       bundle: bundle,
       images: images,
-      configuration: configuration,
+      tiledOptions: configuration.tiled,
     );
 
     await world.add(leapMap);
