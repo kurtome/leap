@@ -11,6 +11,7 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
     required this.tileSize,
     required this.tiledMap,
     this.tiledOptions = const TiledOptions(),
+    this.tiledObjectFactories = const {},
   }) {
     groundLayer = getTileLayer<TileLayer>(
       tiledOptions.groundLayerName,
@@ -37,6 +38,10 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
   /// cell that doesn't have a tile in the layer.
   late List<List<LeapMapGroundTile?>> groundTiles;
 
+  /// Factories for building components in the map from Tiled Objects, keyed
+  /// by Tiled "Class" which is settable in the Tiled editor.
+  late Map<String, TiledObjectFactory> tiledObjectFactories;
+
   @override
   void onMount() {
     groundTiles = LeapMapGroundTile.generate(
@@ -49,6 +54,20 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
       for (final groundTile in column) {
         if (groundTile != null) {
           add(groundTile);
+        }
+      }
+    }
+
+    /// Object layers
+    final objectLayers = tiledMap.tileMap.map.layers
+        .where((l) => l.type == LayerType.objectGroup)
+        .map((l) => l as ObjectGroup);
+    for (final layer in objectLayers) {
+      for (final obj in layer.objects) {
+        final factory = tiledObjectFactories[obj.class_];
+        if (factory != null) {
+          final component = factory.createComponent(obj);
+          add(component);
         }
       }
     }
@@ -93,6 +112,7 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
     AssetBundle? bundle,
     Images? images,
     TiledOptions tiledOptions = const TiledOptions(),
+    Map<String, TiledObjectFactory> tiledObjectFactories = const {},
   }) async {
     final tiledMap = await TiledComponent.load(
       tiledMapPath,
@@ -105,6 +125,7 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
       tileSize: tileSize,
       tiledMap: tiledMap,
       tiledOptions: tiledOptions,
+      tiledObjectFactories: tiledObjectFactories,
     );
   }
 }

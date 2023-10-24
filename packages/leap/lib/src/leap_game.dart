@@ -48,6 +48,7 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     AssetBundle? bundle,
     Images? images,
     LeapConfiguration configuration = const LeapConfiguration(),
+    Map<String, TiledObjectFactory> tiledObjectFactories = const {},
   }) async {
     camera.world = world;
 
@@ -60,6 +61,7 @@ class LeapGame extends FlameGame with HasTrackedComponents {
       bundle: bundle,
       images: images,
       tiledOptions: configuration.tiled,
+      tiledObjectFactories: tiledObjectFactories,
     );
 
     await world.add(leapMap);

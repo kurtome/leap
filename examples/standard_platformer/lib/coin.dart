@@ -34,9 +34,19 @@ class Coin extends PhysicalEntity {
     animation.stepTime = 0.2;
     FlameAudio.play('coin.wav');
   }
+}
 
-  static Future<void> loadAllInMap(LeapMap map) async {
-    final objGroup = map.getTileLayer<ObjectGroup>('AnimatedCoins');
+class CoinFactory implements TiledObjectFactory<Coin> {
+  late final SpriteAnimation spriteAnimation;
+
+  CoinFactory(this.spriteAnimation);
+
+  @override
+  Coin createComponent(TiledObject tiledObject) {
+    return Coin(tiledObject: tiledObject, animation: spriteAnimation);
+  }
+
+  static Future<CoinFactory> createFactory() async {
     final tileset = await Flame.images.load('level_ice_tileset.png');
     final spriteAnimation = SpriteAnimation.fromFrameData(
       tileset,
@@ -47,11 +57,6 @@ class Coin extends PhysicalEntity {
         texturePosition: Vector2(169, 8),
       ),
     );
-
-    // We are 100% sure that an object layer named `AnimatedCoins`
-    // exists in the example `map.tmx`.
-    for (final obj in objGroup.objects) {
-      map.add(Coin(tiledObject: obj, animation: spriteAnimation));
-    }
+    return CoinFactory(spriteAnimation);
   }
 }

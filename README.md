@@ -138,6 +138,50 @@ Specialized ground tiles:
 Layer must be an Object Group named "Metadata", used to place any objects to be used in your game
 like level start/end, enemy spawn points, anything you want.
 
+#### Object Group layers
+
+Any Object Group layer (including the Metadata layer) can include arbitrary objects in them,
+if you wish to automatically create Flame Components for some of those objects you can do so
+based on the Class string in Tiled. All that is required is implementing the `TiledObjectFactory`
+interface and mapping each Class string you care about to a factory instance when loading the
+`LeapMap`, for example...
+
+In your `LeapGame`:
+
+```dart
+await loadWorldAndMap(
+  camera: camera,
+  tiledMapPath: 'map.tmx',
+  tiledObjectFactories: {
+    'Coin': await CoinFactory.createFactory(),
+  },
+);
+```
+
+Your custom factory:
+
+```dart
+class CoinFactory implements TiledObjectFactory<Coin> {
+  late final SpriteAnimation spriteAnimation;
+
+  CoinFactory(this.spriteAnimation);
+
+  @override
+  Coin createComponent(TiledObject tiledObject) {
+    return Coin(tiledObject: tiledObject, animation: spriteAnimation);
+  }
+
+  static Future<CoinFactory> createFactory() async {
+    final tileset = await Flame.images.load('my_animated_coin.png');
+    final spriteAnimation = SpriteAnimation.fromFrameData(
+      tileset,
+      SpriteAnimationData.sequenced(...),
+    );
+    return CoinFactory(spriteAnimation);
+  }
+}
+```
+
 #### Other layer
 
 Any other layers will be rendered visually but have no impact on the game automatically. You can add
