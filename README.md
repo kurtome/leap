@@ -180,6 +180,23 @@ class CoinFactory implements TiledObjectFactory<Coin> {
     return CoinFactory(spriteAnimation);
   }
 }
+
+class Coin extends PhysicalEntity {
+  Coin({
+    required this.tiledObject,
+    required this.animation,
+  }) : super(static: true, collisionType: CollisionType.standard) {
+    anchor = Anchor.center;
+    
+    // Use the position from your Tiled map
+    position = Vector2(tiledObject.x, tiledObject.y);
+    
+    // Use custom properties from your Tiled object
+    value = tiledObject.properties.getValue<int>('CoinValue');
+  }
+  
+  ...
+}
 ```
 
 #### Other layer
