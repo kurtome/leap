@@ -1,10 +1,14 @@
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
+import 'package:leap/leap.dart';
 
-/// Interface for creating components from Tiled Objects.
-mixin TiledObjectFactory<T extends Component> {
-  /// Returns a Flame [Component] from a Tiled Object. Implementers
-  /// can use the [TiledObject.x], [TiledObject.y], [TiledObject.properties],
-  /// etc. to customize the component.
-  T createComponent(TiledObject tiledObject);
+/// Interface for custom handling of a [TiledObject], used by [LeapMap].
+abstract interface class TiledObjectHandler {
+  /// Callback to handle a [TiledObject].
+  ///
+  /// Implementers have full flexibility, but generally want to create a
+  /// [Component] to add to the [LeapMap] and use the [TiledObject.x],
+  /// [TiledObject.y], [TiledObject.properties], etc. to customize the
+  /// component.
+  void handleObject(TiledObject object, Layer layer, LeapMap map);
 }

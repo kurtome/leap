@@ -11,7 +11,7 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
     required this.tileSize,
     required this.tiledMap,
     this.tiledOptions = const TiledOptions(),
-    this.tiledObjectFactories = const {},
+    this.tiledObjectHandlers = const {},
   }) {
     groundLayer = getTileLayer<TileLayer>(
       tiledOptions.groundLayerName,
@@ -38,9 +38,10 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
   /// cell that doesn't have a tile in the layer.
   late List<List<LeapMapGroundTile?>> groundTiles;
 
-  /// Factories for building components in the map from Tiled Objects, keyed
-  /// by Tiled "Class" which is settable in the Tiled editor.
-  late Map<String, TiledObjectFactory> tiledObjectFactories;
+  /// Handlers for building components or custom logic in the map from
+  /// Tiled Objects, keyed by Tiled "Class" which is settable in the Tiled
+  /// editor.
+  late Map<String, TiledObjectHandler> tiledObjectHandlers;
 
   @override
   void onMount() {
@@ -64,10 +65,9 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
         .map((l) => l as ObjectGroup);
     for (final layer in objectLayers) {
       for (final obj in layer.objects) {
-        final factory = tiledObjectFactories[obj.class_];
+        final factory = tiledObjectHandlers[obj.class_];
         if (factory != null) {
-          final component = factory.createComponent(obj);
-          add(component);
+          factory.handleObject(obj, layer, this);
         }
       }
     }
@@ -112,7 +112,7 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
     AssetBundle? bundle,
     Images? images,
     TiledOptions tiledOptions = const TiledOptions(),
-    Map<String, TiledObjectFactory> tiledObjectFactories = const {},
+    Map<String, TiledObjectHandler> tiledObjectHandlers = const {},
   }) async {
     final tiledMap = await TiledComponent.load(
       tiledMapPath,
@@ -125,7 +125,7 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
       tileSize: tileSize,
       tiledMap: tiledMap,
       tiledOptions: tiledOptions,
-      tiledObjectFactories: tiledObjectFactories,
+      tiledObjectHandlers: tiledObjectHandlers,
     );
   }
 }

@@ -152,7 +152,7 @@ In your `LeapGame`:
 await loadWorldAndMap(
   camera: camera,
   tiledMapPath: 'map.tmx',
-  tiledObjectFactories: {
+  tiledObjectHandlers: {
     'Coin': await CoinFactory.createFactory(),
   },
 );
@@ -167,8 +167,9 @@ class CoinFactory implements TiledObjectFactory<Coin> {
   CoinFactory(this.spriteAnimation);
 
   @override
-  Coin createComponent(TiledObject tiledObject) {
-    return Coin(tiledObject: tiledObject, animation: spriteAnimation);
+  void handleObject(TiledObject object, Layer layer, LeapMap map) {
+    final coin = Coin(object, spriteAnimation);
+    map.add(coin);
   }
 
   static Future<CoinFactory> createFactory() async {
@@ -182,14 +183,12 @@ class CoinFactory implements TiledObjectFactory<Coin> {
 }
 
 class Coin extends PhysicalEntity {
-  Coin({
-    required this.tiledObject,
-    required this.animation,
-  }) : super(static: true, collisionType: CollisionType.standard) {
+  Coin(TiledObject object, this.animation)
+      : super(static: true, collisionType: CollisionType.standard) {
     anchor = Anchor.center;
     
     // Use the position from your Tiled map
-    position = Vector2(tiledObject.x, tiledObject.y);
+    position = Vector2(object.x, object.y);
     
     // Use custom properties from your Tiled object
     value = tiledObject.properties.getValue<int>('CoinValue');
