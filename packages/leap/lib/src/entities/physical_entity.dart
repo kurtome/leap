@@ -27,7 +27,7 @@ enum CollisionType {
 ///
 /// [static] components can be collided with but never move and have a much
 /// smaller performance impact on the game loop.
-class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
+abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
     with HasGameRef<TGame>, TrackedComponent<PhysicalEntity, TGame> {
   /// Position object to store the x/y components.
   final bool static;
