@@ -32,6 +32,14 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// Position object to store the x/y components.
   final bool static;
 
+  /// This will collide with other physical entities that have a tag in this
+  /// set.
+  final Set<String> collisionTags = {};
+
+  /// What type of custom entity this is, primarily used to determine what
+  /// entities should be considered solid, like
+  final String tag;
+
   /// Collision detection tags.
   final CollisionType collisionType;
 
@@ -51,6 +59,7 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   PhysicalEntity({
     this.health = 10,
     this.static = false,
+    this.tag = 'default',
     this.collisionType = CollisionType.none,
     Iterable<Behavior<PhysicalEntity>>? behaviors,
   }) : super(

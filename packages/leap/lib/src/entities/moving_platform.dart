@@ -10,6 +10,7 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
     required this.tilePath,
     required this.moveSpeed,
     this.loopMode = MovingPlatformLoopMode.reverseAndLoop,
+    super.tag = 'obstacle',
   }) : super(static: true, collisionType: CollisionType.standard) {
     position = initialPosition;
 
@@ -20,13 +21,17 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
     this.positionPath = _calculatePositionPath(position, tilePath, tileSize);
   }
 
-  MovingPlatform.fromTiledObject(TiledObject tiledObject, double tileSize)
-      : this(
+  MovingPlatform.fromTiledObject(
+    TiledObject tiledObject,
+    double tileSize, {
+    String tag = 'obstacle',
+  }) : this(
           initialPosition: Vector2(tiledObject.x, tiledObject.y),
           moveSpeed: _parseMoveSpeed(tiledObject),
           tilePath: _parseTilePath(tiledObject),
           loopMode: _parseLoopMode(tiledObject),
           tileSize: tileSize,
+          tag: tag,
         );
 
   /// Move speed in tiles per second

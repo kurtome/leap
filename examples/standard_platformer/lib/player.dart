@@ -6,7 +6,9 @@ import 'package:leap_standard_platformer/coin.dart';
 import 'package:leap_standard_platformer/main.dart';
 
 class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
-  Player({super.health = initialHealth});
+  Player({super.health = initialHealth}) {
+    collisionTags.add('obstacle');
+  }
 
   static const initialHealth = 1;
 
