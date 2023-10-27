@@ -42,14 +42,10 @@ class SimpleCombinedInput extends Component
       (_tapInput.isPressedRight || _keyboardInput.isPressedRight);
 
   SimpleCombinedInput({
-    Set<PhysicalKeyboardKey>? leftKeys,
-    Set<PhysicalKeyboardKey>? rightKeys,
+    SimpleKeyboardInput? keyboardInput,
   }) {
     _tapInput = SimpleTapInput();
-    _keyboardInput = SimpleKeyboardInput(
-      leftKeys: leftKeys,
-      rightKeys: rightKeys,
-    );
+    _keyboardInput = keyboardInput ?? SimpleKeyboardInput();
     add(_tapInput);
     add(_keyboardInput);
   }

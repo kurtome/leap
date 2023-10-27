@@ -44,12 +44,14 @@ void main() {
 
       test('can have custom keys', () {
         final input = SimpleCombinedInput(
-          leftKeys: {
-            PhysicalKeyboardKey.arrowUp,
-          },
-          rightKeys: {
-            PhysicalKeyboardKey.arrowDown,
-          },
+          keyboardInput: SimpleKeyboardInput(
+            leftKeys: {
+              PhysicalKeyboardKey.arrowUp,
+            },
+            rightKeys: {
+              PhysicalKeyboardKey.arrowDown,
+            },
+          ),
         );
         expect(
           input.keyboardInput.leftKeys,
