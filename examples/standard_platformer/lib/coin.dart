@@ -5,10 +5,8 @@ import 'package:leap/leap.dart';
 import 'package:tiled/tiled.dart';
 
 class Coin extends PhysicalEntity {
-  Coin({
-    required this.tiledObject,
-    required this.animation,
-  }) : super(static: true, collisionType: CollisionType.standard) {
+  Coin(TiledObject tiledObject, this.animation)
+      : super(static: true, collisionType: CollisionType.standard) {
     width = 16;
     height = 16;
     priority = 2;
@@ -25,33 +23,37 @@ class Coin extends PhysicalEntity {
     );
   }
 
-  final TiledObject tiledObject;
   final SpriteAnimation animation;
 
   @override
   void onRemove() {
     super.onRemove();
-    animation.stepTime = 0.2;
     FlameAudio.play('coin.wav');
   }
+}
 
-  static Future<void> loadAllInMap(LeapMap map) async {
-    final objGroup = map.getTileLayer<ObjectGroup>('AnimatedCoins');
+class CoinFactory implements TiledObjectHandler {
+  late final SpriteAnimation spriteAnimation;
+
+  CoinFactory(this.spriteAnimation);
+
+  @override
+  void handleObject(TiledObject object, Layer layer, LeapMap map) {
+    final coin = Coin(object, spriteAnimation);
+    map.add(coin);
+  }
+
+  static Future<CoinFactory> createFactory() async {
     final tileset = await Flame.images.load('level_ice_tileset.png');
     final spriteAnimation = SpriteAnimation.fromFrameData(
       tileset,
       SpriteAnimationData.sequenced(
         amount: 6,
-        stepTime: 2.5,
+        stepTime: 0.2,
         textureSize: Vector2(16, 16),
         texturePosition: Vector2(169, 8),
       ),
     );
-
-    // We are 100% sure that an object layer named `AnimatedCoins`
-    // exists in the example `map.tmx`.
-    for (final obj in objGroup.objects) {
-      map.add(Coin(tiledObject: obj, animation: spriteAnimation));
-    }
+    return CoinFactory(spriteAnimation);
   }
 }

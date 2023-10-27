@@ -11,6 +11,7 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
     required this.tileSize,
     required this.tiledMap,
     this.tiledOptions = const TiledOptions(),
+    this.tiledObjectHandlers = const {},
   }) {
     groundLayer = getTileLayer<TileLayer>(
       tiledOptions.groundLayerName,
@@ -37,6 +38,11 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
   /// cell that doesn't have a tile in the layer.
   late List<List<LeapMapGroundTile?>> groundTiles;
 
+  /// Handlers for building components or custom logic in the map from
+  /// Tiled Objects, keyed by Tiled "Class" which is settable in the Tiled
+  /// editor.
+  late Map<String, TiledObjectHandler> tiledObjectHandlers;
+
   @override
   void onMount() {
     groundTiles = LeapMapGroundTile.generate(
@@ -49,6 +55,19 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
       for (final groundTile in column) {
         if (groundTile != null) {
           add(groundTile);
+        }
+      }
+    }
+
+    /// Object layers
+    final objectLayers = tiledMap.tileMap.map.layers
+        .where((l) => l.type == LayerType.objectGroup)
+        .cast<ObjectGroup>();
+    for (final layer in objectLayers) {
+      for (final obj in layer.objects) {
+        final factory = tiledObjectHandlers[obj.class_];
+        if (factory != null) {
+          factory.handleObject(obj, layer, this);
         }
       }
     }
@@ -93,6 +112,7 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
     AssetBundle? bundle,
     Images? images,
     TiledOptions tiledOptions = const TiledOptions(),
+    Map<String, TiledObjectHandler> tiledObjectHandlers = const {},
   }) async {
     final tiledMap = await TiledComponent.load(
       tiledMapPath,
@@ -105,6 +125,7 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
       tileSize: tileSize,
       tiledMap: tiledMap,
       tiledOptions: tiledOptions,
+      tiledObjectHandlers: tiledObjectHandlers,
     );
   }
 }
