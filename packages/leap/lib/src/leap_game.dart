@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flame/cache.dart';
-import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/services.dart';
 import 'package:leap/leap.dart';
@@ -43,15 +42,12 @@ class LeapGame extends FlameGame with HasTrackedComponents {
   /// and use tile size [tileSize].
   Future<void> loadWorldAndMap({
     required String tiledMapPath,
-    required CameraComponent camera,
     String prefix = 'assets/tiles/',
     AssetBundle? bundle,
     Images? images,
     LeapConfiguration configuration = const LeapConfiguration(),
     Map<String, TiledObjectHandler> tiledObjectHandlers = const {},
   }) async {
-    camera.world = world;
-
     // These two classes reference each other, so the order matters here to
     // load properly.
     leapMap = await LeapMap.load(

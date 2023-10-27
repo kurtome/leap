@@ -41,7 +41,6 @@ class ExamplePlatformerLeapGame extends LeapGame
     );
 
     await loadWorldAndMap(
-      camera: camera,
       tiledMapPath: 'map.tmx',
       tiledObjectHandlers: {
         'Coin': await CoinFactory.createFactory(),
