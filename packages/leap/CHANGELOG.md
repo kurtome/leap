@@ -1,3 +1,5 @@
+## 0.2.2
+
 ## 0.2.1
 
  - **FIX**: left tap input broken, cannot turn left ([#15](https://github.com/kurtome/leap/issues/15)). ([9eab90b0](https://github.com/kurtome/leap/commit/9eab90b0bba5fb1270863362351b9e529544e2a4))
