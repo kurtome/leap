@@ -3,6 +3,49 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-10-28
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`leap` - `v0.2.2`](#leap---v022)
+
+---
+
+#### `leap` - `v0.2.2`
+
+
+## 2023-10-27
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`leap` - `v0.2.1`](#leap---v021)
+
+---
+
+#### `leap` - `v0.2.1`
+
+ - **FIX**: left tap input broken, cannot turn left ([#15](https://github.com/kurtome/leap/issues/15)). ([9eab90b0](https://github.com/kurtome/leap/commit/9eab90b0bba5fb1270863362351b9e529544e2a4))
+ - **FEAT**: add Tiled object factories to automatically build Components ([#16](https://github.com/kurtome/leap/issues/16)). ([2d801212](https://github.com/kurtome/leap/commit/2d8012126770263dabc72c016274adcb86e8f050))
+ - **FEAT**: allow keyboard keys to be customizable in simple keyboard input  ([#17](https://github.com/kurtome/leap/issues/17)). ([dbd0ae74](https://github.com/kurtome/leap/commit/dbd0ae74c9188ffeb68f41db9a847a6f4476727f))
+ - **FEAT**: adding custom classes and types ([#14](https://github.com/kurtome/leap/issues/14)). ([6e1e016e](https://github.com/kurtome/leap/commit/6e1e016e7d56409a1fe0d98351fbe2aa58c957e2))
+
+
 ## 2023-10-19
 
 ### Changes

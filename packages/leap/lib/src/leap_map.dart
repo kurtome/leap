@@ -62,7 +62,8 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
     /// Object layers
     final objectLayers = tiledMap.tileMap.map.layers
         .where((l) => l.type == LayerType.objectGroup)
-        .map((l) => l as ObjectGroup);
+        .map((l) => l as ObjectGroup)
+        .cast<ObjectGroup>();
     for (final layer in objectLayers) {
       for (final obj in layer.objects) {
         final factory = tiledObjectHandlers[obj.class_];

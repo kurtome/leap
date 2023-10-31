@@ -41,12 +41,17 @@ class SimpleCombinedInput extends Component
       _appFocused &&
       (_tapInput.isPressedRight || _keyboardInput.isPressedRight);
 
-  SimpleCombinedInput() {
+  SimpleCombinedInput({
+    SimpleKeyboardInput? keyboardInput,
+  }) {
     _tapInput = SimpleTapInput();
-    _keyboardInput = SimpleKeyboardInput();
+    _keyboardInput = keyboardInput ?? SimpleKeyboardInput();
     add(_tapInput);
     add(_keyboardInput);
   }
+
+  SimpleKeyboardInput get keyboardInput => _keyboardInput;
+  SimpleTapInput get tapInput => _tapInput;
 
   @override
   void update(double dt) {
@@ -116,19 +121,30 @@ class SimpleTapInput extends PositionComponent
 }
 
 class SimpleKeyboardInput extends Component with KeyboardHandler {
-  SimpleKeyboardInput() : relevantKeys = leftKeys.union(rightKeys);
+  SimpleKeyboardInput({
+    Set<PhysicalKeyboardKey>? leftKeys,
+    Set<PhysicalKeyboardKey>? rightKeys,
+  }) {
+    this.leftKeys = leftKeys ??
+        {
+          PhysicalKeyboardKey.arrowLeft,
+          PhysicalKeyboardKey.keyA,
+          PhysicalKeyboardKey.keyH,
+        };
 
-  static final leftKeys = {
-    PhysicalKeyboardKey.arrowLeft,
-    PhysicalKeyboardKey.keyA,
-    PhysicalKeyboardKey.keyH,
-  };
+    this.rightKeys = rightKeys ??
+        {
+          PhysicalKeyboardKey.arrowRight,
+          PhysicalKeyboardKey.keyD,
+          PhysicalKeyboardKey.keyL,
+        };
 
-  static final rightKeys = {
-    PhysicalKeyboardKey.arrowRight,
-    PhysicalKeyboardKey.keyD,
-    PhysicalKeyboardKey.keyL,
-  };
+    relevantKeys = this.leftKeys.union(this.rightKeys);
+  }
+
+  late final Set<PhysicalKeyboardKey> leftKeys;
+
+  late final Set<PhysicalKeyboardKey> rightKeys;
 
   late final Set<PhysicalKeyboardKey> relevantKeys;
 
