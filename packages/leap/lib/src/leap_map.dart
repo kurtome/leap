@@ -141,28 +141,33 @@ class LeapMapGroundTile extends PhysicalEntity {
   final Tile tile;
 
   /// Coordinates on the tile grid.
-  final int gridX;
-  final int gridY;
+  @override
+  int get gridX => _gridX;
+  final int _gridX;
+
+  @override
+  int get gridY => _gridY;
+  final int _gridY;
 
   /// Topmost point on the left side, important for slopes.
-  int? leftTop;
+  @override
+  int? get leftTop => _leftTop;
+  int? _leftTop;
 
   /// Topmost point on the right side, important for slopes.
-  int? rightTop;
+  @override
+  int? get rightTop => _rightTop;
+  int? _rightTop;
 
   /// Is this a sloped section of ground? If so, this is handled specially
   /// in collision detection to ensure player (or other characters) can walk
   /// up and down it properly.
-  late bool isSlope;
+  @override
+  bool get isSlope => _isSlope;
+  late bool _isSlope;
 
-  /// Hazards (like spikes) damage on collision.
-  bool get isHazard => tile.class_ == tiledOptions.hazardClass;
-
-  /// Platforms only collide from above so the player can jump through them
-  /// and land on top.
-  bool get isPlatform => tile.class_ == tiledOptions.platformClass;
-
-  /// Damage to apply when colliding and [isHazard].
+  /// Damage to apply when colliding and this is a hazard
+  @override
   int get hazardDamage {
     final damage = tile.properties.getValue<int>(
       tiledOptions.damageProperty,
@@ -172,17 +177,28 @@ class LeapMapGroundTile extends PhysicalEntity {
 
   LeapMapGroundTile(
     this.tile,
-    this.gridX,
-    this.gridY, {
+    this._gridX,
+    this._gridY, {
     this.tiledOptions = const TiledOptions(),
   }) : super(static: true, collisionType: CollisionType.tilemapGround) {
-    isSlope = tile.type == tiledOptions.slopeType;
-    rightTop = tile.properties.getValue<int>(
+    _isSlope = tile.type == tiledOptions.slopeType;
+    _rightTop = tile.properties.getValue<int>(
       tiledOptions.slopeRightTopProperty,
     );
-    leftTop = tile.properties.getValue<int>(
+    _leftTop = tile.properties.getValue<int>(
       tiledOptions.slopeLeftTopProperty,
     );
+
+    // Hazards (like spikes) damage on collision.
+    if (tile.class_ == tiledOptions.hazardClass) {
+      tags.add('hazard');
+    }
+
+    // Platforms only collide from above so the player can jump through them
+    // and land on top.
+    if (tile.class_ == tiledOptions.platformClass) {
+      tags.add('platform');
+    }
   }
 
   @override
@@ -194,11 +210,13 @@ class LeapMapGroundTile extends PhysicalEntity {
   }
 
   /// Is this a slop going up from left-to-right.
+  @override
   bool get isSlopeFromLeft {
     return isSlope && (leftTop! < rightTop!);
   }
 
   /// Is this a slop going up from right-to-left.
+  @override
   bool get isSlopeFromRight {
     return isSlope && (leftTop! > rightTop!);
   }

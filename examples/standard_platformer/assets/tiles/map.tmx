@@ -205,7 +205,7 @@
   <object id="52" name="Platform 1" class="SnowyMovingPlatform" x="48" y="384" width="96" height="32">
    <properties>
     <property name="LoopMode" value="reverseAndLoop"/>
-    <property name="TilePath" value="0,-4"/>
+    <property name="TilePath" value="0,-4;4,0;"/>
    </properties>
   </object>
  </objectgroup>

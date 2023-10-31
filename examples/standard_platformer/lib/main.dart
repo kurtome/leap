@@ -54,12 +54,14 @@ class ExamplePlatformerLeapGame extends LeapGame
     // by half the viewport size to the edge of the camera if flush with the
     // edge of the map.
     final inset = camera.viewport.virtualSize;
-    camera.setBounds(Rectangle.fromLTWH(
-      inset.x / 2,
-      inset.y / 2,
-      leapMap.width - inset.x,
-      leapMap.height - inset.y,
-    ),);
+    camera.setBounds(
+      Rectangle.fromLTWH(
+        inset.x / 2,
+        inset.y / 2,
+        leapMap.width - inset.x,
+        leapMap.height - inset.y,
+      ),
+    );
 
     input = SimpleCombinedInput();
     add(input);

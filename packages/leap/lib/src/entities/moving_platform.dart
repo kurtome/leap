@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:flame/extensions.dart';
 import 'package:leap/leap.dart';
 import 'package:tiled/tiled.dart';
@@ -10,8 +12,13 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
     required this.tilePath,
     required this.moveSpeed,
     this.loopMode = MovingPlatformLoopMode.reverseAndLoop,
-    super.tag = 'obstacle',
+    // moving platforms should update before other entities so anything
+    // standing on top of it from the previous frame can be properly moved
+    // with the platform.
+    super.priority = 1,
   }) : super(static: true, collisionType: CollisionType.standard) {
+    tags.add('ground');
+
     position = initialPosition;
 
     // Snap to the closes position on the tile grid
@@ -23,15 +30,13 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
 
   MovingPlatform.fromTiledObject(
     TiledObject tiledObject,
-    double tileSize, {
-    String tag = 'obstacle',
-  }) : this(
+    double tileSize,
+  ) : this(
           initialPosition: Vector2(tiledObject.x, tiledObject.y),
           moveSpeed: _parseMoveSpeed(tiledObject),
           tilePath: _parseTilePath(tiledObject),
           loopMode: _parseLoopMode(tiledObject),
           tileSize: tileSize,
-          tag: tag,
         );
 
   /// Move speed in tiles per second
@@ -61,7 +66,21 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
     super.update(dt);
 
     if (!_stopped) {
+      final prevX = x;
+      final prevY = y;
+
       updatePositionAndLoop(dt);
+
+      final deltaX = x - prevX;
+      final deltaY = y - prevY;
+      // Update the position of anything on top of this platform. Ideally
+      // this happens before the other entity's collision logic
+      world.physicals
+          .where((other) => other.collisionInfo.downCollision == this)
+          .forEach((element) {
+        element.x += deltaX;
+        element.y += deltaY;
+      });
     }
   }
 
@@ -123,13 +142,18 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
     final rawTilePath =
         tiledObject.properties.getValue<String>('TilePath') ?? '';
     try {
-      return rawTilePath.trim().split(' *; *').map((rawPair) {
+      return rawTilePath
+          .trim()
+          .split(';')
+          .where((s) => s.isNotEmpty)
+          .map((rawPair) {
         final parts = rawPair.trim().split(',');
         final x = int.parse(parts[0]);
         final y = int.parse(parts[1]);
         return Tuple2(x, y);
       }).toList();
-    } on Exception {
+    } on Exception catch (e) {
+      developer.log('Could not parse tile path', error: e);
       // tile path was malformed, return an empty path
       return [];
     }
