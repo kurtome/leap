@@ -45,7 +45,6 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     String prefix = 'assets/tiles/',
     AssetBundle? bundle,
     Images? images,
-    LeapConfiguration configuration = const LeapConfiguration(),
     Map<String, TiledObjectHandler> tiledObjectHandlers = const {},
   }) async {
     // These two classes reference each other, so the order matters here to
