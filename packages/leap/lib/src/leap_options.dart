@@ -23,6 +23,8 @@ class TiledOptions {
     this.slopeType = 'Slope',
     this.slopeRightTopProperty = 'RightTop',
     this.slopeLeftTopProperty = 'LeftTop',
+    this.atlasMaxX,
+    this.atlasMaxY,
   });
 
   /// Which layer name should be used for the player, defaults to "Ground".
@@ -54,4 +56,12 @@ class TiledOptions {
   /// Which property name represents the slope right bottom, defaults to
   /// "LeftTop".
   final String slopeLeftTopProperty;
+
+  /// The max width of the atlas texture, defaults to Flame Tiled default
+  /// value when omitted.
+  final double? atlasMaxX;
+
+  /// The max height of the atlas texture, defaults to Flame Tiled default
+  /// value when omitted.
+  final double? atlasMaxY;
 }

@@ -84,11 +84,12 @@ packages:
   flame_behaviors:
     dependency: "direct main"
     description:
-      name: flame_behaviors
-      sha256: e6a7429ed5f16efe7683a63d42f18d6e2c68d6ac3ff0e17f4f62bb224fd294b8
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
+      path: "packages/flame_behaviors"
+      ref: "feat!(flame_behaviors)-migrate-to-flame-v1.8.0"
+      resolved-ref: "9409a5d1bb9639beeeac592f615f4346dfb871e5"
+      url: "https://github.com/VeryGoodOpenSource/flame_behaviors"
+    source: git
+    version: "0.3.0"
   flame_lint:
     dependency: "direct dev"
     description:
