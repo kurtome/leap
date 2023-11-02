@@ -1,3 +1,10 @@
+## 0.3.0
+
+> Note: This release has breaking changes.
+
+ - **FEAT**: allow game to specify max atlas sizes ([#20](https://github.com/kurtome/leap/issues/20)). ([fce72722](https://github.com/kurtome/leap/commit/fce72722fc86be38be38b3d735890189f60ec366))
+ - **BREAKING** **FEAT**: Adding support for Moving Platorms ([#21](https://github.com/kurtome/leap/issues/21)). ([9583948f](https://github.com/kurtome/leap/commit/9583948f37a15a47231263c927247bb65ceaedd0))
+
 ## 0.2.2
 
 ## 0.2.1
