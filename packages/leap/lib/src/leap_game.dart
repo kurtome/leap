@@ -16,7 +16,14 @@ class LeapGame extends FlameGame with HasTrackedComponents {
 
   final double tileSize;
 
-  late final LeapMap leapMap;
+  LeapMap get leapMap {
+    if (_leapMap == null) {
+      throw Exception('LeapMap not loaded yet');
+    }
+    return _leapMap!;
+  }
+
+  LeapMap? _leapMap;
 
   AppLifecycleState appState;
 
@@ -32,6 +39,19 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     }
   }
 
+  /// Called when a running is being unloaded due to it
+  /// being replaced for a new one.
+  ///
+  /// Default implementation is a noop, override it if you need to
+  /// execute logic when the map is unloaded.
+  void onMapUnload() {}
+
+  /// Called when a new map is loaded.
+  ///
+  /// Default implementation is a noop, override it if you need to
+  /// execute logic when the map is loaded.
+  void onMapLoaded() {}
+
   /// All the physical entities in the world.
   Iterable<PhysicalEntity> get physicals => (world as LeapWorld).physicals;
 
@@ -46,10 +66,23 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     AssetBundle? bundle,
     Images? images,
     Map<String, TiledObjectHandler> tiledObjectHandlers = const {},
+    LeapMapTransition Function(LeapGame) mapTransitionFactory =
+        LeapMapTransition.defaultFactory,
   }) async {
+    final currentMap = _leapMap;
+    LeapMapTransition? transitionComponent;
+    if (currentMap != null) {
+      onMapUnload();
+
+      final transition = transitionComponent = mapTransitionFactory(this);
+      camera.viewport.add(transition);
+      await transition.newMapReadyToBeLoaded;
+      currentMap.removeFromParent();
+    }
+
     // These two classes reference each other, so the order matters here to
     // load properly.
-    leapMap = await LeapMap.load(
+    _leapMap = await LeapMap.load(
       tileSize: tileSize,
       tiledMapPath: tiledMapPath,
       prefix: prefix,
@@ -58,7 +91,14 @@ class LeapGame extends FlameGame with HasTrackedComponents {
       tiledOptions: configuration.tiled,
       tiledObjectHandlers: tiledObjectHandlers,
     );
+    onMapLoaded();
 
     await world.add(leapMap);
+
+    if (transitionComponent != null) {
+      transitionComponent.newMapLoaded();
+      await transitionComponent.finished;
+      transitionComponent.removeFromParent();
+    }
   }
 }
