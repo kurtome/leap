@@ -41,10 +41,10 @@ to match the visual size of the component.
 - Ground terrain
 - One way platforms
 - Slopes
+- Moving platforms
 
 🚧 Future tile platformer features:
 
-- Moving platforms
 - Ladders
 
 #### Simple physics designed for 2D platformers
@@ -198,11 +198,25 @@ class Coin extends PhysicalEntity {
 }
 ```
 
-#### Other layer
+#### Other layers
 
 Any other layers will be rendered visually but have no impact on the game automatically. You can add
 additional custom behavior by accessing the layers via `LeapGame.map.tiledMap` and integrating your
 own special behavior for tiles or objects.
+
+#### Moving platforms
+
+To create a moving platform, you need to implement your own component which extends
+`MovingPlatform` and provides a Sprite (or some other rendering).
+
+If you choose to implement this component with a Tiled object (recommended), many of the fields
+can be directly read from the object's custom properties:
+
+- `MoveSpeedX` (double), speed in tiles per second on the X axis
+- `MoveSpeedY` (double), speed in tiles per second on the y axis
+- `LoopMode` (string), one of `resetAndLoop`, `reverseAndLoop`, `none`
+- `TilePath` (string), a list of grid offsets to define the platforms path of movement. For example,
+   `0,-3;2,0` means the platform will move up 3 tiles and then move right 2 tiles.
 
 #### Customizing layer names and classes
 

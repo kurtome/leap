@@ -13,8 +13,8 @@ dependencies:
   flame_tiled: ^1.15.0
   flutter:
     sdk: flutter
+  pathxp: ^0.4.0
   tiled: ^0.10.1
-  tuple: ^2.0.2
 
 dev_dependencies:
   flame_lint: ^1.1.1

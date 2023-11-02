@@ -3,7 +3,6 @@ import 'dart:developer' as developer;
 import 'package:flame/extensions.dart';
 import 'package:leap/leap.dart';
 import 'package:tiled/tiled.dart';
-import 'package:tuple/tuple.dart';
 
 abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
   MovingPlatform({
@@ -50,7 +49,7 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
   ///
   /// The initial position of the platform is implicitly considered the current
   /// node when the platform is created.
-  final List<Tuple2<int, int>> tilePath;
+  final List<(int, int)> tilePath;
 
   late final List<Vector2> positionPath;
 
@@ -138,7 +137,7 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
     return Vector2(x, y);
   }
 
-  static List<Tuple2<int, int>> _parseTilePath(TiledObject tiledObject) {
+  static List<(int, int)> _parseTilePath(TiledObject tiledObject) {
     final rawTilePath =
         tiledObject.properties.getValue<String>('TilePath') ?? '';
     try {
@@ -150,7 +149,7 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
         final parts = rawPair.trim().split(',');
         final x = int.parse(parts[0]);
         final y = int.parse(parts[1]);
-        return Tuple2(x, y);
+        return (x, y);
       }).toList();
     } on Exception catch (e) {
       developer.log('Could not parse tile path', error: e);
@@ -171,7 +170,7 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
 
   static List<Vector2> _calculatePositionPath(
     Vector2 initialPosition,
-    List<Tuple2<int, int>> tilePath,
+    List<(int, int)> tilePath,
     double tileSize,
   ) {
     if (tilePath.isEmpty) {
@@ -182,12 +181,12 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
 
     var position = initialPosition;
     for (final node in tilePath) {
-      if (node.item1 == 0 && node.item2 == 0) {
+      if (node.$1 == 0 && node.$2 == 0) {
         throw ArgumentError("Can't have a 0,0 offset node in the path.");
       }
       final nextPosition = Vector2(
-        position.x + tileSize * node.item1,
-        position.y + tileSize * node.item2,
+        position.x + tileSize * node.$1,
+        position.y + tileSize * node.$2,
       );
       positions.add(nextPosition);
       position = nextPosition;
