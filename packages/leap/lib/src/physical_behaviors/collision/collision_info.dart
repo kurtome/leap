@@ -11,16 +11,16 @@ class CollisionInfo {
   });
 
   /// Component that this is colliding with on top.
-  LeapMapGroundTile? upCollision;
+  PhysicalEntity? upCollision;
 
   /// Component that this is colliding with on bottom.
-  LeapMapGroundTile? downCollision;
+  PhysicalEntity? downCollision;
 
   /// Component that this is colliding with on left
-  LeapMapGroundTile? leftCollision;
+  PhysicalEntity? leftCollision;
 
   /// Component that this is colliding with on right.
-  LeapMapGroundTile? rightCollision;
+  PhysicalEntity? rightCollision;
 
   /// Non-map collisions.
   List<PhysicalEntity>? otherCollisions;
@@ -42,8 +42,8 @@ class CollisionInfo {
   }
 
   bool get onSlope {
-    if (downCollision != null) {
-      return downCollision!.isSlope;
+    if (downCollision != null && downCollision is LeapMapGroundTile) {
+      return (downCollision! as LeapMapGroundTile).isSlope;
     }
     return false;
   }

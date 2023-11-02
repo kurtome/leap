@@ -1,5 +1,6 @@
 import 'package:flame/camera.dart';
 import 'package:flame/events.dart';
+import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/widgets.dart' hide Animation, Image;
@@ -7,6 +8,7 @@ import 'package:leap/leap.dart';
 import 'package:leap_standard_platformer/coin.dart';
 import 'package:leap_standard_platformer/hud.dart';
 import 'package:leap_standard_platformer/player.dart';
+import 'package:leap_standard_platformer/snowy_moving_platform.dart';
 import 'package:leap_standard_platformer/welcome_dialog.dart';
 
 void main() {
@@ -23,9 +25,8 @@ class ExamplePlatformerLeapGame extends LeapGame
     with TapCallbacks, HasKeyboardHandlerComponents {
   ExamplePlatformerLeapGame({
     required super.tileSize,
-  }) : resolution = Vector2(32, 16);
+  });
 
-  final Vector2 resolution;
   late final Player player;
   late final SimpleCombinedInput input;
 
@@ -36,15 +37,29 @@ class ExamplePlatformerLeapGame extends LeapGame
     // Default the camera size to the bounds of the Tiled map.
     camera = CameraComponent.withFixedResolution(
       world: world,
-      width: tileSize * resolution.x.toInt(),
-      height: tileSize * resolution.y.toInt(),
+      width: tileSize * 32,
+      height: tileSize * 16,
     );
 
     await loadWorldAndMap(
       tiledMapPath: 'map.tmx',
       tiledObjectHandlers: {
         'Coin': await CoinFactory.createFactory(),
+        'SnowyMovingPlatform': await SnowyMovingPlatformFactory.createFactory(),
       },
+    );
+
+    // Don't let the camera move outside the bounds of the map, inset
+    // by half the viewport size to the edge of the camera if flush with the
+    // edge of the map.
+    final inset = camera.viewport.virtualSize;
+    camera.setBounds(
+      Rectangle.fromLTWH(
+        inset.x / 2,
+        inset.y / 2,
+        leapMap.width - inset.x,
+        leapMap.height - inset.y,
+      ),
     );
 
     input = SimpleCombinedInput();

@@ -6,7 +6,9 @@ import 'package:leap_standard_platformer/coin.dart';
 import 'package:leap_standard_platformer/main.dart';
 
 class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
-  Player({super.health = initialHealth});
+  Player({super.health = initialHealth}) {
+    solidTags.add('ground');
+  }
 
   static const initialHealth = 1;
 
@@ -21,7 +23,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
 
   /// Render on top of the map tiles.
   @override
-  int get priority => 1;
+  int get priority => 10;
 
   @override
   PositionComponent? get spriteAnimation => _playerAnimation;
@@ -162,7 +164,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   }
 
   void updateCollisionInteractions(double dt) {
-    if (collisionInfo.downCollision?.isHazard ?? false) {
+    if (collisionInfo.downCollision?.tags.contains('hazard') ?? false) {
       health -= collisionInfo.downCollision!.hazardDamage;
     }
 

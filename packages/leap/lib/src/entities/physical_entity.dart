@@ -27,10 +27,17 @@ enum CollisionType {
 ///
 /// [static] components can be collided with but never move and have a much
 /// smaller performance impact on the game loop.
-class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
+abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
     with HasGameRef<TGame>, TrackedComponent<PhysicalEntity, TGame> {
   /// Position object to store the x/y components.
   final bool static;
+
+  /// Tags for custom logic, also used by [solidTags]
+  final Set<String> tags = {};
+
+  /// Which other entities should be considered solid as part of
+  /// normal physics engine / collision detection calculations.
+  final Set<String> solidTags = {};
 
   /// Collision detection tags.
   final CollisionType collisionType;
@@ -53,6 +60,7 @@ class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
     this.static = false,
     this.collisionType = CollisionType.none,
     Iterable<Behavior<PhysicalEntity>>? behaviors,
+    super.priority,
   }) : super(
           behaviors: _physicalBehaviors(
             static: static,
@@ -96,6 +104,30 @@ class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// account the topmost point that could intersect [other] based on its
   /// horizontal position.
   double relativeTop(PhysicalEntity other) => top;
+
+  /// Defined so it can be overridden by slopes [LeapMapGroundTile]
+  bool get isSlope => false;
+
+  /// Defined so it can be overridden by slopes [LeapMapGroundTile]
+  int? get rightTop => null;
+
+  /// Defined so it can be overridden by slopes [LeapMapGroundTile]
+  int? get leftTop => null;
+
+  /// Defined so it can be overridden by slopes [LeapMapGroundTile]
+  int get gridX => -1;
+
+  /// Defined so it can be overridden by slopes [LeapMapGroundTile]
+  int get gridY => -1;
+
+  /// Defined so it can be overridden by slopes [LeapMapGroundTile]
+  bool get isSlopeFromLeft => false;
+
+  /// Defined so it can be overridden by slopes [LeapMapGroundTile]
+  bool get isSlopeFromRight => false;
+
+  /// How much damage this does as a hazard.
+  int get hazardDamage => 0;
 
   /// Topmost point.
   double get top {
@@ -143,6 +175,10 @@ class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// Vertical middle point.
   double get centerY {
     return y + (height / 2);
+  }
+
+  bool isOtherSolid(PhysicalEntity other) {
+    return solidTags.intersection(other.tags).isNotEmpty;
   }
 }
 
