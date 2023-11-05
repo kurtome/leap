@@ -176,7 +176,8 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     if (velocity.y > 0 &&
         !collisionInfo.down &&
         prevCollisionInfo.down &&
-        prevCollisionInfo.down is LeapMapGroundTile) {
+        prevCollisionInfo.downCollision!.gridX >= 0 &&
+        prevCollisionInfo.downCollision!.gridY >= 0) {
       final prevDown = prevCollisionInfo.downCollision!;
       if (velocity.x > 0) {
         // Walking down slope to the right.
