@@ -37,7 +37,9 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     prevCollisionInfo.copyFrom(collisionInfo);
     collisionInfo.reset();
 
-    groundCollisionDetection(dt);
+    if (!parent.tags.contains(CommonTags.onLadder)) {
+      groundCollisionDetection(dt);
+    }
     nonMapCollisionDetection(dt);
   }
 
@@ -84,7 +86,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
       _calculateTilemapHits((c) {
         return c.left <= _hitboxProxy.right &&
             c.right >= _hitboxProxy.right &&
-            !c.tags.contains('platform');
+            !c.tags.contains(CommonTags.platform);
       });
 
       if (_tmpHits.isNotEmpty) {
@@ -107,7 +109,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
       _calculateTilemapHits((c) {
         return c.left <= _hitboxProxy.left &&
             c.right >= _hitboxProxy.left &&
-            !c.tags.contains('platform');
+            !c.tags.contains(CommonTags.platform);
       });
 
       if (_tmpHits.isNotEmpty) {
@@ -160,7 +162,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         return c.top <= top &&
             // Bottom edge of this the below top of c.
             c.bottom >= _hitboxProxy.top &&
-            !c.tags.contains('platform');
+            !c.tags.contains(CommonTags.platform);
       });
 
       if (_tmpHits.isNotEmpty) {

@@ -7,7 +7,7 @@ import 'package:leap_standard_platformer/main.dart';
 
 class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   Player({super.health = initialHealth}) {
-    solidTags.add('ground');
+    solidTags.add(CommonTags.ground);
   }
 
   static const initialHealth = 1;

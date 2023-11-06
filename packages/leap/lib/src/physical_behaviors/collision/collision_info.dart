@@ -1,6 +1,13 @@
 import 'package:leap/leap.dart';
 
 /// Stores collision data for [PhysicalEntity].
+///
+/// The up, down, left, and right collisions are generally the "ground", which
+/// could be literal ground, walls, ceilings etc. Pretty much anything that
+/// normal physical entities can't phase through.
+///
+/// All other collisions are [otherCollisions], such as other moving characters,
+/// enemies, power-ups, etc.
 class CollisionInfo {
   CollisionInfo({
     this.upCollision,

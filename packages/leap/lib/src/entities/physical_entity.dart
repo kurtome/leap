@@ -61,6 +61,8 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
     this.collisionType = CollisionType.none,
     Iterable<Behavior<PhysicalEntity>>? behaviors,
     super.priority,
+    super.position,
+    super.size,
   }) : super(
           behaviors: _physicalBehaviors(
             static: static,
