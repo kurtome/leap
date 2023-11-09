@@ -48,16 +48,10 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
     groundTiles = LeapMapGroundTile.generate(
       tiledMap.tileMap.map,
       groundLayer,
+      gameRef.tileSize,
       tiledOptions: tiledOptions,
     );
     add(tiledMap);
-    for (final column in groundTiles) {
-      for (final groundTile in column) {
-        if (groundTile != null) {
-          add(groundTile);
-        }
-      }
-    }
 
     /// Object layers
     final objectLayers = tiledMap.tileMap.map.layers
@@ -181,7 +175,9 @@ class LeapMapGroundTile extends PhysicalEntity {
   LeapMapGroundTile(
     this.tile,
     this._gridX,
-    this._gridY, {
+    this._gridY,
+    double tileSize,
+    {
     this.tiledOptions = const TiledOptions(),
   }) : super(static: true, collisionType: CollisionType.tilemapGround) {
     _isSlope = tile.type == tiledOptions.slopeType;
@@ -202,11 +198,7 @@ class LeapMapGroundTile extends PhysicalEntity {
     if (tile.class_ == tiledOptions.platformClass) {
       tags.add('platform');
     }
-  }
 
-  @override
-  void onMount() {
-    super.onMount();
     width = tileSize;
     height = tileSize;
     position = Vector2(tileSize * gridX, tileSize * gridY);
@@ -231,12 +223,12 @@ class LeapMapGroundTile extends PhysicalEntity {
     if (isSlopeFromLeft) {
       final delta = rightTop! - leftTop!;
       final fromLeftPx = other.right - left;
-      final ratio = (fromLeftPx / tileSize).clamp(0, 1);
+      final ratio = (fromLeftPx / width).clamp(0, 1);
       return (bottom - leftTop!) - (delta * ratio);
     } else if (isSlopeFromRight) {
       final delta = leftTop! - rightTop!;
       final fromRightPx = other.left - left;
-      final ratio = 1 - (fromRightPx / tileSize).clamp(0, 1);
+      final ratio = 1 - (fromRightPx / height).clamp(0, 1);
       return (bottom - rightTop!) - (delta * ratio);
     }
 
@@ -246,7 +238,9 @@ class LeapMapGroundTile extends PhysicalEntity {
   /// Builds the tile grid full of ground tiles based on [groundLayer].
   static List<List<LeapMapGroundTile?>> generate(
     TiledMap tileMap,
-    TileLayer groundLayer, {
+    TileLayer groundLayer,
+    double tileSize,
+    {
     TiledOptions tiledOptions = const TiledOptions(),
   }) {
     final groundTiles = List.generate(
@@ -265,6 +259,7 @@ class LeapMapGroundTile extends PhysicalEntity {
           tile,
           x,
           y,
+          tileSize,
           tiledOptions: tiledOptions,
         );
       }

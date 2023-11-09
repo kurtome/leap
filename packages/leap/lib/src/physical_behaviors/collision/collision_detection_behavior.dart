@@ -31,6 +31,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
       return;
     }
 
+
     // NOTE: static entities will never run this behavior, so making entities
     // static has important for performance
 
