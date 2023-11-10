@@ -228,7 +228,7 @@ In order to do so, a custom `LeapConfiguration` can be passed to the game.
 Example:
 
 ```dart
-class MyLeapGame extend Leap {
+class MyLeapGame extends LeapGame {
   MyLeapGame() : super(
     configuration: LeapConfiguration(
       tiled: const TiledOptions(
