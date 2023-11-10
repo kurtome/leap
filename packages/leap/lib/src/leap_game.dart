@@ -44,13 +44,13 @@ class LeapGame extends FlameGame with HasTrackedComponents {
   ///
   /// Default implementation is a noop, override it if you need to
   /// execute logic when the map is unloaded.
-  void onMapUnload() {}
+  void onMapUnload(LeapMap map) {}
 
   /// Called when a new map is loaded.
   ///
   /// Default implementation is a noop, override it if you need to
   /// execute logic when the map is loaded.
-  void onMapLoaded() {}
+  void onMapLoaded(LeapMap map) {}
 
   /// All the physical entities in the world.
   Iterable<PhysicalEntity> get physicals => (world as LeapWorld).physicals;
@@ -72,11 +72,11 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     final currentMap = _leapMap;
     LeapMapTransition? transitionComponent;
     if (currentMap != null) {
-      onMapUnload();
+      onMapUnload(currentMap);
 
       final transition = transitionComponent = mapTransitionFactory(this);
       camera.viewport.add(transition);
-      await transition.newMapReadyToBeLoaded;
+      await transition.introFinished;
       currentMap.removeFromParent();
     }
 
@@ -91,13 +91,13 @@ class LeapGame extends FlameGame with HasTrackedComponents {
       tiledOptions: configuration.tiled,
       tiledObjectHandlers: tiledObjectHandlers,
     );
-    onMapLoaded();
+    onMapLoaded(_leapMap!);
 
     await world.add(leapMap);
 
     if (transitionComponent != null) {
-      transitionComponent.newMapLoaded();
-      await transitionComponent.finished;
+      transitionComponent.outro();
+      await transitionComponent.outroFinished;
       transitionComponent.removeFromParent();
     }
   }

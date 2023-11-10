@@ -18,21 +18,29 @@ abstract class LeapMapTransition extends PositionComponent {
 
   final LeapGame game;
 
-  final _readyForNewMap = Completer<void>();
-  final _finished = Completer<void>();
+  final _intro = Completer<void>();
+  final _outro = Completer<void>();
 
-  void markReadyForNewMap() {
-    _readyForNewMap.complete();
+  void markIntroFinished() {
+    _intro.complete();
   }
 
   void markFinished() {
-    _finished.complete();
+    _outro.complete();
   }
 
-  Future<void> get newMapReadyToBeLoaded => _readyForNewMap.future;
-  Future<void> get finished => _finished.future;
+  @override
+  @mustCallSuper
+  FutureOr<void> onLoad() async {
+    await super.onLoad();
+    intro();
+  }
 
-  void newMapLoaded();
+  Future<void> get introFinished => _intro.future;
+  Future<void> get outroFinished => _outro.future;
+
+  void intro();
+  void outro();
 }
 
 class LeapFadeInOutMapTransition extends LeapMapTransition {
@@ -48,7 +56,10 @@ class LeapFadeInOutMapTransition extends LeapMapTransition {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+  }
 
+  @override
+  void intro() {
     add(
       RectangleComponent(
         size: game.size.clone(),
@@ -57,7 +68,7 @@ class LeapFadeInOutMapTransition extends LeapMapTransition {
           OpacityEffect.to(
             1,
             LinearEffectController(duration),
-            onComplete: markReadyForNewMap,
+            onComplete: markIntroFinished,
           ),
         ],
       ),
@@ -65,7 +76,7 @@ class LeapFadeInOutMapTransition extends LeapMapTransition {
   }
 
   @override
-  void newMapLoaded() {
+  void outro() {
     firstChild<RectangleComponent>()?.add(
       OpacityEffect.to(
         0,
