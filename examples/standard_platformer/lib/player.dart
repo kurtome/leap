@@ -5,7 +5,8 @@ import 'package:leap/leap.dart';
 import 'package:leap_standard_platformer/coin.dart';
 import 'package:leap_standard_platformer/main.dart';
 
-class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
+class Player extends JumperCharacter<ExamplePlatformerLeapGame>
+    with CanClimbLadder<ExamplePlatformerLeapGame> {
   Player({super.health = initialHealth}) {
     solidTags.add(CommonTags.ground);
   }
@@ -52,6 +53,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
     final wasJumping = jumping;
 
     updateHandleInput(dt);
+
     if (!_playerAnimation.isLoaded) {
       return;
     }
@@ -102,7 +104,15 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
       }
     }
 
-    if (_input.justPressed && _input.isPressedLeft) {
+    final ladderCollision = collisionInfo.otherCollisions
+        ?.whereType<Ladder<ExamplePlatformerLeapGame>>()
+        .firstOrNull;
+    if (_input.justPressed && ladderCollision != null && !isClimbingLadder) {
+      enterLadder(ladderCollision);
+    } else if (_input.justPressed && isClimbingLadder) {
+      // JumperBehavior will handle applying the jump and exiting the ladder
+      jumping = true;
+    } else if (_input.justPressed && _input.isPressedLeft) {
       // Tapped left.
       if (walking) {
         if (faceLeft) {

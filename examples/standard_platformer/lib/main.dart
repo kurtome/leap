@@ -5,6 +5,7 @@ import 'package:flame/game.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/widgets.dart' hide Animation, Image;
 import 'package:leap/leap.dart';
+import 'package:leap_standard_platformer/basic_ladder.dart';
 import 'package:leap_standard_platformer/coin.dart';
 import 'package:leap_standard_platformer/hud.dart';
 import 'package:leap_standard_platformer/player.dart';
@@ -65,6 +66,14 @@ class ExamplePlatformerLeapGame extends LeapGame
     add(input);
 
     await _loadLevel();
+    await loadWorldAndMap(
+      tiledMapPath: 'map.tmx',
+      tiledObjectHandlers: {
+        'Coin': await CoinFactory.createFactory(),
+        'SnowyMovingPlatform': await SnowyMovingPlatformFactory.createFactory(),
+        'BasicLadder': await BasicLadderFactory.createFactory(),
+      },
+    );
 
     // Don't let the camera move outside the bounds of the map, inset
     // by half the viewport size to the edge of the camera if flush with the

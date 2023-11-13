@@ -10,27 +10,29 @@ abstract class Ladder<T extends LeapGame> extends PhysicalEntity<T> {
   }) : super(static: true, collisionType: CollisionType.standard);
 
   Ladder.fromTiledObject(
-    TiledObject tiledObject, {
-    double entranceBufferPx = 8,
-  }) : this(
-          position: Vector2(tiledObject.x - entranceBufferPx, tiledObject.y),
+    TiledObject tiledObject,
+  ) : this(
+          position: Vector2(tiledObject.x, tiledObject.y),
           size: Vector2(
             tiledObject.width,
-            tiledObject.height + entranceBufferPx * 2,
+            tiledObject.height,
           ),
         );
-
-  void enter(PhysicalEntity<T> other) {
-    other.tags.add(CommonTags.onLadder);
-  }
-
-  void exit(PhysicalEntity<T> other) {
-    other.tags.remove(CommonTags.onLadder);
-  }
 }
 
-enum MovingPlatformLoopMode {
-  none,
-  resetAndLoop,
-  reverseAndLoop,
+mixin CanClimbLadder<T extends LeapGame> on PhysicalEntity<T> {
+  bool isClimbingLadder = false;
+  Ladder<T>? ladderClimbing;
+
+  void enterLadder(Ladder<T> ladder) {
+    isClimbingLadder = true;
+    ladderClimbing = ladder;
+    velocity.x = 0;
+    velocity.y = 0;
+  }
+
+  void exitLadder() {
+    isClimbingLadder = false;
+    ladderClimbing = null;
+  }
 }

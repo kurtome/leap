@@ -27,7 +27,9 @@ class LeapWorld extends World with HasGameRef<LeapGame> {
   @override
   void update(double dt) {
     final gAccel = gravity * dt;
-    for (final physical in physicals.where((p) => !p.static)) {
+    for (final physical in physicals.where((p) =>
+        !p.static &&
+        !(p is CanClimbLadder && (p as CanClimbLadder).isClimbingLadder))) {
       final y = physical.velocity.y;
       final desiredVelocity = (gAccel * physical.gravityRate) + y;
       physical.velocity.y = math.min(desiredVelocity, maxVelocity);
