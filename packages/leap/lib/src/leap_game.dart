@@ -66,15 +66,15 @@ class LeapGame extends FlameGame with HasTrackedComponents {
     AssetBundle? bundle,
     Images? images,
     Map<String, TiledObjectHandler> tiledObjectHandlers = const {},
-    LeapMapTransition Function(LeapGame) mapTransitionFactory =
-        LeapMapTransition.defaultFactory,
+    LeapMapTransition? transitionComponent,
   }) async {
     final currentMap = _leapMap;
-    LeapMapTransition? transitionComponent;
+    LeapMapTransition? mapTransition;
     if (currentMap != null) {
       onMapUnload(currentMap);
 
-      final transition = transitionComponent = mapTransitionFactory(this);
+      final transition = mapTransition =
+          transitionComponent ?? LeapMapTransition.defaultFactory(this);
       camera.viewport.add(transition);
       await transition.introFinished;
       currentMap.removeFromParent();
@@ -95,10 +95,10 @@ class LeapGame extends FlameGame with HasTrackedComponents {
 
     await world.add(leapMap);
 
-    if (transitionComponent != null) {
-      transitionComponent.outro();
-      await transitionComponent.outroFinished;
-      transitionComponent.removeFromParent();
+    if (mapTransition != null) {
+      mapTransition.outro();
+      await mapTransition.outroFinished;
+      mapTransition.removeFromParent();
     }
   }
 }
