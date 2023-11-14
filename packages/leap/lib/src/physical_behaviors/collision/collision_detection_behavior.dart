@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:leap/leap.dart';
-import 'package:leap/src/entities/ladder.dart';
 import 'package:leap/src/physical_behaviors/physical_behaviors.dart';
 
 /// Contains all the logic for the collision detection system,
@@ -38,8 +37,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     prevCollisionInfo.copyFrom(collisionInfo);
     collisionInfo.reset();
 
-    if (!(parent is CanClimbLadder &&
-        (parent as CanClimbLadder).isClimbingLadder)) {
+    if (!parent.hasStatus<IgnoresGroundCollisions>()) {
       groundCollisionDetection(dt);
     }
     nonMapCollisionDetection(dt);

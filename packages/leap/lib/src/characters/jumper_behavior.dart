@@ -11,9 +11,9 @@ class JumperBehavior extends PhysicalBehavior<JumperCharacter> {
   void update(double dt) {
     super.update(dt);
 
-    if (parent is CanClimbLadder &&
-        (parent as CanClimbLadder).isClimbingLadder) {
-      updateClimbingLadder(dt);
+    final ladderStatus = parent.getStatus<OnLadderStatus>();
+    if (ladderStatus != null) {
+      updateClimbingLadder(dt, ladderStatus);
     } else {
       updateNormal(dt);
     }
@@ -58,10 +58,10 @@ class JumperBehavior extends PhysicalBehavior<JumperCharacter> {
       }
     }
   }
-  
-  void updateClimbingLadder(double dt) {
+
+  void updateClimbingLadder(double dt, OnLadderStatus ladderStatus) {
     if (parent.jumping) {
-      (parent as CanClimbLadder).exitLadder();
+      OnLadderStatus.exitLadder(parent, ladderStatus);
       velocity.y = -parent.minJumpImpulse;
     }
   }

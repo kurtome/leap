@@ -20,19 +20,26 @@ abstract class Ladder<T extends LeapGame> extends PhysicalEntity<T> {
         );
 }
 
-mixin CanClimbLadder<T extends LeapGame> on PhysicalEntity<T> {
-  bool isClimbingLadder = false;
-  Ladder<T>? ladderClimbing;
+class OnLadderStatus<T extends LeapGame> extends EntityStatus
+    with IgnoresGravity, IgnoresGroundCollisions {
+  // Singleton only
+  OnLadderStatus._privateConstructor(this.ladder);
 
-  void enterLadder(Ladder<T> ladder) {
-    isClimbingLadder = true;
-    ladderClimbing = ladder;
-    velocity.x = 0;
-    velocity.y = 0;
+  final Ladder<T> ladder;
+
+  static void enterLadder<T extends LeapGame>(
+    PhysicalEntity<T> entity,
+    Ladder<T> ladder,
+  ) {
+    entity.velocity.x = 0;
+    entity.velocity.y = 0;
+    entity.statuses.add(OnLadderStatus._privateConstructor(ladder));
   }
 
-  void exitLadder() {
-    isClimbingLadder = false;
-    ladderClimbing = null;
+  static void exitLadder<T extends LeapGame>(
+    PhysicalEntity<T> entity,
+    OnLadderStatus<T> status,
+  ) {
+    entity.statuses.remove(status);
   }
 }

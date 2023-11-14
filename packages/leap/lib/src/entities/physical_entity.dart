@@ -39,6 +39,14 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// normal physics engine / collision detection calculations.
   final Set<String> solidTags = {};
 
+  /// Status effects which can control aspects of the leap engine (gravity,
+  /// collisions, etc.), or be used for fully custom handling.
+  ///
+  /// This is a list instead of a set for two reasons:
+  ///  1. For some uses status order could be important
+  ///  2. For some uses adding the same status twice could be valid
+  final List<EntityStatus> statuses = [];
+
   /// Collision detection tags.
   final CollisionType collisionType;
 
@@ -181,6 +189,14 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
 
   bool isOtherSolid(PhysicalEntity other) {
     return solidTags.intersection(other.tags).isNotEmpty;
+  }
+
+  bool hasStatus<TStatus extends EntityStatus>() {
+    return statuses.whereType<TStatus>().isNotEmpty;
+  }
+
+  TStatus? getStatus<TStatus extends EntityStatus>() {
+    return statuses.whereType<TStatus>().firstOrNull;
   }
 }
 
