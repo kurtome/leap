@@ -25,6 +25,7 @@ class TiledOptions {
     this.slopeLeftTopProperty = 'LeftTop',
     this.atlasMaxX,
     this.atlasMaxY,
+    this.useAtlas = true,
   });
 
   /// Which layer name should be used for the player, defaults to "Ground".
@@ -64,4 +65,13 @@ class TiledOptions {
   /// The max height of the atlas texture, defaults to Flame Tiled default
   /// value when omitted.
   final double? atlasMaxY;
+
+  /// A flag that indicates if Flame Tiled should render the map
+  /// using `Canvas.drawAtlas` instead of `Canvas.drawImageRect`.
+  ///
+  /// Defaults to Flame Tiled default value, which is `true`.
+  ///
+  /// Refer to Flame's SpriteBatch documentation for more information
+  /// on the differences between the two methods.
+  final bool useAtlas;
 }
