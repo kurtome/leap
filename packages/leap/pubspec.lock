@@ -100,12 +100,11 @@ packages:
   flame_tiled:
     dependency: "direct main"
     description:
-      path: "packages/flame_tiled"
-      ref: HEAD
-      resolved-ref: b93bdd38313fd273e3e4cf55f1b142969effbde4
-      url: "https://github.com/flame-engine/flame.git"
-    source: git
-    version: "1.15.1"
+      name: flame_tiled
+      sha256: "72afc84f73b93a7d52fb636fd02f059f47db0f482145829070b301ab33794d23"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.16.0"
   flutter:
     dependency: "direct main"
     description: flutter

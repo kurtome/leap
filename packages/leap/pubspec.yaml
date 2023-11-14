@@ -10,17 +10,11 @@ environment:
 dependencies:
   flame: ^1.10.0
   flame_behaviors: ^1.0.0
-  flame_tiled: ^1.15.0
+  flame_tiled: ^1.16.0
   flutter:
     sdk: flutter
   pathxp: ^0.4.0
   tiled: ^0.10.1
-
-dependency_overrides:
-  flame_tiled:
-    git:
-      url: https://github.com/flame-engine/flame.git
-      path: packages/flame_tiled
 
 dev_dependencies:
   flame_lint: ^1.1.1
