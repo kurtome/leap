@@ -67,14 +67,6 @@ class ExamplePlatformerLeapGame extends LeapGame
     add(input);
 
     await _loadLevel();
-    await loadWorldAndMap(
-      tiledMapPath: 'map.tmx',
-      tiledObjectHandlers: {
-        'Coin': await CoinFactory.createFactory(),
-        'SnowyMovingPlatform': await SnowyMovingPlatformFactory.createFactory(),
-        'BasicLadder': await BasicLadderFactory.createFactory(),
-      },
-    );
 
     // Don't let the camera move outside the bounds of the map, inset
     // by half the viewport size to the edge of the camera if flush with the
