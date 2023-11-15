@@ -24,6 +24,6 @@ class Hud extends PositionComponent with HasGameRef<ExamplePlatformerLeapGame> {
   @override
   void update(double dt) {
     super.update(dt);
-    textComponent.text = 'Coins: ${gameRef.player.coins}';
+    textComponent.text = 'Coins: ${gameRef.player?.coins ?? 0}';
   }
 }

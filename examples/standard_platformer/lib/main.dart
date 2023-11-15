@@ -27,12 +27,32 @@ class ExamplePlatformerLeapGame extends LeapGame
     required super.tileSize,
   });
 
-  late final Player player;
+  Player? player;
   late final SimpleCombinedInput input;
+  late final Map<String, TiledObjectHandler> tiledObjectHandlers;
+
+  static const _levels = [
+    'map.tmx',
+    'map_2.tmx',
+  ];
+
+  var _currentLevel = 0;
+
+  Future<void> _loadLevel() {
+    return loadWorldAndMap(
+      tiledMapPath: _levels[_currentLevel],
+      tiledObjectHandlers: tiledObjectHandlers,
+    );
+  }
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+
+    tiledObjectHandlers = {
+      'Coin': await CoinFactory.createFactory(),
+      'SnowyMovingPlatform': await SnowyMovingPlatformFactory.createFactory(),
+    };
 
     // Default the camera size to the bounds of the Tiled map.
     camera = CameraComponent.withFixedResolution(
@@ -41,13 +61,10 @@ class ExamplePlatformerLeapGame extends LeapGame
       height: tileSize * 16,
     );
 
-    await loadWorldAndMap(
-      tiledMapPath: 'map.tmx',
-      tiledObjectHandlers: {
-        'Coin': await CoinFactory.createFactory(),
-        'SnowyMovingPlatform': await SnowyMovingPlatformFactory.createFactory(),
-      },
-    );
+    input = SimpleCombinedInput();
+    add(input);
+
+    await _loadLevel();
 
     // Don't let the camera move outside the bounds of the map, inset
     // by half the viewport size to the edge of the camera if flush with the
@@ -62,12 +79,9 @@ class ExamplePlatformerLeapGame extends LeapGame
       ),
     );
 
-    input = SimpleCombinedInput();
-    add(input);
-
     player = Player();
-    world.add(player);
-    camera.follow(player);
+    world.add(player = Player());
+    camera.follow(player!);
 
     if (!FlameAudio.bgm.isPlaying) {
       FlameAudio.bgm.play('village_music.mp3');
@@ -82,6 +96,26 @@ class ExamplePlatformerLeapGame extends LeapGame
         ),
       ),
     );
+  }
+
+  @override
+  void onMapUnload(LeapMap map) {
+    player?.removeFromParent();
+  }
+
+  @override
+  void onMapLoaded(LeapMap map) {
+    if (player != null) {
+      player = Player();
+      world.add(player!);
+      camera.follow(player!);
+    }
+  }
+
+  Future<void> levelCleared() async {
+    _currentLevel = (_currentLevel + 1) % _levels.length;
+
+    await _loadLevel();
   }
 
   @override
