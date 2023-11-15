@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:tiled/tiled.dart';
 
-
 /// A configurable class that allows the developer to
 /// customize different options that Leap will use
 /// when reading the map.
@@ -71,7 +70,7 @@ class TiledOptions {
   /// The max height of the atlas texture, defaults to Flame Tiled default
   /// value when omitted.
   final double? atlasMaxY;
-  
+
   /// A filter that allows you to filter which tilesets should be packed
   /// into Flame Tiled Texture Atlas.
   ///
