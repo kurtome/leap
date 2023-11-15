@@ -102,7 +102,7 @@ packages:
     description:
       path: "packages/flame_tiled"
       ref: HEAD
-      resolved-ref: f7334439c95731c1978d528d2d466888a444e353
+      resolved-ref: "2f0dab9e59958176e6c46f6e417188e6c4fa3831"
       url: "https://github.com/flame-engine/flame.git"
     source: git
     version: "1.16.0"
