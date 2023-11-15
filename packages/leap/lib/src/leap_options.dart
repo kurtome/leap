@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'package:tiled/tiled.dart';
+
 
 /// A configurable class that allows the developer to
 /// customize different options that Leap will use
@@ -27,6 +29,7 @@ class TiledOptions {
     this.slopeLeftTopProperty = 'LeftTop',
     this.atlasMaxX,
     this.atlasMaxY,
+    this.tsxPackingFilter,
     this.useAtlas = true,
     this.layerPaintFactory,
   });
@@ -68,6 +71,13 @@ class TiledOptions {
   /// The max height of the atlas texture, defaults to Flame Tiled default
   /// value when omitted.
   final double? atlasMaxY;
+  
+  /// A filter that allows you to filter which tilesets should be packed
+  /// into Flame Tiled Texture Atlas.
+  ///
+  /// When omitted defaults to Flame Tiled's default filter, which include all
+  /// tilesets in the atlas.
+  final bool Function(Tileset)? tsxPackingFilter;
 
   /// A flag that indicates if Flame Tiled should render the map
   /// using `Canvas.drawAtlas` instead of `Canvas.drawImageRect`.

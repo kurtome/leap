@@ -1,6 +1,6 @@
 name: leap
 description: An opinionated toolkit for creating 2D platformers on top of Flame engine.
-version: 0.3.0
+version: 0.3.1
 homepage: https://github.com/kurtome/leap
 
 environment:
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flame: ^1.10.0
   flame_behaviors: ^1.0.0
-  flame_tiled: ^1.15.0
+  flame_tiled: ^1.16.0
   flutter:
     sdk: flutter
   pathxp: ^0.4.0

@@ -181,7 +181,15 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
       if (other is Coin) {
         other.removeFromParent();
         coins++;
+        _checkForLevelCompletion();
       }
+    }
+  }
+
+  void _checkForLevelCompletion() {
+    final coinsLeft = gameRef.leapMap.children.whereType<Coin>().length;
+    if (coinsLeft <= 1) {
+      gameRef.levelCleared();
     }
   }
 }

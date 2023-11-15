@@ -1,3 +1,9 @@
+## 0.3.1
+
+ - **FIX**: walking down slopes not working properly ([#24](https://github.com/kurtome/leap/issues/24)). ([b88b13be](https://github.com/kurtome/leap/commit/b88b13be2d36a07955014e897236b30ebd37f6d9))
+ - **FEAT**: adding ability to change map in runtime ([#23](https://github.com/kurtome/leap/issues/23)). ([05c615e0](https://github.com/kurtome/leap/commit/05c615e08943de8ed41c7e6949dc70ddecef4e56))
+ - **FEAT**: adding tsx packing filter to TiledOptions ([#26](https://github.com/kurtome/leap/issues/26)). ([3accb89f](https://github.com/kurtome/leap/commit/3accb89f098cf0432211550e2ee80ce967958ffd))
+
 ## 0.3.0
 
 > Note: This release has breaking changes.
