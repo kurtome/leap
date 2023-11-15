@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 /// A configurable class that allows the developer to
 /// customize different options that Leap will use
 /// when reading the map.
@@ -26,6 +28,7 @@ class TiledOptions {
     this.atlasMaxX,
     this.atlasMaxY,
     this.useAtlas = true,
+    this.layerPaintFactory,
   });
 
   /// Which layer name should be used for the player, defaults to "Ground".
@@ -74,4 +77,11 @@ class TiledOptions {
   /// Refer to Flame's SpriteBatch documentation for more information
   /// on the differences between the two methods.
   final bool useAtlas;
+
+  /// A function that allows the developer to customize the paint
+  /// used to render tile maps
+  ///
+  /// When ommited, resorts to Flame Tiled one, which creates a
+  /// a white Paint with the layer opacity value.
+  final Paint Function(double opacity)? layerPaintFactory;
 }
