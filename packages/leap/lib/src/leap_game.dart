@@ -7,7 +7,8 @@ import 'package:leap/leap.dart';
 import 'package:leap/src/mixins/mixins.dart';
 
 /// A [FlameGame] with all the Leap built-ins.
-class LeapGame extends FlameGame with HasTrackedComponents {
+class LeapGame extends FlameGame<LeapWorld>
+    with HasTrackedComponents<LeapWorld> {
   LeapGame({
     required this.tileSize,
     this.appState = AppLifecycleState.resumed,

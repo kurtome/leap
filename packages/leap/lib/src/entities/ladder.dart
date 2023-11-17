@@ -1,4 +1,4 @@
-import 'package:flame/extensions.dart';
+import 'package:flame/components.dart';
 import 'package:leap/leap.dart';
 import 'package:tiled/tiled.dart';
 
@@ -20,26 +20,59 @@ abstract class Ladder<T extends LeapGame> extends PhysicalEntity<T> {
         );
 }
 
-class OnLadderStatus<T extends LeapGame> extends EntityStatus
-    with IgnoresGravity, IgnoresGroundCollisions {
-  // Singleton only
-  OnLadderStatus._privateConstructor(this.ladder);
+enum LadderMovingDirection {
+  up,
+  down,
+  stopped,
+}
+
+class OnLadderStatus<T extends LeapGame> extends StatusComponent
+    with HasGameReference<T>, IgnoresGravity, IgnoresGroundCollisions {
+  OnLadderStatus(this.ladder);
 
   final Ladder<T> ladder;
+  LadderMovingDirection direction = LadderMovingDirection.stopped;
+  double moveSpeed = 0;
 
-  static void enterLadder<T extends LeapGame>(
-    PhysicalEntity<T> entity,
-    Ladder<T> ladder,
-  ) {
-    entity.velocity.x = 0;
-    entity.velocity.y = 0;
-    entity.statuses.add(OnLadderStatus._privateConstructor(ladder));
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    final parentEntity = parent! as PhysicalEntity;
+
+    if (!(parentEntity.collisionInfo.otherCollisions?.contains(ladder) ??
+        false)) {
+      // No longer on the ladder
+      removeFromParent();
+      parentEntity.velocity.y = 0;
+      parentEntity.velocity.x = 0;
+      parentEntity.bottom = ladder.top;
+    } else {
+      // Still on the ladder.
+
+      // Center the parent and stop x movement
+      parentEntity.velocity.x = 0;
+      parentEntity.centerX = ladder.centerX;
+
+      // Update ladder y movement.
+      switch (direction) {
+        case LadderMovingDirection.up:
+          parentEntity.velocity.y = -moveSpeed;
+          break;
+        case LadderMovingDirection.down:
+          parentEntity.velocity.y = moveSpeed;
+          break;
+        case LadderMovingDirection.stopped:
+          parentEntity.velocity.y = 0;
+          break;
+        default:
+      }
+    }
   }
 
-  static void exitLadder<T extends LeapGame>(
-    PhysicalEntity<T> entity,
-    OnLadderStatus<T> status,
-  ) {
-    entity.statuses.remove(status);
+  @override
+  void onMount() {
+    super.onMount();
+    moveSpeed = game.world.gravity / 10;
   }
 }

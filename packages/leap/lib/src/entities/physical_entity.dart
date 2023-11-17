@@ -45,7 +45,8 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// This is a list instead of a set for two reasons:
   ///  1. For some uses status order could be important
   ///  2. For some uses adding the same status twice could be valid
-  final List<EntityStatus> statuses = [];
+  List<StatusComponent> get statuses => _statuses;
+  final List<StatusComponent> _statuses = [];
 
   /// Collision detection tags.
   final CollisionType collisionType;
@@ -182,6 +183,11 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
     return x + (width / 2);
   }
 
+  /// Horizontal middle point.
+  set centerX(double x) {
+    this.x = x - width / 2;
+  }
+
   /// Vertical middle point.
   double get centerY {
     return y + (height / 2);
@@ -191,11 +197,23 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
     return solidTags.intersection(other.tags).isNotEmpty;
   }
 
-  bool hasStatus<TStatus extends EntityStatus>() {
+  /// Invoked when a child [StatusComponent] is mounted, this is designed
+  /// to be called only by [StatusComponent.onMount]
+  void onStatusMount(StatusComponent status) {
+    _statuses.add(status);
+  }
+
+  /// Invoked when a child [StatusComponent] is mounted, this is designed
+  /// to be called only by [StatusComponent.onRemove]
+  void onStatusRemove(StatusComponent status) {
+    _statuses.remove(status);
+  }
+
+  bool hasStatus<TStatus extends StatusComponent>() {
     return statuses.whereType<TStatus>().isNotEmpty;
   }
 
-  TStatus? getStatus<TStatus extends EntityStatus>() {
+  TStatus? getStatus<TStatus extends StatusComponent>() {
     return statuses.whereType<TStatus>().firstOrNull;
   }
 }

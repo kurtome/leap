@@ -61,7 +61,7 @@ class JumperBehavior extends PhysicalBehavior<JumperCharacter> {
 
   void updateClimbingLadder(double dt, OnLadderStatus ladderStatus) {
     if (parent.jumping) {
-      OnLadderStatus.exitLadder(parent, ladderStatus);
+      ladderStatus.removeFromParent();
       velocity.y = -parent.minJumpImpulse;
     }
   }

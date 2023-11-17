@@ -109,7 +109,15 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
     if (_input.justPressed &&
         ladderCollision != null &&
         onLadderStatus == null) {
-      OnLadderStatus.enterLadder(this, ladderCollision);
+      final status = OnLadderStatus(ladderCollision);
+      add(status);
+      walking = false;
+      lastGroundXVelocity = 0;
+      if (isOnGround) {
+        status.direction = LadderMovingDirection.down;
+      } else {
+        status.direction = LadderMovingDirection.up;
+      }
     } else if (_input.justPressed && onLadderStatus != null) {
       // JumperBehavior will handle applying the jump and exiting the ladder
       jumping = true;
@@ -155,6 +163,8 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   void updateAnimation() {
     if (isDead) {
       _playerAnimation.die();
+    } else if (hasStatus<OnLadderStatus>()) {
+      _playerAnimation.ladder();
     } else {
       if (isOnGround) {
         // On the ground.
@@ -214,6 +224,7 @@ class PlayerSpriteAnimation extends PositionComponent
   late final SpriteAnimation _jumpAnimation;
   late final SpriteAnimation _fallAnimation;
   late final SpriteAnimation _deathAnimation;
+  late final SpriteAnimation _ladderAnimation;
 
   @override
   Future<void>? onLoad() async {
@@ -275,6 +286,17 @@ class PlayerSpriteAnimation extends PositionComponent
       ),
     );
 
+    _ladderAnimation = SpriteAnimation.fromFrameData(
+      spritesheet,
+      SpriteAnimationData.sequenced(
+        amount: 4,
+        stepTime: 0.15,
+        textureSize: Vector2.all(16),
+        texturePosition: Vector2(0, 16 * 6),
+        amountPerRow: 4,
+      ),
+    );
+
     _animationComponent = SpriteAnimationComponent(
       size: Vector2.all(32),
       // Reposition the animation relative to the parent's hitbox.
@@ -321,6 +343,13 @@ class PlayerSpriteAnimation extends PositionComponent
   void die() {
     if (_animationComponent.animation != _deathAnimation) {
       _animationComponent.animation = _deathAnimation;
+      _ticker.reset();
+    }
+  }
+
+  void ladder() {
+    if (_animationComponent.animation != _ladderAnimation) {
+      _animationComponent.animation = _ladderAnimation;
       _ticker.reset();
     }
   }
