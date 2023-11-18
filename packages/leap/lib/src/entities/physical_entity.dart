@@ -82,7 +82,7 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// Can only be accessed after component tree has been to the [LeapGame].
   LeapMap get map => gameRef.leapMap;
 
-  LeapWorld get world => gameRef.world as LeapWorld;
+  LeapWorld get world => game.world;
 
   /// Tile size (width and height) in pixels
   double get tileSize => gameRef.tileSize;
@@ -191,6 +191,11 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// Vertical middle point.
   double get centerY {
     return y + (height / 2);
+  }
+
+  /// Vertical middle point.
+  set centerY(double y) {
+    this.y = y - (height / 2);
   }
 
   bool isOtherSolid(PhysicalEntity other) {

@@ -54,7 +54,7 @@ class LeapGame extends FlameGame<LeapWorld>
   void onMapLoaded(LeapMap map) {}
 
   /// All the physical entities in the world.
-  Iterable<PhysicalEntity> get physicals => (world as LeapWorld).physicals;
+  Iterable<PhysicalEntity> get physicals => world.physicals;
 
   /// Initializes and loads the [world] and [leapMap] components
   /// with a Tiled map.

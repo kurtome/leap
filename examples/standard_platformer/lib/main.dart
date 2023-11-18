@@ -29,7 +29,7 @@ class ExamplePlatformerLeapGame extends LeapGame
   });
 
   Player? player;
-  late final SimpleCombinedInput input;
+  late final ThreeButtonInput input;
   late final Map<String, TiledObjectHandler> tiledObjectHandlers;
 
   static const _levels = [
@@ -63,7 +63,7 @@ class ExamplePlatformerLeapGame extends LeapGame
       height: tileSize * 16,
     );
 
-    input = SimpleCombinedInput();
+    input = ThreeButtonInput();
     add(input);
 
     await _loadLevel();

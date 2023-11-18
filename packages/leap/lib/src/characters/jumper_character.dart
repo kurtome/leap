@@ -22,7 +22,7 @@ class JumperCharacter<TGame extends LeapGame> extends PhysicalEntity<TGame> {
   double maxJumpHoldTime = 0.35;
 
   /// The last ground velocity of the character on the horizontal axis.
-  double lastGroundXVelocity = 0;
+  double airXVelocity = 0;
 
   /// The animation position component of the character.
   PositionComponent? spriteAnimation;

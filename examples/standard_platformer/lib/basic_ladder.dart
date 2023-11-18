@@ -6,26 +6,32 @@ import 'package:leap_standard_platformer/main.dart';
 import 'package:tiled/tiled.dart';
 
 class BasicLadder extends Ladder<ExamplePlatformerLeapGame> {
-  BasicLadder(TiledObject tiledObject, Image tileset)
-      : super.fromTiledObject(tiledObject) {
+  BasicLadder(Image tileset, {required super.tiledObject})
+      : super.fromTiledObject(topExtraHitbox: 4) {
     width = 16 * 2; // this is the width of our ladder sprite
-    height = tiledObject.height;
     priority = 2;
 
     // Top sprite
-    final topSprite =
-        Sprite(tileset, srcSize: Vector2(32, 16), srcPosition: Vector2(0, 32));
+    final topSprite = Sprite(
+      tileset,
+      srcSize: Vector2(32, 16),
+      srcPosition: Vector2(0, 32),
+    );
     add(
       SpriteComponent(
         sprite: topSprite,
+        position: Vector2(0, topExtraHitbox),
       ),
     );
 
-    addAll(_buildMiddleSprites(height, tileset));
+    addAll(_buildMiddleSprites(height, tileset, topExtraHitbox + 16));
 
     // Bottom sprite
-    final bottomSprite =
-        Sprite(tileset, srcSize: Vector2(32, 16), srcPosition: Vector2(0, 112));
+    final bottomSprite = Sprite(
+      tileset,
+      srcSize: Vector2(32, 16),
+      srcPosition: Vector2(0, 112),
+    );
     add(
       SpriteComponent(
         sprite: bottomSprite,
@@ -37,10 +43,11 @@ class BasicLadder extends Ladder<ExamplePlatformerLeapGame> {
   static List<SpriteComponent> _buildMiddleSprites(
     double height,
     Image tileset,
+    double topOfMiddle,
   ) {
     final list = List<SpriteComponent>.empty(growable: true);
     final bottomOfMiddle = height - 16;
-    for (var top = 16.0; top < bottomOfMiddle;) {
+    for (var top = topOfMiddle; top < bottomOfMiddle;) {
       // This should be anywhere between one tile (16px) and 4 tiles
       var sectionHeight = bottomOfMiddle - top;
       if (sectionHeight > 16 * 4) {
@@ -69,7 +76,7 @@ class BasicLadderFactory implements TiledObjectHandler {
 
   @override
   void handleObject(TiledObject object, Layer layer, LeapMap map) {
-    final ladder = BasicLadder(object, tileset);
+    final ladder = BasicLadder(tileset, tiledObject: object);
     map.add(ladder);
   }
 

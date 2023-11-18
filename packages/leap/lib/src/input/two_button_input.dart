@@ -7,10 +7,10 @@ import 'package:leap/leap.dart';
 import 'package:leap/src/mixins/mixins.dart';
 
 /// Combines touch screen and keyboard input into one API.
-class SimpleCombinedInput extends Component
+class TwoButtonInput extends Component
     with HasGameRef<LeapGame>, AppLifecycleAware {
-  late final SimpleTapInput _tapInput;
-  late final SimpleKeyboardInput _keyboardInput;
+  late final TwoButtonTapInput _tapInput;
+  late final TwoButtonKeyboardInput _keyboardInput;
   double pressedTime = 0;
   bool justPressed = false;
 
@@ -41,17 +41,17 @@ class SimpleCombinedInput extends Component
       _appFocused &&
       (_tapInput.isPressedRight || _keyboardInput.isPressedRight);
 
-  SimpleCombinedInput({
-    SimpleKeyboardInput? keyboardInput,
+  TwoButtonInput({
+    TwoButtonKeyboardInput? keyboardInput,
   }) {
-    _tapInput = SimpleTapInput();
-    _keyboardInput = keyboardInput ?? SimpleKeyboardInput();
+    _tapInput = TwoButtonTapInput();
+    _keyboardInput = keyboardInput ?? TwoButtonKeyboardInput();
     add(_tapInput);
     add(_keyboardInput);
   }
 
-  SimpleKeyboardInput get keyboardInput => _keyboardInput;
-  SimpleTapInput get tapInput => _tapInput;
+  TwoButtonKeyboardInput get keyboardInput => _keyboardInput;
+  TwoButtonTapInput get tapInput => _tapInput;
 
   @override
   void update(double dt) {
@@ -64,9 +64,9 @@ class SimpleCombinedInput extends Component
   }
 }
 
-class SimpleTapInput extends PositionComponent
+class TwoButtonTapInput extends PositionComponent
     with TapCallbacks, HasGameRef<LeapGame> {
-  SimpleTapInput({
+  TwoButtonTapInput({
     this.upEvent,
     this.downEvent,
   });
@@ -91,7 +91,7 @@ class SimpleTapInput extends PositionComponent
 
   @override
   Future<void> onLoad() async {
-    size = (gameRef.world as LeapWorld).map.size;
+    size = game.world.map.size;
     return super.onLoad();
   }
 
@@ -120,8 +120,8 @@ class SimpleTapInput extends PositionComponent
   }
 }
 
-class SimpleKeyboardInput extends Component with KeyboardHandler {
-  SimpleKeyboardInput({
+class TwoButtonKeyboardInput extends Component with KeyboardHandler {
+  TwoButtonKeyboardInput({
     Set<PhysicalKeyboardKey>? leftKeys,
     Set<PhysicalKeyboardKey>? rightKeys,
   }) {

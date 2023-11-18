@@ -13,7 +13,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   static const initialHealth = 1;
 
   late final Vector2 _spawn;
-  late final SimpleCombinedInput _input;
+  late final ThreeButtonInput _input;
   late final PlayerSpriteAnimation _playerAnimation;
 
   int coins = 0;
@@ -85,8 +85,9 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
     y = _spawn.y;
     velocity.x = 0;
     velocity.y = 0;
-    lastGroundXVelocity = 0;
+    airXVelocity = 0;
     faceLeft = false;
+    jumping = false;
 
     FlameAudio.play('spawn.wav');
   }
@@ -94,7 +95,12 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   void updateHandleInput(double dt) {
     if (isAlive) {
       // Keep jumping if started.
-      if (jumping && _input.isPressed && timeHoldingJump < maxJumpHoldTime) {
+      if (jumping &&
+          _input.isPressed &&
+          timeHoldingJump < maxJumpHoldTime &&
+          // hitting a ceiling should behave the same
+          // as letting go of the jump button
+          !collisionInfo.up) {
         jumping = true;
         timeHoldingJump += dt;
       } else {
@@ -107,20 +113,35 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
         collisionInfo.otherCollisions?.whereType<Ladder>().firstOrNull;
     final onLadderStatus = getStatus<OnLadderStatus>();
     if (_input.justPressed &&
+        _input.isPressedCenter &&
         ladderCollision != null &&
         onLadderStatus == null) {
       final status = OnLadderStatus(ladderCollision);
       add(status);
       walking = false;
-      lastGroundXVelocity = 0;
+      airXVelocity = 0;
       if (isOnGround) {
         status.direction = LadderMovingDirection.down;
       } else {
         status.direction = LadderMovingDirection.up;
       }
     } else if (_input.justPressed && onLadderStatus != null) {
-      // JumperBehavior will handle applying the jump and exiting the ladder
-      jumping = true;
+      if (_input.isPressedCenter) {
+        if (onLadderStatus.direction != LadderMovingDirection.stopped) {
+          onLadderStatus.direction = LadderMovingDirection.stopped;
+        } else if (onLadderStatus.prevDirection == LadderMovingDirection.up) {
+          onLadderStatus.direction = LadderMovingDirection.down;
+        } else {
+          onLadderStatus.direction = LadderMovingDirection.up;
+        }
+      } else {
+        // JumperBehavior will handle applying the jump and exiting the ladder
+        jumping = true;
+        airXVelocity = walkSpeed;
+        walking = true;
+        // Make sure the player exits the ladder facing the direction jumped
+        faceLeft = _input.isPressedLeft;
+      }
     } else if (_input.justPressed && _input.isPressedLeft) {
       // Tapped left.
       if (walking) {
@@ -135,9 +156,12 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
           faceLeft = true;
         }
       } else {
-        // Standing still.
+        // Standing still.a
         walking = true;
         faceLeft = true;
+        if (!isOnGround) {
+          airXVelocity = walkSpeed;
+        }
       }
     } else if (_input.justPressed && _input.isPressedRight) {
       // Tapped right.
@@ -151,6 +175,9 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
           // Moving left, stop.
           walking = false;
           faceLeft = false;
+          if (!isOnGround) {
+            airXVelocity = walkSpeed;
+          }
         }
       } else {
         // Standing still.
@@ -161,10 +188,19 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   }
 
   void updateAnimation() {
+    // Default to playing animations
+    _playerAnimation.animationComponent.playing = true;
+
     if (isDead) {
       _playerAnimation.die();
     } else if (hasStatus<OnLadderStatus>()) {
       _playerAnimation.ladder();
+      if (getStatus<OnLadderStatus>()!.direction ==
+          LadderMovingDirection.stopped) {
+        _playerAnimation.animationComponent.playing = false;
+      } else {
+        _playerAnimation.animationComponent.playing = true;
+      }
     } else {
       if (isOnGround) {
         // On the ground.
@@ -225,6 +261,8 @@ class PlayerSpriteAnimation extends PositionComponent
   late final SpriteAnimation _fallAnimation;
   late final SpriteAnimation _deathAnimation;
   late final SpriteAnimation _ladderAnimation;
+
+  SpriteAnimationComponent get animationComponent => _animationComponent;
 
   @override
   Future<void>? onLoad() async {

@@ -5,7 +5,6 @@ import 'package:leap/src/entities/ladder.dart';
 import 'package:leap/src/physical_behaviors/physical_behavior.dart';
 
 class JumperBehavior extends PhysicalBehavior<JumperCharacter> {
-  double lastGroundXVelocity = 0;
 
   @override
   void update(double dt) {
@@ -48,13 +47,13 @@ class JumperBehavior extends PhysicalBehavior<JumperCharacter> {
       } else {
         velocity.x = 0;
       }
-      lastGroundXVelocity = velocity.x.abs();
+      parent.airXVelocity = velocity.x.abs();
     } else {
       // in the air
       if (parent.faceLeft) {
-        velocity.x = -lastGroundXVelocity;
+        velocity.x = -parent.airXVelocity;
       } else {
-        velocity.x = lastGroundXVelocity;
+        velocity.x = parent.airXVelocity;
       }
     }
   }
