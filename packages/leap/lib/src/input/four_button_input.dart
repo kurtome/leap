@@ -45,8 +45,7 @@ class FourButtonInput extends Component
       _appFocused && (_tapInput.isPressedUp || _keyboardInput.isPressedUp);
 
   bool get isPressedDown =>
-      _appFocused &&
-      (_tapInput.isPressedDown || _keyboardInput.isPressedDown);
+      _appFocused && (_tapInput.isPressedDown || _keyboardInput.isPressedDown);
 
   FourButtonInput({
     FourButtonKeyboardInput? keyboardInput,
@@ -113,8 +112,7 @@ class FourButtonTapInput extends PositionComponent
 
   bool get isPressedRight {
     if (downEvent != null) {
-      return isPressed &&
-          downEvent!.devicePosition.x >= _screenWidth * 2.0 / 3;
+      return isPressed && downEvent!.devicePosition.x >= _screenWidth * 2.0 / 3;
     }
     return false;
   }

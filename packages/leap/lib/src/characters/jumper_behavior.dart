@@ -5,7 +5,6 @@ import 'package:leap/src/entities/ladder.dart';
 import 'package:leap/src/physical_behaviors/physical_behavior.dart';
 
 class JumperBehavior extends PhysicalBehavior<JumperCharacter> {
-
   @override
   void update(double dt) {
     super.update(dt);
