@@ -124,6 +124,8 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
       atlasMaxX: tiledOptions.atlasMaxX,
       atlasMaxY: tiledOptions.atlasMaxY,
       tsxPackingFilter: tiledOptions.tsxPackingFilter,
+      useAtlas: tiledOptions.useAtlas,
+      layerPaintFactory: tiledOptions.layerPaintFactory,
     );
     return LeapMap(
       tileSize: tileSize,
