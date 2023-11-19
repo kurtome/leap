@@ -4,6 +4,7 @@ import 'package:leap/src/characters/jumper_character.dart';
 import 'package:leap/src/entities/ladder.dart';
 import 'package:leap/src/physical_behaviors/physical_behavior.dart';
 
+/// Updates the [JumperCharacter] movement logic.
 class JumperBehavior extends PhysicalBehavior<JumperCharacter> {
   @override
   void update(double dt) {

@@ -20,6 +20,10 @@ class StatusComponent extends PositionComponent {
   }
 }
 
+/// A status mixin which indicates the parent entity should not
+/// be affected by gravity while the status is present.
 mixin IgnoresGravity on StatusComponent {}
 
+/// A status mixin which indicates the parent entity should not
+/// collide with ground.
 mixin IgnoresGroundCollisions on StatusComponent {}

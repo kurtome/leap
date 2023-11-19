@@ -121,18 +121,18 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
       walking = false;
       airXVelocity = 0;
       if (isOnGround) {
-        status.direction = LadderMovingDirection.down;
+        status.movement = LadderMovement.down;
       } else {
-        status.direction = LadderMovingDirection.up;
+        status.movement = LadderMovement.up;
       }
     } else if (_input.justPressed && onLadderStatus != null) {
       if (_input.isPressedCenter) {
-        if (onLadderStatus.direction != LadderMovingDirection.stopped) {
-          onLadderStatus.direction = LadderMovingDirection.stopped;
-        } else if (onLadderStatus.prevDirection == LadderMovingDirection.up) {
-          onLadderStatus.direction = LadderMovingDirection.down;
+        if (onLadderStatus.movement != LadderMovement.stopped) {
+          onLadderStatus.movement = LadderMovement.stopped;
+        } else if (onLadderStatus.prevDirection == LadderMovement.up) {
+          onLadderStatus.movement = LadderMovement.down;
         } else {
-          onLadderStatus.direction = LadderMovingDirection.up;
+          onLadderStatus.movement = LadderMovement.up;
         }
       } else {
         // JumperBehavior will handle applying the jump and exiting the ladder
@@ -195,8 +195,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
       _playerAnimation.die();
     } else if (hasStatus<OnLadderStatus>()) {
       _playerAnimation.ladder();
-      if (getStatus<OnLadderStatus>()!.direction ==
-          LadderMovingDirection.stopped) {
+      if (getStatus<OnLadderStatus>()!.movement == LadderMovement.stopped) {
         _playerAnimation.animationComponent.playing = false;
       } else {
         _playerAnimation.animationComponent.playing = true;

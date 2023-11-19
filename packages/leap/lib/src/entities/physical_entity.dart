@@ -4,24 +4,6 @@ import 'package:leap/leap.dart';
 import 'package:leap/src/mixins/mixins.dart';
 import 'package:leap/src/physical_behaviors/physical_behaviors.dart';
 
-/// See full implementation in [CollisionDetectionBehavior].
-enum CollisionType {
-  /// Ignored by collision detection.
-  none,
-
-  /// Processed as part of the [LeapMap], must be a [LeapMapGroundTile].
-  ///
-  /// The collision detection implementation is much more efficient than
-  /// [standard] because it only looks at tiles adjacent to the entity being
-  /// processed.
-  tilemapGround,
-
-  /// Any non-static entity will check if it collides with this on every game
-  /// loop. Since the collision detection system is all axis-aligned bounding
-  /// boxes, this is still pretty efficient.
-  standard,
-}
-
 /// A component which has a physical representation in the world, with
 /// collision detection, movement, etc.
 ///
@@ -198,6 +180,8 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
     this.y = y - (height / 2);
   }
 
+  /// Whether or [other] should be considered solid relative to this during
+  /// collision detection.
   bool isOtherSolid(PhysicalEntity other) {
     return solidTags.intersection(other.tags).isNotEmpty;
   }
@@ -214,10 +198,12 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
     _statuses.remove(status);
   }
 
+  /// Whether or not this has a status of type [TStatus].
   bool hasStatus<TStatus extends StatusComponent>() {
     return statuses.whereType<TStatus>().isNotEmpty;
   }
 
+  /// Gets the first status having type [TStatus] or null if there is none.
   TStatus? getStatus<TStatus extends StatusComponent>() {
     return statuses.whereType<TStatus>().firstOrNull;
   }

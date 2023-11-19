@@ -15,8 +15,11 @@ class LeapGame extends FlameGame<LeapWorld>
     this.configuration = const LeapConfiguration(),
   }) : super(world: LeapWorld(tileSize: tileSize));
 
+  /// Size of each tile in the Tiled [LeapMap].
+  /// Many pieces of the system use this as a base unit for distance.
   final double tileSize;
 
+  /// The current leap map. This can be changed via [loadWorldAndMap]
   LeapMap get leapMap {
     if (_leapMap == null) {
       throw Exception('LeapMap not loaded yet');
@@ -26,8 +29,10 @@ class LeapGame extends FlameGame<LeapWorld>
 
   LeapMap? _leapMap;
 
+  /// The lifecycle state of the parent Flutter app.
   AppLifecycleState appState;
 
+  /// Leap system configuration.
   final LeapConfiguration configuration;
 
   @override
