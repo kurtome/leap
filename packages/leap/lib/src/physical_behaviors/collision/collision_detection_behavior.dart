@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:leap/leap.dart';
-import 'package:leap/src/physical_behaviors/physical_behaviors.dart';
 
 /// Contains all the logic for the collision detection system,
 /// updates the [velocity], [x], [y], and [collisionInfo] of the as needed.

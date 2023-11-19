@@ -1,8 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame_behaviors/flame_behaviors.dart';
 import 'package:leap/leap.dart';
-import 'package:leap/src/mixins/mixins.dart';
-import 'package:leap/src/physical_behaviors/physical_behaviors.dart';
 
 /// A component which has a physical representation in the world, with
 /// collision detection, movement, etc.

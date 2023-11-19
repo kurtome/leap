@@ -4,7 +4,6 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/services.dart';
 import 'package:leap/leap.dart';
-import 'package:leap/src/mixins/mixins.dart';
 
 /// Combines touch screen and keyboard input into one API.
 class ThreeButtonInput extends Component
