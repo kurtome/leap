@@ -33,5 +33,6 @@ flutter:
     - assets/images/level_standard_tileset.png
     - assets/images/repeatable_background.png
     - assets/images/player_spritesheet.png
-    - assets/tiles/map.tmx
+    - assets/tiles/map_everything.tmx
     - assets/tiles/map_2.tmx
+    - assets/tiles/map_menu.tmx

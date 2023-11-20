@@ -7,7 +7,9 @@ import 'package:flutter/widgets.dart' hide Animation, Image;
 import 'package:leap/leap.dart';
 import 'package:leap_standard_platformer/basic_ladder.dart';
 import 'package:leap_standard_platformer/coin.dart';
+import 'package:leap_standard_platformer/door.dart';
 import 'package:leap_standard_platformer/hud.dart';
+import 'package:leap_standard_platformer/info_text.dart';
 import 'package:leap_standard_platformer/player.dart';
 import 'package:leap_standard_platformer/snowy_moving_platform.dart';
 import 'package:leap_standard_platformer/welcome_dialog.dart';
@@ -33,15 +35,16 @@ class ExamplePlatformerLeapGame extends LeapGame
   late final Map<String, TiledObjectHandler> tiledObjectHandlers;
 
   static const _levels = [
-    'map.tmx',
+    'map_menu.tmx',
+    'map_everything.tmx',
     'map_2.tmx',
   ];
 
-  var _currentLevel = 0;
+  var _currentLevel = 'map_menu.tmx';
 
   Future<void> _loadLevel() {
     return loadWorldAndMap(
-      tiledMapPath: _levels[_currentLevel],
+      tiledMapPath: _currentLevel,
       tiledObjectHandlers: tiledObjectHandlers,
     );
   }
@@ -54,6 +57,8 @@ class ExamplePlatformerLeapGame extends LeapGame
       'Coin': await CoinFactory.createFactory(),
       'SnowyMovingPlatform': await SnowyMovingPlatformFactory.createFactory(),
       'BasicLadder': await BasicLadderFactory.createFactory(),
+      'InfoText': InfoTextFactory(),
+      'Door': DoorFactory(),
     };
 
     // Default the camera size to the bounds of the Tiled map.
@@ -115,8 +120,14 @@ class ExamplePlatformerLeapGame extends LeapGame
   }
 
   Future<void> levelCleared() async {
-    _currentLevel = (_currentLevel + 1) % _levels.length;
+    final i = _levels.indexOf(_currentLevel);
+    _currentLevel = _levels[(i + 1) % _levels.length];
 
+    await _loadLevel();
+  }
+
+  Future<void> goToLevel(String mapName) async {
+    _currentLevel = mapName;
     await _loadLevel();
   }
 
