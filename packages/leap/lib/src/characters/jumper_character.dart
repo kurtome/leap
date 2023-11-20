@@ -8,8 +8,15 @@ class JumperCharacter<TGame extends LeapGame> extends PhysicalEntity<TGame> {
     super.health = 10,
   }) : super(behaviors: [JumperBehavior()]);
 
+  /// When true the character is facing left, otherwise right.
   bool faceLeft = false;
+
+  /// Indicates the character is actively jumping (not just in the air).
+  /// Typically this means the jump button is being held down.
   bool jumping = false;
+
+  /// When true moves at [walkSpeed] in the direction the
+  /// character is facing.
   bool walking = false;
 
   /// The walking speed of the character.
@@ -22,13 +29,15 @@ class JumperCharacter<TGame extends LeapGame> extends PhysicalEntity<TGame> {
   double maxJumpHoldTime = 0.35;
 
   /// The last ground velocity of the character on the horizontal axis.
-  double lastGroundXVelocity = 0;
+  double airXVelocity = 0;
 
   /// The animation position component of the character.
   PositionComponent? spriteAnimation;
 
+  /// Stop walking.
   void stand() => walking = false;
 
+  /// Start walking.
   void walk() => walking = true;
 
   bool get faceRight => !faceLeft;

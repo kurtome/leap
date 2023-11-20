@@ -4,6 +4,8 @@ import 'package:flame/extensions.dart';
 import 'package:leap/leap.dart';
 import 'package:tiled/tiled.dart';
 
+/// A base class for moving platforms, which behave the same as
+/// groun tiles but move around, typically on a set path.
 abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
   MovingPlatform({
     required Vector2 initialPosition,
@@ -51,6 +53,8 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
   /// node when the platform is created.
   final List<(int, int)> tilePath;
 
+  /// The [tilePath] in world space, with the initial position added
+  /// at the front (index 0).
   late final List<Vector2> positionPath;
 
   /// What to do when reaching the end of the tilePath.
@@ -68,7 +72,7 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
       final prevX = x;
       final prevY = y;
 
-      updatePositionAndLoop(dt);
+      _updatePositionAndLoop(dt);
 
       final deltaX = x - prevX;
       final deltaY = y - prevY;
@@ -83,7 +87,7 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
     }
   }
 
-  void updatePositionAndLoop(double dt) {
+  void _updatePositionAndLoop(double dt) {
     if (position == positionPath[_nextPathNode]) {
       if (_reversing) {
         _nextPathNode -= 1;
@@ -196,8 +200,16 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
   }
 }
 
+/// Options for MovingPlatformBehavior when it reaches the extends
+/// of its path.
 enum MovingPlatformLoopMode {
+  /// Stop at the end of the path.
   none,
+
+  /// Jump back to the initial position and start the path again.
   resetAndLoop,
+
+  /// Traverse the path in reverse to the initial position, and then
+  /// start the path again.
   reverseAndLoop,
 }

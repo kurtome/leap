@@ -1,26 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame_behaviors/flame_behaviors.dart';
 import 'package:leap/leap.dart';
-import 'package:leap/src/mixins/mixins.dart';
-import 'package:leap/src/physical_behaviors/physical_behaviors.dart';
-
-/// See full implementation in [CollisionDetectionBehavior].
-enum CollisionType {
-  /// Ignored by collision detection.
-  none,
-
-  /// Processed as part of the [LeapMap], must be a [LeapMapGroundTile].
-  ///
-  /// The collision detection implementation is much more efficient than
-  /// [standard] because it only looks at tiles adjacent to the entity being
-  /// processed.
-  tilemapGround,
-
-  /// Any non-static entity will check if it collides with this on every game
-  /// loop. Since the collision detection system is all axis-aligned bounding
-  /// boxes, this is still pretty efficient.
-  standard,
-}
 
 /// A component which has a physical representation in the world, with
 /// collision detection, movement, etc.
@@ -38,6 +18,15 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// Which other entities should be considered solid as part of
   /// normal physics engine / collision detection calculations.
   final Set<String> solidTags = {};
+
+  /// Status effects which can control aspects of the leap engine (gravity,
+  /// collisions, etc.), or be used for fully custom handling.
+  ///
+  /// This is a list instead of a set for two reasons:
+  ///  1. For some uses status order could be important
+  ///  2. For some uses adding the same status twice could be valid
+  List<StatusComponent> get statuses => _statuses;
+  final List<StatusComponent> _statuses = [];
 
   /// Collision detection tags.
   final CollisionType collisionType;
@@ -61,6 +50,8 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
     this.collisionType = CollisionType.none,
     Iterable<Behavior<PhysicalEntity>>? behaviors,
     super.priority,
+    super.position,
+    super.size,
   }) : super(
           behaviors: _physicalBehaviors(
             static: static,
@@ -71,7 +62,7 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// Can only be accessed after component tree has been to the [LeapGame].
   LeapMap get map => gameRef.leapMap;
 
-  LeapWorld get world => gameRef.world as LeapWorld;
+  LeapWorld get world => game.world;
 
   /// Tile size (width and height) in pixels
   double get tileSize => gameRef.tileSize;
@@ -172,13 +163,47 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
     return x + (width / 2);
   }
 
+  /// Horizontal middle point.
+  set centerX(double x) {
+    this.x = x - width / 2;
+  }
+
   /// Vertical middle point.
   double get centerY {
     return y + (height / 2);
   }
 
+  /// Vertical middle point.
+  set centerY(double y) {
+    this.y = y - (height / 2);
+  }
+
+  /// Whether or [other] should be considered solid relative to this during
+  /// collision detection.
   bool isOtherSolid(PhysicalEntity other) {
     return solidTags.intersection(other.tags).isNotEmpty;
+  }
+
+  /// Invoked when a child [StatusComponent] is mounted, this is designed
+  /// to be called only by [StatusComponent.onMount]
+  void onStatusMount(StatusComponent status) {
+    _statuses.add(status);
+  }
+
+  /// Invoked when a child [StatusComponent] is mounted, this is designed
+  /// to be called only by [StatusComponent.onRemove]
+  void onStatusRemove(StatusComponent status) {
+    _statuses.remove(status);
+  }
+
+  /// Whether or not this has a status of type [TStatus].
+  bool hasStatus<TStatus extends StatusComponent>() {
+    return statuses.whereType<TStatus>().isNotEmpty;
+  }
+
+  /// Gets the first status having type [TStatus] or null if there is none.
+  TStatus? getStatus<TStatus extends StatusComponent>() {
+    return statuses.whereType<TStatus>().firstOrNull;
   }
 }
 

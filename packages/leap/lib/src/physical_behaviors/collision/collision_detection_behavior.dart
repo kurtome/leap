@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:leap/leap.dart';
-import 'package:leap/src/physical_behaviors/physical_behaviors.dart';
 
 /// Contains all the logic for the collision detection system,
 /// updates the [velocity], [x], [y], and [collisionInfo] of the as needed.
@@ -37,7 +36,9 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     prevCollisionInfo.copyFrom(collisionInfo);
     collisionInfo.reset();
 
-    groundCollisionDetection(dt);
+    if (!parent.hasStatus<IgnoresGroundCollisions>()) {
+      groundCollisionDetection(dt);
+    }
     nonMapCollisionDetection(dt);
   }
 
@@ -84,7 +85,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
       _calculateTilemapHits((c) {
         return c.left <= _hitboxProxy.right &&
             c.right >= _hitboxProxy.right &&
-            !c.tags.contains('platform');
+            !c.tags.contains(CommonTags.platform);
       });
 
       if (_tmpHits.isNotEmpty) {
@@ -107,7 +108,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
       _calculateTilemapHits((c) {
         return c.left <= _hitboxProxy.left &&
             c.right >= _hitboxProxy.left &&
-            !c.tags.contains('platform');
+            !c.tags.contains(CommonTags.platform);
       });
 
       if (_tmpHits.isNotEmpty) {
@@ -160,7 +161,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         return c.top <= top &&
             // Bottom edge of this the below top of c.
             c.bottom >= _hitboxProxy.top &&
-            !c.tags.contains('platform');
+            !c.tags.contains(CommonTags.platform);
       });
 
       if (_tmpHits.isNotEmpty) {

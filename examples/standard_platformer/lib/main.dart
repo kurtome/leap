@@ -5,6 +5,7 @@ import 'package:flame/game.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/widgets.dart' hide Animation, Image;
 import 'package:leap/leap.dart';
+import 'package:leap_standard_platformer/basic_ladder.dart';
 import 'package:leap_standard_platformer/coin.dart';
 import 'package:leap_standard_platformer/hud.dart';
 import 'package:leap_standard_platformer/player.dart';
@@ -28,7 +29,7 @@ class ExamplePlatformerLeapGame extends LeapGame
   });
 
   Player? player;
-  late final SimpleCombinedInput input;
+  late final ThreeButtonInput input;
   late final Map<String, TiledObjectHandler> tiledObjectHandlers;
 
   static const _levels = [
@@ -52,6 +53,7 @@ class ExamplePlatformerLeapGame extends LeapGame
     tiledObjectHandlers = {
       'Coin': await CoinFactory.createFactory(),
       'SnowyMovingPlatform': await SnowyMovingPlatformFactory.createFactory(),
+      'BasicLadder': await BasicLadderFactory.createFactory(),
     };
 
     // Default the camera size to the bounds of the Tiled map.
@@ -61,7 +63,7 @@ class ExamplePlatformerLeapGame extends LeapGame
       height: tileSize * 16,
     );
 
-    input = SimpleCombinedInput();
+    input = ThreeButtonInput();
     add(input);
 
     await _loadLevel();

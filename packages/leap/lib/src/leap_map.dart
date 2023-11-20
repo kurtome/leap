@@ -195,15 +195,17 @@ class LeapMapGroundTile extends PhysicalEntity {
       tiledOptions.slopeLeftTopProperty,
     );
 
+    tags.add(CommonTags.ground);
+
     // Hazards (like spikes) damage on collision.
     if (tile.class_ == tiledOptions.hazardClass) {
-      tags.add('hazard');
+      tags.add(CommonTags.hazard);
     }
 
     // Platforms only collide from above so the player can jump through them
     // and land on top.
     if (tile.class_ == tiledOptions.platformClass) {
-      tags.add('platform');
+      tags.add(CommonTags.platform);
     }
   }
 

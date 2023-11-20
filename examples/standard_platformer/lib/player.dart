@@ -7,13 +7,13 @@ import 'package:leap_standard_platformer/main.dart';
 
 class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   Player({super.health = initialHealth}) {
-    solidTags.add('ground');
+    solidTags.add(CommonTags.ground);
   }
 
   static const initialHealth = 1;
 
   late final Vector2 _spawn;
-  late final SimpleCombinedInput _input;
+  late final ThreeButtonInput _input;
   late final PlayerSpriteAnimation _playerAnimation;
 
   int coins = 0;
@@ -52,6 +52,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
     final wasJumping = jumping;
 
     updateHandleInput(dt);
+
     if (!_playerAnimation.isLoaded) {
       return;
     }
@@ -84,8 +85,9 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
     y = _spawn.y;
     velocity.x = 0;
     velocity.y = 0;
-    lastGroundXVelocity = 0;
+    airXVelocity = 0;
     faceLeft = false;
+    jumping = false;
 
     FlameAudio.play('spawn.wav');
   }
@@ -93,7 +95,12 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   void updateHandleInput(double dt) {
     if (isAlive) {
       // Keep jumping if started.
-      if (jumping && _input.isPressed && timeHoldingJump < maxJumpHoldTime) {
+      if (jumping &&
+          _input.isPressed &&
+          timeHoldingJump < maxJumpHoldTime &&
+          // hitting a ceiling should behave the same
+          // as letting go of the jump button
+          !collisionInfo.up) {
         jumping = true;
         timeHoldingJump += dt;
       } else {
@@ -102,7 +109,40 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
       }
     }
 
-    if (_input.justPressed && _input.isPressedLeft) {
+    final ladderCollision =
+        collisionInfo.otherCollisions?.whereType<Ladder>().firstOrNull;
+    final onLadderStatus = getStatus<OnLadderStatus>();
+    if (_input.justPressed &&
+        _input.isPressedCenter &&
+        ladderCollision != null &&
+        onLadderStatus == null) {
+      final status = OnLadderStatus(ladderCollision);
+      add(status);
+      walking = false;
+      airXVelocity = 0;
+      if (isOnGround) {
+        status.movement = LadderMovement.down;
+      } else {
+        status.movement = LadderMovement.up;
+      }
+    } else if (_input.justPressed && onLadderStatus != null) {
+      if (_input.isPressedCenter) {
+        if (onLadderStatus.movement != LadderMovement.stopped) {
+          onLadderStatus.movement = LadderMovement.stopped;
+        } else if (onLadderStatus.prevDirection == LadderMovement.up) {
+          onLadderStatus.movement = LadderMovement.down;
+        } else {
+          onLadderStatus.movement = LadderMovement.up;
+        }
+      } else {
+        // JumperBehavior will handle applying the jump and exiting the ladder
+        jumping = true;
+        airXVelocity = walkSpeed;
+        walking = true;
+        // Make sure the player exits the ladder facing the direction jumped
+        faceLeft = _input.isPressedLeft;
+      }
+    } else if (_input.justPressed && _input.isPressedLeft) {
       // Tapped left.
       if (walking) {
         if (faceLeft) {
@@ -116,9 +156,12 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
           faceLeft = true;
         }
       } else {
-        // Standing still.
+        // Standing still.a
         walking = true;
         faceLeft = true;
+        if (!isOnGround) {
+          airXVelocity = walkSpeed;
+        }
       }
     } else if (_input.justPressed && _input.isPressedRight) {
       // Tapped right.
@@ -132,6 +175,9 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
           // Moving left, stop.
           walking = false;
           faceLeft = false;
+          if (!isOnGround) {
+            airXVelocity = walkSpeed;
+          }
         }
       } else {
         // Standing still.
@@ -142,8 +188,18 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   }
 
   void updateAnimation() {
+    // Default to playing animations
+    _playerAnimation.animationComponent.playing = true;
+
     if (isDead) {
       _playerAnimation.die();
+    } else if (hasStatus<OnLadderStatus>()) {
+      _playerAnimation.ladder();
+      if (getStatus<OnLadderStatus>()!.movement == LadderMovement.stopped) {
+        _playerAnimation.animationComponent.playing = false;
+      } else {
+        _playerAnimation.animationComponent.playing = true;
+      }
     } else {
       if (isOnGround) {
         // On the ground.
@@ -203,6 +259,9 @@ class PlayerSpriteAnimation extends PositionComponent
   late final SpriteAnimation _jumpAnimation;
   late final SpriteAnimation _fallAnimation;
   late final SpriteAnimation _deathAnimation;
+  late final SpriteAnimation _ladderAnimation;
+
+  SpriteAnimationComponent get animationComponent => _animationComponent;
 
   @override
   Future<void>? onLoad() async {
@@ -264,6 +323,17 @@ class PlayerSpriteAnimation extends PositionComponent
       ),
     );
 
+    _ladderAnimation = SpriteAnimation.fromFrameData(
+      spritesheet,
+      SpriteAnimationData.sequenced(
+        amount: 4,
+        stepTime: 0.15,
+        textureSize: Vector2.all(16),
+        texturePosition: Vector2(0, 16 * 6),
+        amountPerRow: 4,
+      ),
+    );
+
     _animationComponent = SpriteAnimationComponent(
       size: Vector2.all(32),
       // Reposition the animation relative to the parent's hitbox.
@@ -310,6 +380,13 @@ class PlayerSpriteAnimation extends PositionComponent
   void die() {
     if (_animationComponent.animation != _deathAnimation) {
       _animationComponent.animation = _deathAnimation;
+      _ticker.reset();
+    }
+  }
+
+  void ladder() {
+    if (_animationComponent.animation != _ladderAnimation) {
+      _animationComponent.animation = _ladderAnimation;
       _ticker.reset();
     }
   }

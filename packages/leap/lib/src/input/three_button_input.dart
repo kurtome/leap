@@ -4,13 +4,12 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/services.dart';
 import 'package:leap/leap.dart';
-import 'package:leap/src/mixins/mixins.dart';
 
 /// Combines touch screen and keyboard input into one API.
-class SimpleCombinedInput extends Component
+class ThreeButtonInput extends Component
     with HasGameRef<LeapGame>, AppLifecycleAware {
-  late final SimpleTapInput _tapInput;
-  late final SimpleKeyboardInput _keyboardInput;
+  late final ThreeButtonTapInput _tapInput;
+  late final ThreeButtonKeyboardInput _keyboardInput;
   double pressedTime = 0;
   bool justPressed = false;
 
@@ -28,8 +27,8 @@ class SimpleCombinedInput extends Component
   }
 
   bool get _appFocused =>
-      gameRef.appState == AppLifecycleState.resumed ||
-      gameRef.appState == AppLifecycleState.detached;
+      game.appState == AppLifecycleState.resumed ||
+      game.appState == AppLifecycleState.detached;
 
   bool get isPressed =>
       _appFocused && (_tapInput.isPressed || _keyboardInput.isPressed);
@@ -41,17 +40,21 @@ class SimpleCombinedInput extends Component
       _appFocused &&
       (_tapInput.isPressedRight || _keyboardInput.isPressedRight);
 
-  SimpleCombinedInput({
-    SimpleKeyboardInput? keyboardInput,
+  bool get isPressedCenter =>
+      _appFocused &&
+      (_tapInput.isPressedCenter || _keyboardInput.isPressedCenter);
+
+  ThreeButtonInput({
+    ThreeButtonKeyboardInput? keyboardInput,
   }) {
-    _tapInput = SimpleTapInput();
-    _keyboardInput = keyboardInput ?? SimpleKeyboardInput();
+    _tapInput = ThreeButtonTapInput();
+    _keyboardInput = keyboardInput ?? ThreeButtonKeyboardInput();
     add(_tapInput);
     add(_keyboardInput);
   }
 
-  SimpleKeyboardInput get keyboardInput => _keyboardInput;
-  SimpleTapInput get tapInput => _tapInput;
+  ThreeButtonKeyboardInput get keyboardInput => _keyboardInput;
+  ThreeButtonTapInput get tapInput => _tapInput;
 
   @override
   void update(double dt) {
@@ -64,9 +67,9 @@ class SimpleCombinedInput extends Component
   }
 }
 
-class SimpleTapInput extends PositionComponent
+class ThreeButtonTapInput extends PositionComponent
     with TapCallbacks, HasGameRef<LeapGame> {
-  SimpleTapInput({
+  ThreeButtonTapInput({
     this.upEvent,
     this.downEvent,
   });
@@ -81,17 +84,35 @@ class SimpleTapInput extends PositionComponent
 
   bool get isPressedLeft {
     if (downEvent != null) {
-      return isPressed &&
-          downEvent!.devicePosition.x < gameRef.canvasSize.x / 2;
+      return isPressed && downEvent!.devicePosition.x < game.canvasSize.x / 3;
     }
     return false;
   }
 
-  bool get isPressedRight => isPressed && !isPressedLeft;
+  bool get isPressedCenter {
+    if (downEvent != null) {
+      return isPressed && _eventInCenterThird(downEvent!);
+    }
+    return false;
+  }
+
+  bool get isPressedRight {
+    if (downEvent != null) {
+      return isPressed && downEvent!.devicePosition.x >= _screenWidth * 2.0 / 3;
+    }
+    return false;
+  }
+
+  double get _screenWidth => game.canvasSize.x;
+
+  bool _eventInCenterThird(TapDownEvent downEvent) {
+    final x = downEvent.devicePosition.x;
+    return x >= (_screenWidth / 3) && x < (_screenWidth * 2.0 / 3);
+  }
 
   @override
   Future<void> onLoad() async {
-    size = (gameRef.world as LeapWorld).map.size;
+    size = game.leapMap.size;
     return super.onLoad();
   }
 
@@ -120,10 +141,11 @@ class SimpleTapInput extends PositionComponent
   }
 }
 
-class SimpleKeyboardInput extends Component with KeyboardHandler {
-  SimpleKeyboardInput({
+class ThreeButtonKeyboardInput extends Component with KeyboardHandler {
+  ThreeButtonKeyboardInput({
     Set<PhysicalKeyboardKey>? leftKeys,
     Set<PhysicalKeyboardKey>? rightKeys,
+    Set<PhysicalKeyboardKey>? centerKeys,
   }) {
     this.leftKeys = leftKeys ??
         {
@@ -139,12 +161,24 @@ class SimpleKeyboardInput extends Component with KeyboardHandler {
           PhysicalKeyboardKey.keyL,
         };
 
-    relevantKeys = this.leftKeys.union(this.rightKeys);
+    this.centerKeys = centerKeys ??
+        {
+          PhysicalKeyboardKey.arrowUp,
+          PhysicalKeyboardKey.keyW,
+          PhysicalKeyboardKey.keyK,
+          PhysicalKeyboardKey.arrowDown,
+          PhysicalKeyboardKey.keyS,
+          PhysicalKeyboardKey.keyJ,
+        };
+
+    relevantKeys = this.leftKeys.union(this.rightKeys).union(this.centerKeys);
   }
 
   late final Set<PhysicalKeyboardKey> leftKeys;
 
   late final Set<PhysicalKeyboardKey> rightKeys;
+
+  late final Set<PhysicalKeyboardKey> centerKeys;
 
   late final Set<PhysicalKeyboardKey> relevantKeys;
 
@@ -157,6 +191,9 @@ class SimpleKeyboardInput extends Component with KeyboardHandler {
 
   bool get isPressedRight =>
       isPressed && keysDown.intersection(rightKeys).isNotEmpty;
+
+  bool get isPressedCenter =>
+      isPressed && keysDown.intersection(centerKeys).isNotEmpty;
 
   @override
   bool onKeyEvent(RawKeyEvent keyEvent, Set<LogicalKeyboardKey> keysPressed) {

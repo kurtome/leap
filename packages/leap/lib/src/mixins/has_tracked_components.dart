@@ -1,7 +1,8 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
+import 'package:leap/leap.dart';
 
-mixin HasTrackedComponents on FlameGame {
+mixin HasTrackedComponents<W extends LeapWorld> on FlameGame<W> {
   final Map<Type, dynamic> allTrackedComponents = <Type, dynamic>{};
 
   List<T> trackedComponents<T>() {

@@ -1,15 +1,24 @@
 import 'dart:math';
 
 import 'package:leap/src/characters/jumper_character.dart';
+import 'package:leap/src/entities/ladder.dart';
 import 'package:leap/src/physical_behaviors/physical_behavior.dart';
 
+/// Updates the [JumperCharacter] movement logic.
 class JumperBehavior extends PhysicalBehavior<JumperCharacter> {
-  double lastGroundXVelocity = 0;
-
   @override
   void update(double dt) {
     super.update(dt);
 
+    final ladderStatus = parent.getStatus<OnLadderStatus>();
+    if (ladderStatus != null) {
+      updateClimbingLadder(dt, ladderStatus);
+    } else {
+      updateNormal(dt);
+    }
+  }
+
+  void updateNormal(double dt) {
     if (parent.jumping) {
       if (parent.isOnGround) {
         velocity.y = -parent.minJumpImpulse;
@@ -38,14 +47,21 @@ class JumperBehavior extends PhysicalBehavior<JumperCharacter> {
       } else {
         velocity.x = 0;
       }
-      lastGroundXVelocity = velocity.x.abs();
+      parent.airXVelocity = velocity.x.abs();
     } else {
       // in the air
       if (parent.faceLeft) {
-        velocity.x = -lastGroundXVelocity;
+        velocity.x = -parent.airXVelocity;
       } else {
-        velocity.x = lastGroundXVelocity;
+        velocity.x = parent.airXVelocity;
       }
+    }
+  }
+
+  void updateClimbingLadder(double dt, OnLadderStatus ladderStatus) {
+    if (parent.jumping) {
+      ladderStatus.removeFromParent();
+      velocity.y = -parent.minJumpImpulse;
     }
   }
 }

@@ -4,18 +4,21 @@ import 'package:flame/cache.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/services.dart';
 import 'package:leap/leap.dart';
-import 'package:leap/src/mixins/mixins.dart';
 
 /// A [FlameGame] with all the Leap built-ins.
-class LeapGame extends FlameGame with HasTrackedComponents {
+class LeapGame extends FlameGame<LeapWorld>
+    with HasTrackedComponents<LeapWorld> {
   LeapGame({
     required this.tileSize,
     this.appState = AppLifecycleState.resumed,
     this.configuration = const LeapConfiguration(),
   }) : super(world: LeapWorld(tileSize: tileSize));
 
+  /// Size of each tile in the Tiled [LeapMap].
+  /// Many pieces of the system use this as a base unit for distance.
   final double tileSize;
 
+  /// The current leap map. This can be changed via [loadWorldAndMap]
   LeapMap get leapMap {
     if (_leapMap == null) {
       throw Exception('LeapMap not loaded yet');
@@ -25,8 +28,10 @@ class LeapGame extends FlameGame with HasTrackedComponents {
 
   LeapMap? _leapMap;
 
+  /// The lifecycle state of the parent Flutter app.
   AppLifecycleState appState;
 
+  /// Leap system configuration.
   final LeapConfiguration configuration;
 
   @override
@@ -53,7 +58,7 @@ class LeapGame extends FlameGame with HasTrackedComponents {
   void onMapLoaded(LeapMap map) {}
 
   /// All the physical entities in the world.
-  Iterable<PhysicalEntity> get physicals => (world as LeapWorld).physicals;
+  Iterable<PhysicalEntity> get physicals => world.physicals;
 
   /// Initializes and loads the [world] and [leapMap] components
   /// with a Tiled map.

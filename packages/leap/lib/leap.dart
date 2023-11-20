@@ -1,9 +1,13 @@
 export 'src/characters/characters.dart';
 export 'src/entities/entities.dart';
-export 'src/input.dart';
+export 'src/input/input.dart';
 export 'src/leap_game.dart';
 export 'src/leap_map.dart';
 export 'src/leap_map_transition_component.dart';
 export 'src/leap_options.dart';
 export 'src/leap_world.dart';
+export 'src/mixins/mixins.dart';
+export 'src/physical_behaviors/collision/collision.dart';
+export 'src/physical_behaviors/physical_behaviors.dart';
+export 'src/physical_behaviors/velocity/velocity.dart';
 export 'src/tiled_object_factory.dart';

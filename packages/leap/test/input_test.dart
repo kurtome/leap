@@ -4,9 +4,9 @@ import 'package:leap/leap.dart';
 
 void main() {
   group('input', () {
-    group('SimpleCombinedInput', () {
+    group('TwoButtonInput', () {
       test('has the correct default keys', () {
-        final input = SimpleCombinedInput();
+        final input = TwoButtonInput();
         expect(
           input.keyboardInput.leftKeys,
           equals(
@@ -43,8 +43,8 @@ void main() {
       });
 
       test('can have custom keys', () {
-        final input = SimpleCombinedInput(
-          keyboardInput: SimpleKeyboardInput(
+        final input = TwoButtonInput(
+          keyboardInput: TwoButtonKeyboardInput(
             leftKeys: {
               PhysicalKeyboardKey.arrowUp,
             },
@@ -81,9 +81,9 @@ void main() {
       });
     });
 
-    group('SimpleKeyboardInput', () {
+    group('TwoButtonKeyboardInput', () {
       test('has the correct default keys', () {
-        final input = SimpleKeyboardInput();
+        final input = TwoButtonKeyboardInput();
         expect(
           input.leftKeys,
           equals(
@@ -120,7 +120,7 @@ void main() {
       });
 
       test('can have custom keys', () {
-        final input = SimpleKeyboardInput(
+        final input = TwoButtonKeyboardInput(
           leftKeys: {
             PhysicalKeyboardKey.arrowUp,
           },

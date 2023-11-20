@@ -85,10 +85,10 @@ packages:
     dependency: transitive
     description:
       name: collection
-      sha256: f092b211a4319e98e5ff58223576de6c2803db36221657b46c82574721240687
+      sha256: ee67cb0715911d28db6bf4af1026078bd6f0128b07a5f66fb2ed94ec6783c09a
       url: "https://pub.dev"
     source: hosted
-    version: "1.17.2"
+    version: "1.18.0"
   convert:
     dependency: transitive
     description:
@@ -125,10 +125,10 @@ packages:
     dependency: "direct main"
     description:
       name: flame
-      sha256: "042533edc7ded96c2a439b2eae1a905f2611447d0d106b33686b841371c8d8c5"
+      sha256: b6bb76224fc29fd5eea25d66cda6e322e3678bdedc1f65956c6151326a6a798b
       url: "https://pub.dev"
     source: hosted
-    version: "1.10.0"
+    version: "1.10.1"
   flame_audio:
     dependency: "direct main"
     description:
@@ -157,10 +157,10 @@ packages:
     dependency: "direct main"
     description:
       name: flame_tiled
-      sha256: "1d40c455612ed5a0b471bff5e86f06964f9be3039a8b69000359b4a27184d39e"
+      sha256: "38d03b94b27299d321d325c6aea54023bd793ae167c6c7f92fb7de81a5acfd4f"
       url: "https://pub.dev"
     source: hosted
-    version: "1.15.0"
+    version: "1.17.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -201,7 +201,7 @@ packages:
       path: "../../packages/leap"
       relative: true
     source: path
-    version: "0.3.0"
+    version: "0.3.1"
   material_color_utilities:
     dependency: transitive
     description:
@@ -214,10 +214,10 @@ packages:
     dependency: transitive
     description:
       name: meta
-      sha256: "3c74dbf8763d36539f114c799d8a2d87343b5067e9d796ca22b5eb8437090ee3"
+      sha256: a6e590c838b18133bb482a2745ad77c5bb7715fb0451209e1a7567d416678b8e
       url: "https://pub.dev"
     source: hosted
-    version: "1.9.1"
+    version: "1.10.0"
   ordered_set:
     dependency: transitive
     description:
@@ -411,10 +411,10 @@ packages:
     dependency: transitive
     description:
       name: web
-      sha256: dc8ccd225a2005c1be616fe02951e2e342092edf968cf0844220383757ef8f10
+      sha256: afe077240a270dcfd2aafe77602b4113645af95d0ad31128cc02bce5ac5d5152
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.4-beta"
+    version: "0.3.0"
   win32:
     dependency: transitive
     description:
@@ -440,5 +440,5 @@ packages:
     source: hosted
     version: "6.3.0"
 sdks:
-  dart: ">=3.1.0-185.0.dev <4.0.0"
+  dart: ">=3.2.0-194.0.dev <4.0.0"
   flutter: ">=3.13.2"

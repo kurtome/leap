@@ -1,9 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flame_behaviors/flame_behaviors.dart';
-import 'package:leap/src/entities/entities.dart';
-import 'package:leap/src/leap_map.dart';
-import 'package:leap/src/leap_world.dart';
-import 'package:leap/src/physical_behaviors/physical_behaviors.dart';
+import 'package:leap/leap.dart';
 
 /// Base class for behaviors on [PhysicalEntity].
 abstract class PhysicalBehavior<T extends PhysicalEntity> extends Behavior<T> {
