@@ -53,6 +53,9 @@ class BasicLadder extends Ladder<ExamplePlatformerLeapGame> {
       if (sectionHeight > 16 * 4) {
         sectionHeight = sectionHeight % (16 * 4);
       }
+      if (sectionHeight == 0) {
+        sectionHeight = 16 * 4;
+      }
       list.add(
         SpriteComponent(
           sprite: Sprite(

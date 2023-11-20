@@ -3,6 +3,8 @@ import 'package:flame/sprite.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:leap/leap.dart';
 import 'package:leap_standard_platformer/coin.dart';
+import 'package:leap_standard_platformer/door.dart';
+import 'package:leap_standard_platformer/info_text.dart';
 import 'package:leap_standard_platformer/main.dart';
 
 class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
@@ -238,6 +240,14 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
         other.removeFromParent();
         coins++;
         _checkForLevelCompletion();
+      }
+
+      if (other is InfoText) {
+        other.activateText();
+      }
+
+      if (other is Door && _input.justPressed && _input.isPressedCenter) {
+        other.enter(this);
       }
     }
   }

@@ -28,8 +28,8 @@ class SnowyMovingPlatformFactory implements TiledObjectHandler {
 
   @override
   void handleObject(TiledObject object, Layer layer, LeapMap map) {
-    final coin = SnowyMovingPlatform(object, sprite, map.tileSize);
-    map.add(coin);
+    final platform = SnowyMovingPlatform(object, sprite, map.tileSize);
+    map.add(platform);
   }
 
   static Future<SnowyMovingPlatformFactory> createFactory() async {
