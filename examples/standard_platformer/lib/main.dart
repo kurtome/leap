@@ -37,7 +37,7 @@ class ExamplePlatformerLeapGame extends LeapGame
   static const _levels = [
     'map_menu.tmx',
     'map_everything.tmx',
-    'map_2.tmx',
+    'map_ladders.tmx',
   ];
 
   var _currentLevel = 'map_menu.tmx';
