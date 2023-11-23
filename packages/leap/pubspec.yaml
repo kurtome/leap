@@ -18,7 +18,10 @@ dependencies:
 
 dependency_overrides:
   flame_tiled:
-    path: ../../../flame/packages/flame_tiled
+    git:
+      url: https://github.com/flame-engine/flame.git
+      ref: erick.tile-atlas-padding
+      path: packages/flame_tiled
 
 dev_dependencies:
   flame_lint: ^1.1.1
