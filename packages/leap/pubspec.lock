@@ -76,10 +76,9 @@ packages:
   flame:
     dependency: "direct main"
     description:
-      name: flame
-      sha256: b6bb76224fc29fd5eea25d66cda6e322e3678bdedc1f65956c6151326a6a798b
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../../flame/packages/flame"
+      relative: true
+    source: path
     version: "1.10.1"
   flame_behaviors:
     dependency: "direct main"
@@ -100,10 +99,9 @@ packages:
   flame_tiled:
     dependency: "direct main"
     description:
-      name: flame_tiled
-      sha256: "38d03b94b27299d321d325c6aea54023bd793ae167c6c7f92fb7de81a5acfd4f"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../../flame/packages/flame_tiled"
+      relative: true
+    source: path
     version: "1.17.0"
   flutter:
     dependency: "direct main"

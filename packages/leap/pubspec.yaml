@@ -16,6 +16,10 @@ dependencies:
   pathxp: ^0.4.0
   tiled: ^0.10.1
 
+dependency_overrides:
+  flame_tiled:
+    path: ../../../flame/packages/flame_tiled
+
 dev_dependencies:
   flame_lint: ^1.1.1
   flutter_test:
