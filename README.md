@@ -195,6 +195,37 @@ await loadWorldAndMap(
 );
 ```
 
+And your `MyCustomTileHandler`:
+
+```dart
+class MyCustomTileHandler implements GroundTileHandler {
+  @override
+  LeapMapGroundTile handleGroundTile(LeapMapGroundTile groundTile, LeapMap map) {
+    tile.tags.add('PowerUpTile');
+
+    // Add some extra rendering on top of your special tile.
+    map.add(PowerUpTileAnimationComponent(x: groundTile.x, y: groundTile.y));
+
+    // use the provided tile instance in the map
+    return tile;
+  }
+}
+
+// OR
+
+class MyCustomTileHandler implements GroundTileHandler {
+  @override
+  LeapMapGroundTile handleGroundTile(LeapMapGroundTile groundTile, LeapMap map) {
+    // MyCustomTile constructor must call the super constructor to initialize
+    // the the LeapMapGroundTile properties
+    return MyCustomTile(
+      groundTile,
+      myCustomProperty: groundTile.tile.properties.getValue<int>('PowerValue'),
+    );
+  }
+}
+```
+
 Note that the `class` property is **always** added to each tile's
 `PhysicalEntity.tags`. So, you can check if your player is walking into a
 special type of wall with something like this:
