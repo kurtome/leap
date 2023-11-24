@@ -21,7 +21,6 @@ class InfoText extends PhysicalEntity<ExamplePlatformerLeapGame> {
   TextBoxComponent _buildTextBox() {
     return TextBoxComponent(
       text: text,
-      // size: Vector2(160, 32),
       position: Vector2(-16, -48),
       boxConfig:
           TextBoxConfig(dismissDelay: 3, margins: const EdgeInsets.all(4)),
