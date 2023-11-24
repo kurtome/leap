@@ -32,9 +32,10 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
 
   @override
   Future<void> onLoad() async {
-    _input = gameRef.input;
+    _input = game.input;
     _spawn = map.playerSpawn;
     _playerAnimation = PlayerSpriteAnimation();
+
     // Size controls player hitbox, which should be slightly smaller than
     // visual size of the sprite.
     size = Vector2(10, 20);
@@ -112,7 +113,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
     }
 
     final ladderCollision =
-        collisionInfo.otherCollisions?.whereType<Ladder>().firstOrNull;
+        collisionInfo.allCollisions?.whereType<Ladder>().firstOrNull;
     final onLadderStatus = getStatus<OnLadderStatus>();
     if (_input.justPressed &&
         _input.isPressedCenter &&
@@ -154,14 +155,16 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
           }
         } else {
           // Moving right, stop.
-          walking = false;
+          if (isOnGround) {
+            walking = false;
+          }
           faceLeft = true;
         }
       } else {
-        // Standing still.a
+        // Standing still.
         walking = true;
         faceLeft = true;
-        if (!isOnGround) {
+        if (isOnGround) {
           airXVelocity = walkSpeed;
         }
       }
@@ -175,16 +178,18 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
           }
         } else {
           // Moving left, stop.
-          walking = false;
-          faceLeft = false;
-          if (!isOnGround) {
-            airXVelocity = walkSpeed;
+          if (isOnGround) {
+            walking = false;
           }
+          faceLeft = false;
         }
       } else {
         // Standing still.
         walking = true;
         faceLeft = false;
+        if (isOnGround) {
+          airXVelocity = walkSpeed;
+        }
       }
     }
   }
@@ -235,7 +240,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
       velocity.y = -minJumpImpulse;
     }
 
-    for (final other in collisionInfo.otherCollisions ?? const []) {
+    for (final other in collisionInfo.allCollisions ?? const []) {
       if (other is Coin) {
         other.removeFromParent();
         coins++;

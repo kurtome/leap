@@ -17,8 +17,8 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
     // standing on top of it from the previous frame can be properly moved
     // with the platform.
     super.priority = 1,
-  }) : super(static: true, collisionType: CollisionType.standard) {
-    tags.add('ground');
+  }) : super(static: true) {
+    tags.add(CommonTags.ground);
 
     position = initialPosition;
 

@@ -8,7 +8,7 @@ class Door extends PhysicalEntity<ExamplePlatformerLeapGame> {
       : super(
           position: Vector2(object.x, object.y),
           size: Vector2(object.width, object.height),
-          collisionType: CollisionType.standard,
+          static: true,
         ) {
     destinationMap = object.properties.getValue<String>('DestinationMap');
     final destinationObjectId =

@@ -2,35 +2,90 @@ import 'package:leap/leap.dart';
 
 /// Stores collision data for [PhysicalEntity].
 ///
-/// The up, down, left, and right collisions are generally the "ground", which
-/// could be literal ground, walls, ceilings etc. Pretty much anything that
-/// normal physical entities can't phase through.
+/// There are two types of collisions, solid and non-solid.
 ///
-/// All other collisions are [otherCollisions], such as other moving characters,
-/// enemies, power-ups, etc.
+/// Solid collisions are only considered if their [PhysicalEntity.tags] overlaps
+/// with this entity's [PhysicalEntity.solidTags].
+/// These could be ground tiles, walls, ceilings or other characters, enememies
+/// or movable obstacles.
+/// Pretty much anything that normal physical entities can't phase through.
+/// Any time an entity collides with another solid entity, the
+/// [VelocityBehavior] handles properly updating the position so they never
+/// overlap, but they will still be considered a collision.
+///
+/// Non-solid collisions are other entities which overlap with the
+/// [PhysicalEntity], such as other moving characters, enemies, power-ups, etc.
+///
+/// The [upCollision], [downCollision], [leftCollision], and [rightCollision]
+/// are the first solid collision in each direction.
+///
+/// [allCollisions] include all current solid and plus all non-solid entities
+/// that currently overlap or phased through.
 class CollisionInfo {
-  CollisionInfo({
-    this.upCollision,
-    this.downCollision,
-    this.leftCollision,
-    this.rightCollision,
-    this.otherCollisions,
-  });
+  PhysicalEntity? _upCollision;
+  PhysicalEntity? _downCollision;
+  PhysicalEntity? _leftCollision;
+  PhysicalEntity? _rightCollision;
 
-  /// Component that this is colliding with on top.
-  PhysicalEntity? upCollision;
+  /// Entity that this is colliding with on top.
+  PhysicalEntity? get upCollision => _upCollision;
 
-  /// Component that this is colliding with on bottom.
-  PhysicalEntity? downCollision;
+  set upCollision(PhysicalEntity? c) {
+    if (_upCollision != null) {
+      allCollisions?.remove(c);
+    }
+    if (c != null) {
+      addCollision(c);
+    }
+    _upCollision = c;
+  }
 
-  /// Component that this is colliding with on left
-  PhysicalEntity? leftCollision;
+  /// Entity that this is colliding with on bottom.
+  PhysicalEntity? get downCollision => _downCollision;
 
-  /// Component that this is colliding with on right.
-  PhysicalEntity? rightCollision;
+  set downCollision(PhysicalEntity? c) {
+    if (_downCollision != null) {
+      allCollisions?.remove(c);
+    }
+    if (c != null) {
+      addCollision(c);
+    }
+    _downCollision = c;
+  }
 
-  /// Non-map collisions.
-  List<PhysicalEntity>? otherCollisions;
+  /// Entity that this is colliding with on left
+  PhysicalEntity? get leftCollision => _leftCollision;
+
+  set leftCollision(PhysicalEntity? c) {
+    if (_leftCollision != null) {
+      allCollisions?.remove(c);
+    }
+    if (c != null) {
+      addCollision(c);
+    }
+    _leftCollision = c;
+  }
+
+  /// Entity that this is colliding with on right.
+  PhysicalEntity? get rightCollision => _rightCollision;
+
+  set rightCollision(PhysicalEntity? c) {
+    if (_rightCollision != null) {
+      allCollisions?.remove(c);
+    }
+    if (c != null) {
+      addCollision(c);
+    }
+    _rightCollision = c;
+  }
+
+  /// Non-solid collisions.
+  List<PhysicalEntity>? allCollisions;
+
+  void addCollision(PhysicalEntity collision) {
+    allCollisions ??= [];
+    allCollisions!.add(collision);
+  }
 
   /// Is currently colliding on top
   bool get up => upCollision != null;
@@ -60,16 +115,19 @@ class CollisionInfo {
     downCollision = null;
     leftCollision = null;
     rightCollision = null;
-    otherCollisions = null;
+    allCollisions = null;
   }
 
-  void copyFrom(CollisionInfo collisionInfo) {
-    upCollision = collisionInfo.upCollision;
-    downCollision = collisionInfo.downCollision;
-    leftCollision = collisionInfo.leftCollision;
-    rightCollision = collisionInfo.rightCollision;
+  void copyFrom(CollisionInfo other) {
+    _upCollision = other.upCollision;
+    _downCollision = other.downCollision;
+    _leftCollision = other.leftCollision;
+    _rightCollision = other.rightCollision;
 
-    otherCollisions?.clear();
-    otherCollisions?.addAll(collisionInfo.otherCollisions ?? []);
+    allCollisions?.clear();
+    if (other.allCollisions != null) {
+      allCollisions ??= [];
+      allCollisions!.addAll(other.allCollisions!);
+    }
   }
 }

@@ -53,13 +53,10 @@ class JumperCharacter<TGame extends LeapGame> extends PhysicalEntity<TGame> {
     }
 
     if (velocity.x < 0) {
-      spriteAnimation!.transform.offset = Vector2(
-        spriteAnimation!.width - width,
-        0,
-      );
+      spriteAnimation!.transform.offset.x = spriteAnimation!.width - width;
       spriteAnimation!.scale.x = -1;
     } else if (velocity.x > 0) {
-      spriteAnimation!.transform.offset = Vector2(0, 0);
+      spriteAnimation!.transform.offset.x = 0;
       spriteAnimation!.scale.x = 1;
     }
   }

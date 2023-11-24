@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flame/components.dart';
 import 'package:leap/leap.dart';
 
 /// Contains all the logic for the collision detection system,
@@ -31,45 +32,37 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     }
 
     // NOTE: static entities will never run this behavior, so making entities
-    // static has important for performance
+    // static is important for performance
 
     prevCollisionInfo.copyFrom(collisionInfo);
     collisionInfo.reset();
 
-    if (!parent.hasStatus<IgnoresGroundCollisions>()) {
-      groundCollisionDetection(dt);
+    if (!parent.hasStatus<IgnoresSolidCollisions>()) {
+      solidCollisionDetection(dt);
     }
-    nonMapCollisionDetection(dt);
+    nonSolidCollisionDetection(dt);
   }
 
-  void nonMapCollisionDetection(double dt) {
+  void nonSolidCollisionDetection(double dt) {
     // This should be a small enough number of  objects that looping over all
     // of them is efficient (we intentionally don't do this for ground tiles for
     // that reason)
 
-    // TODO(kurtome): This should probably be changed to track "all collisions"
-    //  instead of just "other collisions".
-    //
-    //  Also, since this happens before VelocityBehavior has updated the
-    //  position (and without the special handling groundCollisionDetection
-    //  does) the collision detection may be one frame later than it should be.
-
-    final nonMapCollidables = world.physicals.where(
-      (other) =>
-          other.collisionType == CollisionType.standard &&
-          // solid collisions are considered during ground detection
-          !parent.isOtherSolid(other),
+    final nonSolidCollidables = world.physicals.where(
+      (other) => !parent.isOtherSolid(other),
     );
-    for (final other in nonMapCollidables) {
-      if (intersects(other)) {
-        collisionInfo.otherCollisions ??= [];
-        collisionInfo.otherCollisions!.add(other);
+
+    _proxyHitboxForNonSolidHits();
+    for (final other in nonSolidCollidables) {
+      if (intersectsOther(_hitboxProxy, other)) {
+        collisionInfo.addCollision(other);
       }
     }
   }
 
-  /// This handles the tilemap ground tiles collisions
-  void groundCollisionDetection(double dt) {
+  /// This handles the tilemap ground tiles collisions and collisions with any
+  /// other solid entity, as determined by [PhysicalEntity.solidTags]
+  void solidCollisionDetection(double dt) {
     // The collision detection process work in a few steps:
     //
     // 1. Update x/y position as if there were no collisions (from velocity)
@@ -82,7 +75,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
 
     if (velocity.x > 0) {
       // Moving right.
-      _calculateTilemapHits((c) {
+      _calculateSolidHits((c) {
         return c.left <= _hitboxProxy.right &&
             c.right >= _hitboxProxy.right &&
             !c.tags.contains(CommonTags.platform);
@@ -105,7 +98,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     }
     if (velocity.x < 0) {
       // Moving left.
-      _calculateTilemapHits((c) {
+      _calculateSolidHits((c) {
         return c.left <= _hitboxProxy.left &&
             c.right >= _hitboxProxy.left &&
             !c.tags.contains(CommonTags.platform);
@@ -135,7 +128,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         !collisionInfo.down &&
         !collisionInfo.onSlope) {
       // Moving down.
-      _calculateTilemapHits((c) {
+      _calculateSolidHits((c) {
         return c.bottom >= bottom &&
             // Bottom edge of this the below top of c.
             c.relativeTop(_hitboxProxy) <= _hitboxProxy.bottom;
@@ -157,7 +150,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
 
     if (velocity.y < 0) {
       // Moving up.
-      _calculateTilemapHits((c) {
+      _calculateSolidHits((c) {
         return c.top <= top &&
             // Bottom edge of this the below top of c.
             c.bottom >= _hitboxProxy.top &&
@@ -229,7 +222,31 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     _hitboxProxy.width = width + velocity.x.abs() * dt;
   }
 
-  void _calculateTilemapHits(bool Function(PhysicalEntity) filter) {
+  void _proxyHitboxForNonSolidHits() {
+    _hitboxProxy.x = x;
+    _hitboxProxy.y = y;
+    _hitboxProxy.width = width;
+    _hitboxProxy.height = height;
+
+    // This is intended to run after solid collision detection.
+    // So, up/down/left/right will only be set if this is moving
+    // in that direction and collided with something.
+
+    if (collisionInfo.up) {
+      _hitboxProxy.top = collisionInfo.upCollision!.bottom;
+    }
+    if (collisionInfo.down) {
+      _hitboxProxy.bottom = collisionInfo.downCollision!.top;
+    }
+    if (collisionInfo.left) {
+      _hitboxProxy.left = collisionInfo.leftCollision!.right;
+    }
+    if (collisionInfo.right) {
+      _hitboxProxy.right = collisionInfo.rightCollision!.left;
+    }
+  }
+
+  void _calculateSolidHits(bool Function(PhysicalEntity) filter) {
     _tmpHits.clear();
 
     // Find the edges of the map.
@@ -247,7 +264,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         final tile = map.groundTiles[j][i];
         if (tile != null &&
             intersectsOther(_hitboxProxy, tile) &&
-            tile.collisionType == CollisionType.tilemapGround &&
+            parent.isOtherSolid(tile) &&
             filter(tile)) {
           _tmpHits.add(tile);
         }
@@ -257,32 +274,29 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     // TODO(kurtome): cache this somehow so it's only evaluated once per game
     //  loop?
     final nonMapCollidables = world.physicals.where(
-      (p) => p.collisionType == CollisionType.standard,
+      (other) => parent.isOtherSolid(other),
     );
     for (final other in nonMapCollidables) {
-      if (intersectsOther(_hitboxProxy, other) &&
-          parent.isOtherSolid(other) &&
-          filter(other)) {
+      if (intersectsOther(_hitboxProxy, other) && filter(other)) {
         _tmpHits.add(other);
       }
     }
   }
 
   static bool intersectsOther(PhysicalEntity a, PhysicalEntity b) {
+    // https://github.com/kurtome/leap/issues/30
+    // Collision detection math here assumes top left anchor.
+    if (a.anchor != Anchor.topLeft || b.anchor != Anchor.topLeft) {
+      throw AssertionError('Collision detection requires Anchor.topLeft');
+    }
+
+
     final bHeight = b.bottom - b.relativeTop(a);
     // This works by checking if the distance between the objects is less than
     // their combined width (meaning they must overlap).
     return ((a.centerX - b.centerX).abs() * 2 < (a.width + b.width)) &&
         ((a.centerY - (b.bottom - (bHeight / 2))).abs() * 2 <
             (a.height + bHeight));
-  }
-
-  bool intersects(PhysicalEntity b) {
-    final bHeight = b.bottom - b.relativeTop(parent);
-    // This works by checking if the distance between the objects is less than
-    // their combined width (meaning they must overlap).
-    return ((centerX - b.centerX).abs() * 2 < (width + b.width)) &&
-        ((centerY - (b.bottom - (bHeight / 2))).abs() * 2 < (height + bHeight));
   }
 }
 
@@ -297,4 +311,7 @@ class _HitboxProxyComponent extends PhysicalEntity {
 
   @override
   LeapGame get gameRef => overrideGameRef;
+
+  @override
+  LeapGame get game => overrideGameRef;
 }

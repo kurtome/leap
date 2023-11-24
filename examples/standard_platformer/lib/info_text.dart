@@ -9,7 +9,7 @@ class InfoText extends PhysicalEntity<ExamplePlatformerLeapGame> {
       : super(
           position: Vector2(object.x, object.y),
           size: Vector2(object.width, object.height),
-          collisionType: CollisionType.standard,
+          static: true,
         ) {
     text = object.properties.getValue<String>('Text') ??
         'Lorem ipsum mising text.';

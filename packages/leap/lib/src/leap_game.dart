@@ -6,8 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:leap/leap.dart';
 
 /// A [FlameGame] with all the Leap built-ins.
-class LeapGame extends FlameGame<LeapWorld>
-    with HasTrackedComponents<LeapWorld> {
+class LeapGame extends FlameGame<LeapWorld> {
   LeapGame({
     required this.tileSize,
     this.appState = AppLifecycleState.resumed,

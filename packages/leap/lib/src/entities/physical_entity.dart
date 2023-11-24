@@ -1,5 +1,8 @@
+import 'dart:ui';
 import 'package:flame/components.dart';
+import 'package:flame/extensions.dart';
 import 'package:flame_behaviors/flame_behaviors.dart';
+import 'package:flutter/material.dart';
 import 'package:leap/leap.dart';
 
 /// A component which has a physical representation in the world, with
@@ -8,7 +11,7 @@ import 'package:leap/leap.dart';
 /// [static] components can be collided with but never move and have a much
 /// smaller performance impact on the game loop.
 abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
-    with HasGameRef<TGame>, TrackedComponent<PhysicalEntity, TGame> {
+    with HasGameRef<TGame> {
   /// Position object to store the x/y components.
   final bool static;
 
@@ -28,9 +31,6 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   List<StatusComponent> get statuses => _statuses;
   final List<StatusComponent> _statuses = [];
 
-  /// Collision detection tags.
-  final CollisionType collisionType;
-
   /// Position object to store the x/y components.
   final Vector2 velocity = Vector2.zero();
 
@@ -47,7 +47,6 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   PhysicalEntity({
     this.health = 10,
     this.static = false,
-    this.collisionType = CollisionType.none,
     Iterable<Behavior<PhysicalEntity>>? behaviors,
     super.priority,
     super.position,
@@ -59,13 +58,57 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
           ),
         );
 
+
+  /// Draws a rect over the hitbox when this returns true.
+  bool get debugHitbox => false;
+
+  _DebugHitboxComponent? _debugHitboxComponent;
+
+  @override
+  @mustCallSuper
+  void update(double dt) {
+    super.update(dt);
+    _updateDebugHitbox();
+  }
+
+  void _updateDebugHitbox() {
+    // Adds a visualization for the entity's hitbox dynamically
+    if (debugHitbox) {
+      if (_debugHitboxComponent == null) {
+        _debugHitboxComponent = _DebugHitboxComponent();
+        add(_debugHitboxComponent!);
+      }
+      _debugHitboxComponent!.width = width;
+      _debugHitboxComponent!.height = height;
+    } else {
+      if (_debugHitboxComponent != null) {
+        _debugHitboxComponent!.removeFromParent();
+        _debugHitboxComponent = null;
+      }
+    }
+  }
+
+  @override
+  @mustCallSuper
+  void onMount() {
+    super.onMount();
+    game.world.physicalEntityMounted(this);
+  }
+
+  @override
+  @mustCallSuper
+  void onRemove() {
+    super.onRemove();
+    game.world.physicalEntityRemoved(this);
+  }
+
   /// Can only be accessed after component tree has been to the [LeapGame].
-  LeapMap get map => gameRef.leapMap;
+  LeapMap get map => game.leapMap;
 
   LeapWorld get world => game.world;
 
   /// Tile size (width and height) in pixels
-  double get tileSize => gameRef.tileSize;
+  double get tileSize => game.tileSize;
 
   /// Whether or not this is "alive" (or not destroyed) in the game
   bool get isAlive => health > 0;
@@ -219,4 +262,18 @@ Iterable<Behavior>? _physicalBehaviors({
     behaviors.addAll(extra);
   }
   return behaviors;
+}
+
+/// Component added as a child to ensure it is drawn on top of the 
+/// entity's standard rendering.
+class _DebugHitboxComponent extends PositionComponent {
+  final _paint = Paint()..color = Colors.green.withOpacity(0.6);
+
+  @override
+  int get priority => 999;
+
+  @override
+  void render(Canvas canvas) {
+    canvas.drawRect(size.toRect(), _paint);
+  }
 }
