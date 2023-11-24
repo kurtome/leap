@@ -339,7 +339,7 @@ entity.
 class MyPlayer extends PhysicalEntity {
 
   @override
-  void onUpdate(double dt) {
+  void update(double dt) {
     // Draw entity's hitbox
     debugHitbox = true;
   }
