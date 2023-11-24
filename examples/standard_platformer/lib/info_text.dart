@@ -9,7 +9,7 @@ class InfoText extends PhysicalEntity<ExamplePlatformerLeapGame> {
       : super(
           position: Vector2(object.x, object.y),
           size: Vector2(object.width, object.height),
-          collisionType: CollisionType.standard,
+          static: true,
         ) {
     text = object.properties.getValue<String>('Text') ??
         'Lorem ipsum mising text.';
@@ -21,7 +21,6 @@ class InfoText extends PhysicalEntity<ExamplePlatformerLeapGame> {
   TextBoxComponent _buildTextBox() {
     return TextBoxComponent(
       text: text,
-      // size: Vector2(160, 32),
       position: Vector2(-16, -48),
       boxConfig:
           TextBoxConfig(dismissDelay: 3, margins: const EdgeInsets.all(4)),
@@ -42,7 +41,9 @@ class InfoText extends PhysicalEntity<ExamplePlatformerLeapGame> {
   }
 
   @override
+  @mustCallSuper
   void update(double dt) {
+    super.update(dt);
     if (textBoxComponent?.finished ?? false) {
       textBoxComponent!.removeFromParent();
       textBoxComponent = null;

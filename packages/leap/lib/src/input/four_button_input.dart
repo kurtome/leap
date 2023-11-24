@@ -79,9 +79,6 @@ class FourButtonTapInput extends PositionComponent
   TapUpEvent? upEvent;
   TapDownEvent? downEvent;
 
-  @override
-  bool get debugMode => true;
-
   bool get isPressed => downEvent != null && upEvent == null;
 
   bool get isPressedLeft {

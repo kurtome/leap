@@ -146,7 +146,7 @@ There are mixins on `StatusComponent` which affect the Leap engine's handling of
 the parent `PhysicalEntity`. See:
 
 - `IgnoresGravity`
-- `IgnoresGroundCollisions`
+- `IgnoresSolidCollisions`
 
 You can implement your own mixins on `StatusComponent` which control pieces of
 logic in your own game.
@@ -225,7 +225,7 @@ class CoinFactory implements TiledObjectFactory<Coin> {
 
 class Coin extends PhysicalEntity {
   Coin(TiledObject object, this.animation)
-      : super(static: true, collisionType: CollisionType.standard) {
+      : super(static: true) {
     anchor = Anchor.center;
 
     // Use the position from your Tiled map
@@ -317,6 +317,33 @@ class MyLeapGame extends LeapGame {
       ),
     ),
   );
+}
+```
+
+## Debugging
+
+### Slow motion
+
+`LeapWorld` includes
+[`HasTimeScale`](https://pub.dev/documentation/flame/latest/components/HasTimeScale-mixin.html),
+so you can set `world.timeScale = 0.5` to slow your whole game down to 50% speed to make it easier
+to play test nuanced bugs. (You can use this as slow motion for your game too.)
+
+### Render hitbox
+
+`PhysicalEntity` includes a `debugHitbox` property you can override which will automatically
+draw a box indicating the exact hitbox the collision detection system is using for your
+entity.
+
+```dart
+class MyPlayer extends PhysicalEntity {
+
+  @override
+  void update(double dt) {
+    // Draw entity's hitbox
+    debugHitbox = true;
+  }
+
 }
 ```
 
