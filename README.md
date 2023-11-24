@@ -336,11 +336,13 @@ draw a box indicating the exact hitbox the collision detection system is using f
 entity.
 
 ```dart
-class Player extends PhysicalEntity {
+class MyPlayer extends PhysicalEntity {
 
-  /// Draw entity's hitbox
   @override
-  bool get debugHitbox => true;
+  void onUpdate(double dt) {
+    // Draw entity's hitbox
+    debugHitbox = true;
+  }
 
 }
 ```

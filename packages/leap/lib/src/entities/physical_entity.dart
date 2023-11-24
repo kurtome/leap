@@ -58,7 +58,7 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
         );
 
   /// Draws a rect over the hitbox when this returns true.
-  bool get debugHitbox => true;
+  bool debugHitbox = false;
 
   _DebugHitboxComponent? _debugHitboxComponent;
 
@@ -66,6 +66,7 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   @mustCallSuper
   void update(double dt) {
     super.update(dt);
+
     _updateDebugHitbox();
   }
 

@@ -127,8 +127,13 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         !collisionInfo.onSlope) {
       // Moving down.
       _calculateSolidHits((c) {
-        return c.bottom >= bottom &&
-            // Bottom edge of this the below top of c.
+        return
+            c.bottom >= bottom &&
+            // For one-way platforms, make sure this is currently above it
+            // so this doesn't pop up on top of it when overlapping from the
+            // below
+            (!c.tags.contains(CommonTags.platform) || c.top >= bottom) &&
+            // Bottom edge of this the below top of c, with current velocity
             c.relativeTop(_hitboxProxy) <= _hitboxProxy.bottom;
       });
 
@@ -265,6 +270,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     }
   }
 
+  /// Calculates the solid hits into [_tmpHits] given [filter]
   void _calculateSolidHits(bool Function(PhysicalEntity) filter) {
     _tmpHits.clear();
 
