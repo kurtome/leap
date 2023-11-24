@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame_behaviors/flame_behaviors.dart';
@@ -58,9 +57,8 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
           ),
         );
 
-
   /// Draws a rect over the hitbox when this returns true.
-  bool get debugHitbox => false;
+  bool get debugHitbox => true;
 
   _DebugHitboxComponent? _debugHitboxComponent;
 
@@ -264,7 +262,7 @@ Iterable<Behavior>? _physicalBehaviors({
   return behaviors;
 }
 
-/// Component added as a child to ensure it is drawn on top of the 
+/// Component added as a child to ensure it is drawn on top of the
 /// entity's standard rendering.
 class _DebugHitboxComponent extends PositionComponent {
   final _paint = Paint()..color = Colors.green.withOpacity(0.6);

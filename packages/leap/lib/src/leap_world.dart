@@ -38,14 +38,15 @@ class LeapWorld extends World with HasGameRef<LeapGame>, HasTimeScale {
     super.update(dt);
   }
 
-
   final List<PhysicalEntity> _physicals = [];
   late final _physicalsView = UnmodifiableListView(_physicals);
 
+  /// Called by [PhysicalEntity.onMount]
   void physicalEntityMounted(PhysicalEntity entity) {
     _physicals.add(entity);
   }
 
+  /// Called by [PhysicalEntity.onRemove]
   void physicalEntityRemoved(PhysicalEntity entity) {
     _physicals.remove(entity);
   }

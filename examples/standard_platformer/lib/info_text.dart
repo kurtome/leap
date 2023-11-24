@@ -42,7 +42,9 @@ class InfoText extends PhysicalEntity<ExamplePlatformerLeapGame> {
   }
 
   @override
+  @mustCallSuper
   void update(double dt) {
+    super.update(dt);
     if (textBoxComponent?.finished ?? false) {
       textBoxComponent!.removeFromParent();
       textBoxComponent = null;

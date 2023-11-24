@@ -38,7 +38,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
 
     // Size controls player hitbox, which should be slightly smaller than
     // visual size of the sprite.
-    size = Vector2(10, 20);
+    size = Vector2(10, 24);
     add(_playerAnimation);
 
     resetPosition();
@@ -281,6 +281,9 @@ class PlayerSpriteAnimation extends PositionComponent
   @override
   Future<void>? onLoad() async {
     final spritesheet = await gameRef.images.load('player_spritesheet.png');
+
+    // offset as needed to line up with the hitbox
+    y = 4;
 
     _idleAnimation = SpriteAnimation.fromFrameData(
       spritesheet,

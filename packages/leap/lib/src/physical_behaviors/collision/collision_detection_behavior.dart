@@ -290,7 +290,6 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
       throw AssertionError('Collision detection requires Anchor.topLeft');
     }
 
-
     final bHeight = b.bottom - b.relativeTop(a);
     // This works by checking if the distance between the objects is less than
     // their combined width (meaning they must overlap).
