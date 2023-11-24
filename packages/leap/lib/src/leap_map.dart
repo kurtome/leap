@@ -52,13 +52,6 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
       tiledOptions: tiledOptions,
     );
     add(tiledMap);
-    //for (final column in groundTiles) {
-    //  for (final groundTile in column) {
-    //    if (groundTile != null) {
-    //      add(groundTile);
-    //    }
-    //  }
-    //}
 
     /// Object layers
     final objectLayers = tiledMap.tileMap.map.layers
