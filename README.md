@@ -169,9 +169,31 @@ Specialized ground tiles:
   properties `LeftTop` and `RightTop`. For example, a 16x16 pixel tile with
   `LeftTop = 0` and `RightTop = 8` indicates slope that is ascending when moving
   from left-to-right.
-- **Platforms** (name may change) for terrain the physical entities can move up
-  (e.g. jump) through from below but still land on. These tiles must have their
-  `class` property set to `"Platform"`.
+- **One Way Platforms** for terrain the physical entities can move up
+  (e.g. jump) through from all but one direction. These are implemented via
+  `GroundTileHandler` classes, and can therefore use and `class` you want via
+  passing in a map of custom `groundTileHandlers` when loading the map (see below).
+  The most used is `OneWayTopPlatformHandler` which modifies the tile to be phased
+  through from below and the sides, but solid from the top.
+
+##### Custom ground tile handling
+
+To have complete control over individual tiles in the ground layer, you can use the
+`class` property in the Tiled editor tileset to hook into the `groundTileHandlers`
+you pass in when loading your map.
+  
+In your `LeapGame`:
+
+```dart
+await loadWorldAndMap(
+  camera: camera,
+  tiledMapPath: 'map.tmx',
+  groundTileHandlers: {
+    'OneWayTopPlatform': OneWayTopPlatformHandler(),
+    'MyCustomTile': MyCustomTileHandler(),
+  },
+);
+```
 
 #### Metadata layer
 
@@ -308,7 +330,6 @@ class MyLeapGame extends LeapGame {
         groundLayerName: 'Ground',
         metadataLayerName: 'Metadata',
         playerSpawnClass: 'PlayerSpawn',
-        hazardClass: 'Hazard',
         damageProperty: 'Damage',
         platformClass: 'Platform',
         slopeType: 'Slope',

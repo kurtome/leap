@@ -227,7 +227,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   }
 
   void updateCollisionInteractions(double dt) {
-    if (collisionInfo.downCollision?.tags.contains('hazard') ?? false) {
+    if (collisionInfo.downCollision?.tags.contains('Hazard') ?? false) {
       health -= collisionInfo.downCollision!.hazardDamage;
     }
 
