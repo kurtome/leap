@@ -169,19 +169,19 @@ Specialized ground tiles:
   properties `LeftTop` and `RightTop`. For example, a 16x16 pixel tile with
   `LeftTop = 0` and `RightTop = 8` indicates slope that is ascending when moving
   from left-to-right.
-- **One Way Platforms** for terrain the physical entities can move up
-  (e.g. jump) through from all but one direction. These are implemented via
+- **One Way Platforms** for terrain the physical entities can move up (e.g.
+  jump) through from all but one direction. These are implemented via
   `GroundTileHandler` classes, and can therefore use and `class` you want via
-  passing in a map of custom `groundTileHandlers` when loading the map (see below).
-  The most used is `OneWayTopPlatformHandler` which modifies the tile to be phased
-  through from below and the sides, but solid from the top.
+  passing in a map of custom `groundTileHandlers` when loading the map (see
+  below). The most used is `OneWayTopPlatformHandler` which modifies the tile to
+  be phased through from below and the sides, but solid from the top.
 
 ##### Custom ground tile handling
 
-To have complete control over individual tiles in the ground layer, you can use the
-`class` property in the Tiled editor tileset to hook into the `groundTileHandlers`
-you pass in when loading your map.
-  
+To have complete control over individual tiles in the ground layer, you can use
+the `class` property in the Tiled editor tileset to hook into the
+`groundTileHandlers` you pass in when loading your map.
+
 In your `LeapGame`:
 
 ```dart
@@ -193,6 +193,29 @@ await loadWorldAndMap(
     'MyCustomTile': MyCustomTileHandler(),
   },
 );
+```
+
+Note that the `class` property is **always** added to each tile's
+`PhysicalEntity.tags`. So, you can check if your player is walking into a
+special type of wall with something like this:
+
+```dart
+class Player extends PhysicalEntity {
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    if (collisionInfo.right && // hitting solid entity on the right
+        input.actionButtonPressed && // custom input handling
+        collisionInfo.rightCollision!.tags.contains('MySpecialTile')) {
+      // right collision has a tag we set from Tiled's tileset `class` property
+      // (tag could also be added by your own custom handling)
+      specialInteraction(collisionInfo.rightCollision!);
+    }
+  }
+
+}
 ```
 
 #### Metadata layer
@@ -347,14 +370,15 @@ class MyLeapGame extends LeapGame {
 
 `LeapWorld` includes
 [`HasTimeScale`](https://pub.dev/documentation/flame/latest/components/HasTimeScale-mixin.html),
-so you can set `world.timeScale = 0.5` to slow your whole game down to 50% speed to make it easier
-to play test nuanced bugs. (You can use this as slow motion for your game too.)
+so you can set `world.timeScale = 0.5` to slow your whole game down to 50% speed
+to make it easier to play test nuanced bugs. (You can use this as slow motion
+for your game too.)
 
 ### Render hitbox
 
-`PhysicalEntity` includes a `debugHitbox` property you can override which will automatically
-draw a box indicating the exact hitbox the collision detection system is using for your
-entity.
+`PhysicalEntity` includes a `debugHitbox` property you can override which will
+automatically draw a box indicating the exact hitbox the collision detection
+system is using for your entity.
 
 ```dart
 class MyPlayer extends PhysicalEntity {
