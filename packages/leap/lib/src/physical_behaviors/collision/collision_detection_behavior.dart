@@ -127,8 +127,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         !collisionInfo.onSlope) {
       // Moving down.
       _calculateSolidHits((c) {
-        return
-            c.bottom >= bottom &&
+        return c.bottom >= bottom &&
             // For one-way platforms, make sure this is currently above it
             // so this doesn't pop up on top of it when overlapping from the
             // below
