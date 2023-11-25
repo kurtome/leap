@@ -16,7 +16,6 @@ dependencies:
   leap:
     path: ../../packages/leap
   tiled: ^0.10.1
-  tuple: ^2.0.2
 
 dev_dependencies:
   flame_lint: ^1.1.1
