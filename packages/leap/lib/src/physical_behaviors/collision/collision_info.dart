@@ -32,7 +32,7 @@ class CollisionInfo {
 
   set upCollision(PhysicalEntity? c) {
     if (_upCollision != null) {
-      allCollisions?.remove(c);
+      _allCollisions?.remove(c);
     }
     if (c != null) {
       addCollision(c);
@@ -45,7 +45,7 @@ class CollisionInfo {
 
   set downCollision(PhysicalEntity? c) {
     if (_downCollision != null) {
-      allCollisions?.remove(c);
+      _allCollisions?.remove(c);
     }
     if (c != null) {
       addCollision(c);
@@ -58,7 +58,7 @@ class CollisionInfo {
 
   set leftCollision(PhysicalEntity? c) {
     if (_leftCollision != null) {
-      allCollisions?.remove(c);
+      _allCollisions?.remove(c);
     }
     if (c != null) {
       addCollision(c);
@@ -71,7 +71,7 @@ class CollisionInfo {
 
   set rightCollision(PhysicalEntity? c) {
     if (_rightCollision != null) {
-      allCollisions?.remove(c);
+      _allCollisions?.remove(c);
     }
     if (c != null) {
       addCollision(c);
@@ -80,11 +80,13 @@ class CollisionInfo {
   }
 
   /// Non-solid collisions.
-  List<PhysicalEntity>? allCollisions;
+  List<PhysicalEntity>? _allCollisions;
+
+  List<PhysicalEntity> get allCollisions => _allCollisions ?? const [];
 
   void addCollision(PhysicalEntity collision) {
-    allCollisions ??= [];
-    allCollisions!.add(collision);
+    _allCollisions ??= [];
+    _allCollisions!.add(collision);
   }
 
   /// Is currently colliding on top
@@ -115,7 +117,8 @@ class CollisionInfo {
     downCollision = null;
     leftCollision = null;
     rightCollision = null;
-    allCollisions = null;
+
+    _allCollisions = null;
   }
 
   void copyFrom(CollisionInfo other) {
@@ -124,10 +127,10 @@ class CollisionInfo {
     _leftCollision = other.leftCollision;
     _rightCollision = other.rightCollision;
 
-    allCollisions?.clear();
-    if (other.allCollisions != null) {
-      allCollisions ??= [];
-      allCollisions!.addAll(other.allCollisions!);
+    _allCollisions?.clear();
+    if (other.allCollisions.isNotEmpty) {
+      _allCollisions ??= [];
+      _allCollisions!.addAll(other.allCollisions);
     }
   }
 }

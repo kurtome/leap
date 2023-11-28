@@ -65,8 +65,7 @@ class OnLadderStatus<T extends LeapGame> extends StatusComponent
 
     final parentEntity = parent! as PhysicalEntity;
 
-    if (!(parentEntity.collisionInfo.allCollisions?.contains(ladder) ??
-        false)) {
+    if (!parentEntity.collisionInfo.allCollisions.contains(ladder)) {
       // No longer on the ladder
       removeFromParent();
       parentEntity.velocity.y = 0;

@@ -1,11 +1,12 @@
 import 'package:flame/components.dart';
 import 'package:leap/src/characters/jumper_behavior.dart';
-import 'package:leap/src/entities/entities.dart';
+import 'package:leap/src/entities/character.dart';
 import 'package:leap/src/leap_game.dart';
 
-class JumperCharacter<TGame extends LeapGame> extends PhysicalEntity<TGame> {
+class JumperCharacter<TGame extends LeapGame> extends Character<TGame> {
   JumperCharacter({
     super.health = 10,
+    super.removeOnDeath,
   }) : super(behaviors: [JumperBehavior()]);
 
   /// When true the character is facing left, otherwise right.

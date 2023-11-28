@@ -51,12 +51,7 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// Multiplier on standard gravity, see [LeapWorld].
   double gravityRate = 1;
 
-  /// When health reaches 0, [isDead] will be true.
-  /// This needs to be used by child classes to have any effect.
-  int health;
-
   PhysicalEntity({
-    this.health = 10,
     this.static = false,
     Iterable<Behavior<PhysicalEntity>>? behaviors,
     super.priority,
@@ -120,12 +115,6 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
 
   /// Tile size (width and height) in pixels
   double get tileSize => game.tileSize;
-
-  /// Whether or not this is "alive" (or not destroyed) in the game
-  bool get isAlive => health > 0;
-
-  /// Whether or not this is "dead" (or destroyed) in the game.
-  bool get isDead => !isAlive;
 
   /// Leftmost point.
   double get left {
