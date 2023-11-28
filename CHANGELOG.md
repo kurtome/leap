@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-11-27
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`leap` - `v0.4.0`](#leap---v040)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `leap` - `v0.4.0`
+
+ - **FEAT**: allow useAtlas and layerPaintFactory to be configured through TiledOptions ([#27](https://github.com/kurtome/leap/issues/27)). ([02f2be0c](https://github.com/kurtome/leap/commit/02f2be0c9d47cf2ce51ee2109fbe21a42dcd7457))
+ - **BREAKING** **FEAT**: ground tiles clean-up and custom handling ([#34](https://github.com/kurtome/leap/issues/34)). ([225b830a](https://github.com/kurtome/leap/commit/225b830a554988bc55ad3f3dcd10fa44139fc0b0))
+ - **BREAKING** **FEAT**: Refactoring collision detection for simplified API and improved performance ([#32](https://github.com/kurtome/leap/issues/32)). ([4b767231](https://github.com/kurtome/leap/commit/4b767231e6ce0df68b52757adca08e7519ef01c2))
+ - **BREAKING** **FEAT**: StatusComponent system, ladders, and more inputs ([#28](https://github.com/kurtome/leap/issues/28)). ([eafe653f](https://github.com/kurtome/leap/commit/eafe653f60ad123241b810717caff4fdef8ef363))
+
+
 ## 2023-11-14
 
 ### Changes
