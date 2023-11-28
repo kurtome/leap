@@ -70,6 +70,7 @@ class LeapGame extends FlameGame<LeapWorld> {
     AssetBundle? bundle,
     Images? images,
     Map<String, TiledObjectHandler> tiledObjectHandlers = const {},
+    Map<String, GroundTileHandler> groundTileHandlers = const {},
     LeapMapTransition? transitionComponent,
   }) async {
     final currentMap = _leapMap;
@@ -94,6 +95,7 @@ class LeapGame extends FlameGame<LeapWorld> {
       images: images,
       tiledOptions: configuration.tiled,
       tiledObjectHandlers: tiledObjectHandlers,
+      groundTileHandlers: groundTileHandlers,
     );
     onMapLoaded(_leapMap!);
 

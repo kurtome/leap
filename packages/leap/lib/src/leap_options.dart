@@ -20,7 +20,6 @@ class TiledOptions {
     this.groundLayerName = 'Ground',
     this.metadataLayerName = 'Metadata',
     this.playerSpawnClass = 'PlayerSpawn',
-    this.hazardClass = 'Hazard',
     this.damageProperty = 'Damage',
     this.platformClass = 'Platform',
     this.slopeType = 'Slope',
@@ -42,9 +41,6 @@ class TiledOptions {
   /// Which class name should be used for the player spawn point,
   /// defaults to "PlayerSpawn".
   final String playerSpawnClass;
-
-  /// Whick class name represents hazard objects, defaults to "Hazard".
-  final String hazardClass;
 
   /// Which property name represents damage, defaults to "Damage".
   final String damageProperty;

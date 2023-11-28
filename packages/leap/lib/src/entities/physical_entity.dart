@@ -21,6 +21,18 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// normal physics engine / collision detection calculations.
   final Set<String> solidTags = {};
 
+  /// When this is considered solid, phase through from above
+  bool isSolidFromTop = true;
+
+  /// When this is considered solid, phase through from below
+  bool isSolidFromBottom = true;
+
+  /// When this is considered solid, phase through from left
+  bool isSolidFromLeft = true;
+
+  /// When this is considered solid, phase through from right
+  bool isSolidFromRight = true;
+
   /// Status effects which can control aspects of the leap engine (gravity,
   /// collisions, etc.), or be used for fully custom handling.
   ///
@@ -159,8 +171,12 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// Defined so it can be overridden by slopes [LeapMapGroundTile]
   bool get isSlopeFromRight => false;
 
-  /// How much damage this does as a hazard.
-  int get hazardDamage => 0;
+  /// How much damage this does by default to other entities.
+  /// This property has no affect on its own, it is for custom logic.
+  /// Typically this is applied as the result of a collision, if
+  /// the colliding entity has a [tags] value that indicates it is
+  /// a "Hazard" or "Spikes" or "Enemy" etc.
+  int hazardDamage = 0;
 
   /// Topmost point.
   double get top {

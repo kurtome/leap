@@ -76,7 +76,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
       _calculateSolidHits((c) {
         return c.left <= _hitboxProxy.right &&
             c.right >= _hitboxProxy.right &&
-            !c.tags.contains(CommonTags.platform);
+            c.isSolidFromLeft;
       });
 
       if (_tmpHits.isNotEmpty) {
@@ -99,7 +99,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
       _calculateSolidHits((c) {
         return c.left <= _hitboxProxy.left &&
             c.right >= _hitboxProxy.left &&
-            !c.tags.contains(CommonTags.platform);
+            c.isSolidFromRight;
       });
 
       if (_tmpHits.isNotEmpty) {
@@ -128,10 +128,11 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
       // Moving down.
       _calculateSolidHits((c) {
         return c.bottom >= bottom &&
-            // For one-way platforms, make sure this is currently above it
-            // so this doesn't pop up on top of it when overlapping from the
-            // below
-            (!c.tags.contains(CommonTags.platform) || c.top >= bottom) &&
+            c.isSolidFromTop &&
+            // For one-way platforms from underneath, make sure this is
+            // currently above it so this doesn't pop up on top of it
+            // when overlapping from the below
+            (c.isSolidFromBottom || c.top >= bottom) &&
             // Bottom edge of this the below top of c, with current velocity
             c.relativeTop(_hitboxProxy) <= _hitboxProxy.bottom;
       });
@@ -156,7 +157,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         return c.top <= top &&
             // Bottom edge of this the below top of c.
             c.bottom >= _hitboxProxy.top &&
-            !c.tags.contains(CommonTags.platform);
+            c.isSolidFromBottom;
       });
 
       if (_tmpHits.isNotEmpty) {
