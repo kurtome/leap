@@ -93,7 +93,7 @@ class ExamplePlatformerLeapGame extends LeapGame
     );
 
     player = Player();
-    world.add(player = Player());
+    world.add(player!);
     camera.follow(player!);
 
     if (!FlameAudio.bgm.isPlaying) {

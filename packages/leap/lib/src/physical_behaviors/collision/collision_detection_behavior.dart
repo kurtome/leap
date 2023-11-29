@@ -127,7 +127,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         !collisionInfo.onSlope) {
       // Moving down.
       _calculateSolidHits((c) {
-        return c.bottom >= bottom &&
+        return c.bottom > bottom &&
             c.isSolidFromTop &&
             // For one-way platforms from underneath, make sure this is
             // currently above it so this doesn't pop up on top of it
@@ -292,7 +292,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
 
     _proxyHitboxForPotentialHits(dt);
     for (final other in world.physicals) {
-      if (intersectsOther(_hitboxProxy, other)) {
+      if (!other.isRemoving && intersectsOther(_hitboxProxy, other)) {
         _potentialHits.add(other);
       }
     }

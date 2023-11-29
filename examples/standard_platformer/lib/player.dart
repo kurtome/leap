@@ -8,7 +8,7 @@ import 'package:leap_standard_platformer/info_text.dart';
 import 'package:leap_standard_platformer/main.dart';
 
 class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
-  Player({super.health = initialHealth}) {
+  Player({super.health = initialHealth}) : super(removeOnDeath: false) {
     solidTags.add(CommonTags.ground);
   }
 
@@ -113,7 +113,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
     }
 
     final ladderCollision =
-        collisionInfo.allCollisions?.whereType<Ladder>().firstOrNull;
+        collisionInfo.allCollisions.whereType<Ladder>().firstOrNull;
     final onLadderStatus = getStatus<OnLadderStatus>();
     if (_input.justPressed &&
         _input.isPressedCenter &&
@@ -240,7 +240,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
       velocity.y = -minJumpImpulse;
     }
 
-    for (final other in collisionInfo.allCollisions ?? const []) {
+    for (final other in collisionInfo.allCollisions) {
       if (other is Coin) {
         other.removeFromParent();
         coins++;
