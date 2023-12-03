@@ -1,6 +1,6 @@
 import 'package:flame/components.dart';
-import 'package:flame/sprite.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:leap/leap.dart';
 import 'package:leap_standard_platformer/coin.dart';
 import 'package:leap_standard_platformer/door.dart';
@@ -16,7 +16,6 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
 
   late final Vector2 _spawn;
   late final ThreeButtonInput _input;
-  late final PlayerSpriteAnimation _playerAnimation;
 
   int coins = 0;
   double deadTime = 0;
@@ -28,18 +27,16 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   int get priority => 10;
 
   @override
-  PositionComponent? get spriteAnimation => _playerAnimation;
-
-  @override
   Future<void> onLoad() async {
     _input = game.input;
     _spawn = map.playerSpawn;
-    _playerAnimation = PlayerSpriteAnimation();
+
+    characterAnimation = PlayerSpriteAnimation();
+    add(characterAnimation!);
 
     // Size controls player hitbox, which should be slightly smaller than
     // visual size of the sprite.
     size = Vector2(10, 24);
-    add(_playerAnimation);
 
     resetPosition();
 
@@ -56,18 +53,12 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
 
     updateHandleInput(dt);
 
-    if (!_playerAnimation.isLoaded) {
-      return;
-    }
-
     updateCollisionInteractions(dt);
 
     if (isDead) {
       deadTime += dt;
       walking = false;
     }
-
-    updateAnimation();
 
     if (world.isOutside(this) || (isDead && deadTime > 3)) {
       health = initialHealth;
@@ -194,38 +185,6 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
     }
   }
 
-  void updateAnimation() {
-    // Default to playing animations
-    _playerAnimation.animationComponent.playing = true;
-
-    if (isDead) {
-      _playerAnimation.die();
-    } else if (hasStatus<OnLadderStatus>()) {
-      _playerAnimation.ladder();
-      if (getStatus<OnLadderStatus>()!.movement == LadderMovement.stopped) {
-        _playerAnimation.animationComponent.playing = false;
-      } else {
-        _playerAnimation.animationComponent.playing = true;
-      }
-    } else {
-      if (isOnGround) {
-        // On the ground.
-        if (velocity.x.abs() > 0) {
-          _playerAnimation.walk();
-        } else {
-          _playerAnimation.idle();
-        }
-      } else {
-        // In the air.
-        if (velocity.y > (world.maxVelocity / 4)) {
-          _playerAnimation.fall();
-        } else if (velocity.y < 0) {
-          _playerAnimation.jump();
-        }
-      }
-    }
-  }
-
   void updateCollisionInteractions(double dt) {
     if (collisionInfo.downCollision?.tags.contains('Hazard') ?? false) {
       health -= collisionInfo.downCollision!.hazardDamage;
@@ -242,7 +201,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
 
     for (final other in collisionInfo.allCollisions) {
       if (other is Coin) {
-        other.removeFromParent();
+        other.collect();
         coins++;
         _checkForLevelCompletion();
       }
@@ -265,147 +224,116 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   }
 }
 
-class PlayerSpriteAnimation extends PositionComponent
-    with HasGameRef<LeapGame> {
-  late final SpriteAnimationTicker _ticker;
-  late final SpriteAnimationComponent _animationComponent;
-  late final SpriteAnimation _idleAnimation;
-  late final SpriteAnimation _walkAnimation;
-  late final SpriteAnimation _jumpAnimation;
-  late final SpriteAnimation _fallAnimation;
-  late final SpriteAnimation _deathAnimation;
-  late final SpriteAnimation _ladderAnimation;
+enum _AnimationState { idle, walk, jump, fall, death, ladder }
 
-  SpriteAnimationComponent get animationComponent => _animationComponent;
+class PlayerSpriteAnimation extends CharacterAnimation<_AnimationState, Player>
+    with HasGameRef<LeapGame> {
+  PlayerSpriteAnimation() : super(scale: Vector2.all(2));
 
   @override
   Future<void>? onLoad() async {
     final spritesheet = await gameRef.images.load('player_spritesheet.png');
 
-    // offset as needed to line up with the hitbox
-    y = 4;
-
-    _idleAnimation = SpriteAnimation.fromFrameData(
-      spritesheet,
-      SpriteAnimationData.sequenced(
-        amount: 2,
-        stepTime: 0.4,
-        textureSize: Vector2.all(16),
-        amountPerRow: 2,
+    animations = {
+      _AnimationState.idle: SpriteAnimation.fromFrameData(
+        spritesheet,
+        SpriteAnimationData.sequenced(
+          amount: 2,
+          stepTime: 0.4,
+          textureSize: Vector2.all(16),
+          amountPerRow: 2,
+        ),
       ),
-    );
-
-    _walkAnimation = SpriteAnimation.fromFrameData(
-      spritesheet,
-      SpriteAnimationData.sequenced(
-        amount: 2,
-        stepTime: 0.2,
-        textureSize: Vector2.all(16),
-        texturePosition: Vector2(0, 16),
-        amountPerRow: 2,
+      _AnimationState.walk: SpriteAnimation.fromFrameData(
+        spritesheet,
+        SpriteAnimationData.sequenced(
+          amount: 2,
+          stepTime: 0.2,
+          textureSize: Vector2.all(16),
+          texturePosition: Vector2(0, 16),
+          amountPerRow: 2,
+        ),
       ),
-    );
-
-    _jumpAnimation = SpriteAnimation.fromFrameData(
-      spritesheet,
-      SpriteAnimationData.sequenced(
-        amount: 1,
-        stepTime: 1,
-        textureSize: Vector2.all(16),
-        texturePosition: Vector2(16 * 4, 0),
-        amountPerRow: 1,
-        loop: false,
+      _AnimationState.jump: SpriteAnimation.fromFrameData(
+        spritesheet,
+        SpriteAnimationData.sequenced(
+          amount: 1,
+          stepTime: 1,
+          textureSize: Vector2.all(16),
+          texturePosition: Vector2(16 * 4, 0),
+          amountPerRow: 1,
+          loop: false,
+        ),
       ),
-    );
-
-    _fallAnimation = SpriteAnimation.fromFrameData(
-      spritesheet,
-      SpriteAnimationData.sequenced(
-        amount: 2,
-        stepTime: 0.2,
-        textureSize: Vector2.all(16),
-        texturePosition: Vector2(16 * 2, 0),
-        amountPerRow: 2,
+      _AnimationState.fall: SpriteAnimation.fromFrameData(
+        spritesheet,
+        SpriteAnimationData.sequenced(
+          amount: 2,
+          stepTime: 0.2,
+          textureSize: Vector2.all(16),
+          texturePosition: Vector2(16 * 2, 0),
+          amountPerRow: 2,
+        ),
       ),
-    );
-
-    _deathAnimation = SpriteAnimation.fromFrameData(
-      spritesheet,
-      SpriteAnimationData.sequenced(
-        amount: 8,
-        stepTime: 0.15,
-        textureSize: Vector2.all(16),
-        texturePosition: Vector2(0, 16 * 2),
-        amountPerRow: 6,
-        loop: false,
+      _AnimationState.death: SpriteAnimation.fromFrameData(
+        spritesheet,
+        SpriteAnimationData.sequenced(
+          amount: 8,
+          stepTime: 0.15,
+          textureSize: Vector2.all(16),
+          texturePosition: Vector2(0, 16 * 2),
+          amountPerRow: 6,
+          loop: false,
+        ),
       ),
-    );
-
-    _ladderAnimation = SpriteAnimation.fromFrameData(
-      spritesheet,
-      SpriteAnimationData.sequenced(
-        amount: 4,
-        stepTime: 0.15,
-        textureSize: Vector2.all(16),
-        texturePosition: Vector2(0, 16 * 6),
-        amountPerRow: 4,
+      _AnimationState.ladder: SpriteAnimation.fromFrameData(
+        spritesheet,
+        SpriteAnimationData.sequenced(
+          amount: 4,
+          stepTime: 0.15,
+          textureSize: Vector2.all(16),
+          texturePosition: Vector2(0, 16 * 6),
+          amountPerRow: 4,
+        ),
       ),
-    );
-
-    _animationComponent = SpriteAnimationComponent(
-      size: Vector2.all(32),
-      // Reposition the animation relative to the parent's hitbox.
-      // This should be visually x-axis centered over the parent, and y-axis
-      // bottom aligned so the player's feet touch the ground.
-      position: Vector2(-12, -12),
-      animation: _idleAnimation,
-    );
-
-    _ticker = _animationComponent.animation!.createTicker();
-    add(_animationComponent);
+    };
 
     return super.onLoad();
   }
 
-  void idle() {
-    if (_animationComponent.animation != _idleAnimation) {
-      _animationComponent.animation = _idleAnimation;
-      _ticker.reset();
-    }
-  }
+  @override
+  @mustCallSuper
+  void update(double dt) {
+    // Default to playing animations
+    playing = true;
 
-  void walk() {
-    if (_animationComponent.animation != _walkAnimation) {
-      _animationComponent.animation = _walkAnimation;
-      _ticker.reset();
+    if (character.isDead) {
+      current = _AnimationState.death;
+    } else if (character.hasStatus<OnLadderStatus>()) {
+      if (character.getStatus<OnLadderStatus>()!.movement ==
+          LadderMovement.stopped) {
+        playing = false;
+      } else {
+        playing = true;
+      }
+      current = _AnimationState.ladder;
+    } else {
+      if (character.isOnGround) {
+        // On the ground.
+        if (character.velocity.x.abs() > 0) {
+          current = _AnimationState.walk;
+        } else {
+          current = _AnimationState.idle;
+        }
+      } else {
+        // In the air.
+        if (character.velocity.y > (game.world.maxVelocity / 4)) {
+          current = _AnimationState.fall;
+        } else if (character.velocity.y < 0) {
+          current = _AnimationState.jump;
+        }
+      }
     }
-  }
-
-  void jump() {
-    if (_animationComponent.animation != _jumpAnimation) {
-      _animationComponent.animation = _jumpAnimation;
-      _ticker.reset();
-    }
-  }
-
-  void fall() {
-    if (_animationComponent.animation != _fallAnimation) {
-      _animationComponent.animation = _fallAnimation;
-      _ticker.reset();
-    }
-  }
-
-  void die() {
-    if (_animationComponent.animation != _deathAnimation) {
-      _animationComponent.animation = _deathAnimation;
-      _ticker.reset();
-    }
-  }
-
-  void ladder() {
-    if (_animationComponent.animation != _ladderAnimation) {
-      _animationComponent.animation = _ladderAnimation;
-      _ticker.reset();
-    }
+    super.update(dt);
   }
 }

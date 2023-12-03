@@ -25,9 +25,8 @@ class Coin extends PhysicalEntity {
 
   final SpriteAnimation animation;
 
-  @override
-  void onRemove() {
-    super.onRemove();
+  void collect() {
+    removeFromParent();
     FlameAudio.play('coin.wav');
   }
 }

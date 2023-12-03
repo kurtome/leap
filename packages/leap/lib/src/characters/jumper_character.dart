@@ -1,13 +1,10 @@
-import 'package:flame/components.dart';
 import 'package:leap/src/characters/jumper_behavior.dart';
-import 'package:leap/src/entities/character.dart';
+import 'package:leap/src/entities/entities.dart';
 import 'package:leap/src/leap_game.dart';
 
 class JumperCharacter<TGame extends LeapGame> extends Character<TGame> {
-  JumperCharacter({
-    super.health = 10,
-    super.removeOnDeath,
-  }) : super(behaviors: [JumperBehavior()]);
+  JumperCharacter({super.removeOnDeath, super.health})
+      : super(behaviors: [JumperBehavior()]);
 
   /// When true the character is facing left, otherwise right.
   bool faceLeft = false;
@@ -32,9 +29,6 @@ class JumperCharacter<TGame extends LeapGame> extends Character<TGame> {
   /// The last ground velocity of the character on the horizontal axis.
   double airXVelocity = 0;
 
-  /// The animation position component of the character.
-  PositionComponent? spriteAnimation;
-
   /// Stop walking.
   void stand() => walking = false;
 
@@ -49,16 +43,12 @@ class JumperCharacter<TGame extends LeapGame> extends Character<TGame> {
   void update(double dt) {
     super.update(dt);
 
-    if (spriteAnimation == null) {
-      return;
-    }
-
-    if (velocity.x < 0) {
-      spriteAnimation!.transform.offset.x = spriteAnimation!.width - width;
-      spriteAnimation!.scale.x = -1;
-    } else if (velocity.x > 0) {
-      spriteAnimation!.transform.offset.x = 0;
-      spriteAnimation!.scale.x = 1;
+    if (characterAnimation != null) {
+      if (velocity.x < 0) {
+        characterAnimation!.scale.x = -characterAnimation!.scale.x.abs();
+      } else if (velocity.x > 0) {
+        characterAnimation!.scale.x = characterAnimation!.scale.x.abs();
+      }
     }
   }
 }
