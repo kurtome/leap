@@ -64,10 +64,14 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
           ),
         );
 
-  /// Draws a rect over the hitbox when this returns true.
+  /// Draws a rect over the hitbox when this is true.
   bool debugHitbox = false;
 
+  /// Draws a rect over the hitbox of collisions when is true.
+  bool debugCollisions = false;
+
   _DebugHitboxComponent? _debugHitboxComponent;
+  _DebugCollisionsComponent? _debugCollisionsComponent;
 
   @override
   @mustCallSuper
@@ -90,6 +94,19 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
       if (_debugHitboxComponent != null) {
         _debugHitboxComponent!.removeFromParent();
         _debugHitboxComponent = null;
+      }
+    }
+
+    // Adds a visualization for the entity's collisions dynamically
+    if (debugCollisions) {
+      if (_debugCollisionsComponent == null) {
+        _debugCollisionsComponent = _DebugCollisionsComponent();
+        add(_debugCollisionsComponent!);
+      }
+    } else {
+      if (_debugCollisionsComponent != null) {
+        _debugCollisionsComponent!.removeFromParent();
+        _debugCollisionsComponent = null;
       }
     }
   }
@@ -274,10 +291,36 @@ class _DebugHitboxComponent extends PositionComponent {
   final _paint = Paint()..color = Colors.green.withOpacity(0.6);
 
   @override
-  int get priority => 999;
+  int get priority => 9998;
 
   @override
   void render(Canvas canvas) {
     canvas.drawRect(size.toRect(), _paint);
+  }
+}
+
+/// Component added as a child to ensure it is drawn on top of the
+/// entity's standard rendering.
+class _DebugCollisionsComponent extends PositionComponent
+    with HasAncestor<PhysicalEntity> {
+  final _paint = Paint()..color = Colors.red.withOpacity(0.6);
+
+  @override
+  int get priority => 9999;
+
+  @override
+  void render(Canvas canvas) {
+    for (final collision in ancestor.collisionInfo.allCollisions) {
+      final left = collision.x - ancestor.x;
+      final top = collision.y - ancestor.y;
+      final rect = Rect.fromLTRB(
+        left,
+        top,
+        left + collision.width,
+        top + collision.height,
+      );
+
+      canvas.drawRect(rect, _paint);
+    }
   }
 }

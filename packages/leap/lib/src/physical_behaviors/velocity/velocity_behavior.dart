@@ -1,11 +1,17 @@
 import 'dart:math' as math;
 
-import 'package:leap/src/physical_behaviors/physical_behavior.dart';
+import 'package:leap/leap.dart';
 
 class VelocityBehavior extends PhysicalBehavior {
   @override
   void update(double dt) {
     super.update(dt);
+
+    if (parent.statuses
+        .where((s) => s is IgnoredByWorld || s is IgnoresVelocity)
+        .isNotEmpty) {
+      return;
+    }
 
     if (collisionInfo.up) {
       // Set the top of this to the bottom of the collision on top.

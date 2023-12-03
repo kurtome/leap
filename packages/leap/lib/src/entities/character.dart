@@ -5,7 +5,6 @@ import 'package:leap/leap.dart';
 /// for players, enemies, etc.
 /// Characters have health, and usually a removed on death.
 ///
-// TODO(kurtome): add sprite animation and state helpers.
 class Character<T extends LeapGame> extends PhysicalEntity<T> {
   Character({
     this.health = 1,
@@ -30,7 +29,7 @@ class Character<T extends LeapGame> extends PhysicalEntity<T> {
 
   /// Indicates if this finish the current [characterAnimation] before
   /// auto-removing (i.e. [removeOnDeath]).
-  bool finishAnimationBeforeRemove = true;
+  bool finishAnimationBeforeRemove = false;
 
   /// Whether or not this is "alive" (or not destroyed) in the game
   bool get isAlive => health > 0;
@@ -43,7 +42,17 @@ class Character<T extends LeapGame> extends PhysicalEntity<T> {
   /// Indicates that this was alive on the previous [update] loop
   bool get wasAlive => _wasAlive;
 
-  CharacterAnimation? characterAnimation;
+  CharacterAnimation? _characterAnimation;
+  CharacterAnimation? get characterAnimation => _characterAnimation;
+  set characterAnimation(CharacterAnimation? newAnimation) {
+    if (_characterAnimation != null) {
+      remove(_characterAnimation!);
+    }
+    _characterAnimation = newAnimation;
+    if (_characterAnimation != null) {
+      add(_characterAnimation!);
+    }
+  }
 
   /// Called when this entity dies, typically due to health dropping below one.
   ///

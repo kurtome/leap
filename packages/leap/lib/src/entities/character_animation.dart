@@ -2,8 +2,24 @@ import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 import 'package:leap/leap.dart';
 
-abstract class CharacterAnimation<T, C extends Character>
-    extends SpriteAnimationGroupComponent<T> with HasAncestor<C> {
+/// A [SpriteAnimationGroupComponent] with extra funcationality to
+/// automatically handle what most character components want. This
+/// should be a direct child of a [Character].
+///
+/// 1. Positions the animation based on the parent character's hitbox.
+///    By default this is bottom aligned and horizontally centered, but
+///    can be changed with [hitboxAnchor].
+///
+/// 2. Resets the animation ticker anytime the [current] animation changes
+///    to make sure the animation plays from the beginning.
+///
+/// Subclasses are typically override [update] to set the appropriate [TKey]
+/// value to [current]. This will pick the animation keyed in [animations].
+/// [animations] should be set in [onLoad] if they require asset loading.
+/// It is also possible to use this without a subclass by simply setting
+/// the [current] value in the character's [update].
+class CharacterAnimation<TKey, TChar extends Character>
+    extends SpriteAnimationGroupComponent<TKey> with HasAncestor<TChar> {
   CharacterAnimation({
     this.hitboxAnchor = Anchor.bottomCenter,
     super.animations,
@@ -28,9 +44,9 @@ abstract class CharacterAnimation<T, C extends Character>
   Anchor hitboxAnchor;
 
   /// The parent character this is added to.
-  C get character => ancestor;
+  TChar get character => ancestor;
 
-  T? _prevCurrent;
+  TKey? _prevCurrent;
 
   @override
   @mustCallSuper
@@ -42,10 +58,23 @@ abstract class CharacterAnimation<T, C extends Character>
     }
     _prevCurrent = current;
 
+    if (character.anchor != Anchor.topLeft) {
+      throw Exception(
+        'Character must have topLeft anchor instead of ${character.anchor}.',
+      );
+    }
+    // NOTE: anchor and hitboxAnchor are slightly different, we want people to
+    //       use hitboxAnchor.
+    if (anchor != Anchor.topLeft) {
+      throw Exception(
+        'This must have topLeft anchor instead of $anchor.',
+      );
+    }
+
     // Do this _after_ setting the animation since
     // that may have caused a resize.
-    x = (ancestor.width - width * scale.x) * hitboxAnchor.x;
-    y = (ancestor.height - height * scale.y) * hitboxAnchor.y;
+    x = (character.width - width * scale.x) * hitboxAnchor.x;
+    y = (character.height - height * scale.y) * hitboxAnchor.y;
 
     super.update(dt);
   }

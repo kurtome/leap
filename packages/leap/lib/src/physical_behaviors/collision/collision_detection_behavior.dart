@@ -30,21 +30,26 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
   void update(double dt) {
     super.update(dt);
 
-    if (isRemoving) {
-      return;
-    }
+    prevCollisionInfo.copyFrom(collisionInfo);
+    collisionInfo.reset();
 
     // NOTE: static entities will never run this behavior, so making entities
     // static is important for performance
 
-    prevCollisionInfo.copyFrom(collisionInfo);
-    collisionInfo.reset();
-    _calculatePotentialHits(dt);
+    if (isRemoving ||
+        parent.statuses
+            .where((s) => s is IgnoredByWorld || s is IgnoresCollisions)
+            .isNotEmpty) {
+      return;
+    }
 
+    _calculatePotentialHits(dt);
     if (!parent.hasStatus<IgnoresSolidCollisions>()) {
       _solidCollisionDetection(dt);
     }
-    _nonSolidCollisionDetection(dt);
+    if (!parent.hasStatus<IgnoresNonSolidCollisions>()) {
+      _nonSolidCollisionDetection(dt);
+    }
   }
 
   void _nonSolidCollisionDetection(double dt) {
@@ -150,7 +155,10 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
           }
           return a.relativeTop(_hitboxProxy).compareTo(b.top);
         });
-        _tmpHits.forEach(collisionInfo.addDownCollision);
+        final firstDown = _tmpHits.first;
+        _tmpHits
+            .where((h) => h.top == firstDown.top)
+            .forEach(collisionInfo.addDownCollision);
       }
     }
 
@@ -293,7 +301,14 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     // Find the world phyiscal entity potential hits.
 
     _proxyHitboxForPotentialHits(dt);
-    for (final other in world.physicals) {
+    final physicals = world.physicals.where(
+      (p) =>
+          p != parent &&
+          p.statuses
+              .where((s) => s is IgnoredByWorld || s is IgnoredByCollisions)
+              .isEmpty,
+    );
+    for (final other in physicals) {
       if (!other.isRemoving && intersectsOther(_hitboxProxy, other)) {
         _potentialHits.add(other);
       }

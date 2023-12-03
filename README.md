@@ -131,6 +131,82 @@ The physics system for Leap requires that every `Component` that interacts with
 the game's phyical world extend `PhysicalEntity` and be added to the `LeapWorld`
 component which is accessible via `LeapGame.world`.
 
+#### Characters
+
+`Character` is a `PhysicalEntity` which is intended to be used as the parent
+class for players, enemies, and possibly even objects in your game. It has the
+concept of `health` and an `onDeath` function that can be overridden for when
+health reaches zero (or negative). It's also possible to set
+`removeOnDeath = true` to automatically remove the character from the game when
+it dies.
+
+##### Character animations
+
+Characters are typically rendered visually as a `SpriteAnimation`, however most
+likely thre is a different animation for different states of the character.
+That's where `CharacterAnimation` comes in.
+
+A `CharacterAnimation` is specialized `SpriteAnimationGroupComponent`, so you
+can set all the animations as map on the component and the update the current
+animation with the key in the map for the correct animation.
+
+Typically you want to make use of this by making a subclass of
+`CharacterAnimation` so all the logic relevant to picking the current animation
+is self contained.
+
+For example:
+
+```dart
+class Player extends Character {
+    Player() {
+        characterAnimation = PlayerAnimation();
+    }
+}
+
+enum _AnimationState { walk, jump }
+
+class PlayerAnimation extends CharacterAnimation<_AnimationState, Player> {
+    @override
+    Future<void> onLoad() async {
+        animations = {
+            _AnimationState.walk: SpriteAnimation(...),
+            _AnimationState.jump: SpriteAnimation(...),
+        };
+        return super.onLoad();
+    }
+
+    @override
+    void update(double dt) {
+       if (character.isWalking) {
+           current = _AnimationState.walking;
+       } else if (character.isJumping) {
+           current = _AnimationState.jumping;
+       }
+       super.update(dt);
+    }
+}
+```
+
+`CharacterAnimation` also automatically handles positioning the animation to be
+centered on the parent's hitbox. The positioning can be changed with the
+`hitboxAnchor` property.
+
+`CharacterAnimation` must be added as child of a `Character` component, and
+typically is set to the `characterAnimation` property as well.
+
+##### Death animations
+
+The recommended way to handle death animations is to set `removeOnDeath = true`
+and `finishAnimationBeforeRemove = true`. You will also need to:
+
+1. Have a `CharacterAnimation` set on the character, and make sure it sets the
+   `current` animation to whichever death animation you need.
+2. Make sure the death animation has `loop = false` so it doesn't play forever.
+3. Make sure the rest of your game doesn't interact with it as if it is still
+   alive. The recommened approach for this is to add a custom `Status` to it,
+   possibly with the `IgnoredByWorld` mixin on it. Or you can other entities
+   interacting with it can check `isDead` on it.
+
 #### Status effect system
 
 `PhysicalEntity` components can have statuses (`StatusComponent`) which modify
@@ -145,7 +221,12 @@ handle updating themselves or their parent `PhysicalEntity` components. See
 There are mixins on `StatusComponent` which affect the Leap engine's handling of
 the parent `PhysicalEntity`. See:
 
+- `IgnoredByWorld`
+- `IgnoresVelocity`
 - `IgnoresGravity`
+- `IgnoredByCollisions`
+- `IgnoresAllCollisions`
+- `IgnoresNonSolidCollisions`
 - `IgnoresSolidCollisions`
 
 You can implement your own mixins on `StatusComponent` which control pieces of
@@ -407,9 +488,9 @@ for your game too.)
 
 ### Render hitbox
 
-`PhysicalEntity` includes a `debugHitbox` property you can override which will
-automatically draw a box indicating the exact hitbox the collision detection
-system is using for your entity.
+`PhysicalEntity` includes a `debugHitbox` property you can set to automatically
+draw a box indicating the exact hitbox the collision detection system is using
+for your entity.
 
 ```dart
 class MyPlayer extends PhysicalEntity {
@@ -423,14 +504,29 @@ class MyPlayer extends PhysicalEntity {
 }
 ```
 
+### Render collisions
+
+`PhysicalEntity` includes a `debugCollisions` property you can set to
+automatically draw a box indicating the hitbox of all other entities it is
+currently colliding with.
+
+```dart
+class MyPlayer extends PhysicalEntity {
+
+  @override
+  void update(double dt) {
+    // Draw entity's collisions
+    debugCollisions = true;
+  }
+
+}
+```
+
 ## Roadmap 🚧
 
 - Improved collision detection API.
   - The current API is fairly awkward, see `CollisionInfo`.
   - There is no great way to detect collision start or collision end.
-- Add more robust and reusable base class for players/enemies/etc. (`Character`
-  class).
-  - Integrated with sprite animations based on character state
 - Improved API for `PhysicalEntity`, `addImpulse` etc.
 - Lots of code clean-up to make usage of Leap more ergonomic and configurable.
 

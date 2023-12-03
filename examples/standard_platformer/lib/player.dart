@@ -32,7 +32,6 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
     _spawn = map.playerSpawn;
 
     characterAnimation = PlayerSpriteAnimation();
-    add(characterAnimation!);
 
     // Size controls player hitbox, which should be slightly smaller than
     // visual size of the sprite.
@@ -297,6 +296,8 @@ class PlayerSpriteAnimation extends CharacterAnimation<_AnimationState, Player>
         ),
       ),
     };
+
+    current = _AnimationState.idle;
 
     return super.onLoad();
   }
