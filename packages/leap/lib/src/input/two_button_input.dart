@@ -86,9 +86,9 @@ class TwoButtonTapInput extends PositionComponent
   bool get isPressedRight => isPressed && !isPressedLeft;
 
   @override
-  Future<void> onLoad() async {
-    size = game.world.map.size;
-    return super.onLoad();
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    this.size.setFrom(size);
   }
 
   @override

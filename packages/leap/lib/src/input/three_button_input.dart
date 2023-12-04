@@ -108,9 +108,9 @@ class ThreeButtonTapInput extends PositionComponent
   }
 
   @override
-  Future<void> onLoad() async {
-    size = game.leapMap.size;
-    return super.onLoad();
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    this.size.setFrom(size);
   }
 
   @override

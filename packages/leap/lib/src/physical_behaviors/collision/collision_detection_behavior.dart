@@ -30,21 +30,26 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
   void update(double dt) {
     super.update(dt);
 
-    if (isRemoving) {
-      return;
-    }
+    prevCollisionInfo.copyFrom(collisionInfo);
+    collisionInfo.reset();
 
     // NOTE: static entities will never run this behavior, so making entities
     // static is important for performance
 
-    prevCollisionInfo.copyFrom(collisionInfo);
-    collisionInfo.reset();
-    _calculatePotentialHits(dt);
+    if (isRemoving ||
+        parent.statuses
+            .where((s) => s is IgnoredByWorld || s is IgnoresCollisions)
+            .isNotEmpty) {
+      return;
+    }
 
+    _calculatePotentialHits(dt);
     if (!parent.hasStatus<IgnoresSolidCollisions>()) {
       _solidCollisionDetection(dt);
     }
-    _nonSolidCollisionDetection(dt);
+    if (!parent.hasStatus<IgnoresNonSolidCollisions>()) {
+      _nonSolidCollisionDetection(dt);
+    }
   }
 
   void _nonSolidCollisionDetection(double dt) {
@@ -53,7 +58,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     _proxyHitboxForNonSolidHits();
     for (final other in _potentialHits) {
       if (!parent.isOtherSolid(other) && intersectsOther(_hitboxProxy, other)) {
-        collisionInfo.addCollision(other);
+        collisionInfo.addNonSolidCollision(other);
       }
     }
   }
@@ -85,12 +90,14 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         if (firstRightHit.isSlopeFromLeft) {
           if (velocity.y >= 0) {
             // Ignore slope underneath while moving upwards.
-            collisionInfo.downCollision = firstRightHit;
+            collisionInfo.addDownCollision(firstRightHit);
           } else {
-            collisionInfo.rightCollision = firstRightHit;
+            collisionInfo.addRightCollision(firstRightHit);
           }
         } else if (firstRightHit.left >= right) {
-          collisionInfo.rightCollision = firstRightHit;
+          _tmpHits
+              .where((c) => c.left == firstRightHit.left)
+              .forEach(collisionInfo.addRightCollision);
         }
       }
     }
@@ -109,12 +116,14 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
           // Ignore slope underneath while moving upwards, should not collide
           // on left.
           if (velocity.y >= 0) {
-            collisionInfo.downCollision = firstLeftHit;
+            collisionInfo.addDownCollision(firstLeftHit);
           } else {
-            collisionInfo.leftCollision = firstLeftHit;
+            collisionInfo.addLeftCollision(firstLeftHit);
           }
         } else if (firstLeftHit.right <= left) {
-          collisionInfo.leftCollision = firstLeftHit;
+          _tmpHits
+              .where((c) => c.right == firstLeftHit.right)
+              .forEach(collisionInfo.addLeftCollision);
         }
       }
     }
@@ -146,8 +155,10 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
           }
           return a.relativeTop(_hitboxProxy).compareTo(b.top);
         });
-        final firstBottomHit = _tmpHits.first;
-        collisionInfo.downCollision = firstBottomHit;
+        final firstDown = _tmpHits.first;
+        _tmpHits
+            .where((h) => h.top == firstDown.top)
+            .forEach(collisionInfo.addDownCollision);
       }
     }
 
@@ -162,8 +173,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
 
       if (_tmpHits.isNotEmpty) {
         _tmpHits.sort((a, b) => a.bottom.compareTo(b.bottom));
-        final firstTopHit = _tmpHits.first;
-        collisionInfo.upCollision = firstTopHit;
+        _tmpHits.forEach(collisionInfo.addUpCollision);
       }
     }
 
@@ -181,9 +191,9 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         final nextSlope = map.groundTiles[prevDown.gridX + 1]
             [prevDown.gridY + nextSlopeYDelta];
         if (prevDown.right >= left) {
-          collisionInfo.downCollision = prevDown;
+          collisionInfo.addDownCollision(prevDown);
         } else if (nextSlope != null && nextSlope.isSlopeFromRight) {
-          collisionInfo.downCollision = nextSlope;
+          collisionInfo.addDownCollision(nextSlope);
         }
       } else if (velocity.x < 0) {
         // Walking down slope to the left.
@@ -191,9 +201,9 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         final nextSlope = map.groundTiles[prevDown.gridX - 1]
             [prevDown.gridY + nextSlopeYDelta];
         if (prevDown.left <= right) {
-          collisionInfo.downCollision = prevDown;
+          collisionInfo.addDownCollision(prevDown);
         } else if (nextSlope != null && nextSlope.isSlopeFromLeft) {
-          collisionInfo.downCollision = nextSlope;
+          collisionInfo.addDownCollision(nextSlope);
         }
       }
     }
@@ -291,7 +301,14 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     // Find the world phyiscal entity potential hits.
 
     _proxyHitboxForPotentialHits(dt);
-    for (final other in world.physicals) {
+    final physicals = world.physicals.where(
+      (p) =>
+          p != parent &&
+          p.statuses
+              .where((s) => s is IgnoredByWorld || s is IgnoredByCollisions)
+              .isEmpty,
+    );
+    for (final other in physicals) {
       if (!other.isRemoving && intersectsOther(_hitboxProxy, other)) {
         _potentialHits.add(other);
       }
