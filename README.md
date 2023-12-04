@@ -1,5 +1,9 @@
 # Leap
 
+<p>
+  <a title="Pub" href="https://pub.dev/packages/leap"><img src="https://img.shields.io/pub/v/leap.svg?style=popout"/></a>
+</p>
+
 An opinionated toolkit for creating 2D platformers on top of the
 [Flame engine](https://flame-engine.org/).
 
