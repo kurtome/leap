@@ -1,3 +1,10 @@
+## 0.5.0
+
+> Note: This release has breaking changes.
+
+ - **FEAT**: adding character base class ([#35](https://github.com/kurtome/leap/issues/35)). ([802a735a](https://github.com/kurtome/leap/commit/802a735af6d4e274640c8fd9e3ccc695b5e44bd7))
+ - **BREAKING** **FEAT**: refactoring collision info (again) and adding character animations ([#36](https://github.com/kurtome/leap/issues/36)). ([0fbefd66](https://github.com/kurtome/leap/commit/0fbefd660916a8ed8ba3e5a9d4a85784383a4a2c))
+
 ## 0.4.0
 
 > Note: This release has breaking changes.
