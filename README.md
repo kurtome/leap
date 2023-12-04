@@ -143,11 +143,11 @@ it dies.
 ##### Character animations
 
 Characters are typically rendered visually as a `SpriteAnimation`, however most
-likely thre is a different animation for different states of the character.
+likely there is a different animation for different states of the character.
 That's where `CharacterAnimation` comes in.
 
-A `CharacterAnimation` is specialized `SpriteAnimationGroupComponent`, so you
-can set all the animations as map on the component and the update the current
+A `CharacterAnimation` is a specialized `SpriteAnimationGroupComponent`, so you
+can set all the animations as map on the component and then update the current
 animation with the key in the map for the correct animation.
 
 Typically you want to make use of this by making a subclass of
