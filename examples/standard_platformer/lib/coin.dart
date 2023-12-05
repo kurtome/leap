@@ -5,14 +5,14 @@ import 'package:leap/leap.dart';
 import 'package:tiled/tiled.dart';
 
 class Coin extends PhysicalEntity {
-  Coin(TiledObject tiledObject, this.animation)
-      : super(static: true, collisionType: CollisionType.standard) {
+  Coin(TiledObject tiledObject, this.animation) : super(static: true) {
     width = 16;
     height = 16;
     priority = 2;
 
-    anchor = Anchor.center;
-    position = Vector2(tiledObject.x, tiledObject.y);
+    // in Tiled we center position the Coins
+    // so, we need to offset here for top-left position.
+    position = Vector2(tiledObject.x - width / 2, tiledObject.y - height / 2);
     add(
       SpriteAnimationComponent(
         size: Vector2.all(20),
@@ -25,9 +25,8 @@ class Coin extends PhysicalEntity {
 
   final SpriteAnimation animation;
 
-  @override
-  void onRemove() {
-    super.onRemove();
+  void collect() {
+    removeFromParent();
     FlameAudio.play('coin.wav');
   }
 }

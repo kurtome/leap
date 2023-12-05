@@ -8,7 +8,7 @@ abstract class Ladder<T extends LeapGame> extends PhysicalEntity<T> {
     super.position,
     super.size,
     this.topExtraHitbox = 0,
-  }) : super(static: true, collisionType: CollisionType.standard) {
+  }) : super(static: true) {
     y = y - topExtraHitbox;
     height = height + topExtraHitbox;
   }
@@ -44,7 +44,7 @@ enum LadderMovement {
 /// Status indicating the [PhysicalEntity] this is added to is
 /// on a ladder.
 class OnLadderStatus<T extends LeapGame> extends StatusComponent
-    with HasGameReference<T>, IgnoresGravity, IgnoresGroundCollisions {
+    with HasGameReference<T>, IgnoresGravity, IgnoresSolidCollisions {
   OnLadderStatus(this.ladder);
 
   final Ladder<T> ladder;
@@ -65,8 +65,7 @@ class OnLadderStatus<T extends LeapGame> extends StatusComponent
 
     final parentEntity = parent! as PhysicalEntity;
 
-    if (!(parentEntity.collisionInfo.otherCollisions?.contains(ladder) ??
-        false)) {
+    if (!parentEntity.collisionInfo.allCollisions.contains(ladder)) {
       // No longer on the ladder
       removeFromParent();
       parentEntity.velocity.y = 0;

@@ -79,9 +79,6 @@ class FourButtonTapInput extends PositionComponent
   TapUpEvent? upEvent;
   TapDownEvent? downEvent;
 
-  @override
-  bool get debugMode => true;
-
   bool get isPressed => downEvent != null && upEvent == null;
 
   bool get isPressedLeft {
@@ -125,9 +122,9 @@ class FourButtonTapInput extends PositionComponent
   }
 
   @override
-  Future<void> onLoad() async {
-    size = game.leapMap.size;
-    return super.onLoad();
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    this.size.setFrom(size);
   }
 
   @override

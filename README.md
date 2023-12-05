@@ -1,5 +1,9 @@
 # Leap
 
+<p>
+  <a title="Pub" href="https://pub.dev/packages/leap"><img src="https://img.shields.io/pub/v/leap.svg?style=popout"/></a>
+</p>
+
 An opinionated toolkit for creating 2D platformers on top of the
 [Flame engine](https://flame-engine.org/).
 
@@ -131,6 +135,82 @@ The physics system for Leap requires that every `Component` that interacts with
 the game's phyical world extend `PhysicalEntity` and be added to the `LeapWorld`
 component which is accessible via `LeapGame.world`.
 
+#### Characters
+
+`Character` is a `PhysicalEntity` which is intended to be used as the parent
+class for players, enemies, and possibly even objects in your game. It has the
+concept of `health` and an `onDeath` function that can be overridden for when
+health reaches zero (or negative). It's also possible to set
+`removeOnDeath = true` to automatically remove the character from the game when
+it dies.
+
+##### Character animations
+
+Characters are typically rendered visually as a `SpriteAnimation`, however most
+likely there is a different animation for different states of the character.
+That's where `CharacterAnimation` comes in.
+
+A `CharacterAnimation` is a specialized `SpriteAnimationGroupComponent`, so you
+can set all the animations as map on the component and then update the current
+animation with the key in the map for the correct animation.
+
+Typically you want to make use of this by making a subclass of
+`CharacterAnimation` so all the logic relevant to picking the current animation
+is self contained.
+
+For example:
+
+```dart
+class Player extends Character {
+    Player() {
+        characterAnimation = PlayerAnimation();
+    }
+}
+
+enum _AnimationState { walk, jump }
+
+class PlayerAnimation extends CharacterAnimation<_AnimationState, Player> {
+    @override
+    Future<void> onLoad() async {
+        animations = {
+            _AnimationState.walk: SpriteAnimation(...),
+            _AnimationState.jump: SpriteAnimation(...),
+        };
+        return super.onLoad();
+    }
+
+    @override
+    void update(double dt) {
+       if (character.isWalking) {
+           current = _AnimationState.walking;
+       } else if (character.isJumping) {
+           current = _AnimationState.jumping;
+       }
+       super.update(dt);
+    }
+}
+```
+
+`CharacterAnimation` also automatically handles positioning the animation to be
+centered on the parent's hitbox. The positioning can be changed with the
+`hitboxAnchor` property.
+
+`CharacterAnimation` must be added as child of a `Character` component, and
+typically is set to the `characterAnimation` property as well.
+
+##### Death animations
+
+The recommended way to handle death animations is to set `removeOnDeath = true`
+and `finishAnimationBeforeRemove = true`. You will also need to:
+
+1. Have a `CharacterAnimation` set on the character, and make sure it sets the
+   `current` animation to whichever death animation you need.
+2. Make sure the death animation has `loop = false` so it doesn't play forever.
+3. Make sure the rest of your game doesn't interact with it as if it is still
+   alive. The recommened approach for this is to add a custom `Status` to it,
+   possibly with the `IgnoredByWorld` mixin on it. Or you can other entities
+   interacting with it can check `isDead` on it.
+
 #### Status effect system
 
 `PhysicalEntity` components can have statuses (`StatusComponent`) which modify
@@ -145,8 +225,13 @@ handle updating themselves or their parent `PhysicalEntity` components. See
 There are mixins on `StatusComponent` which affect the Leap engine's handling of
 the parent `PhysicalEntity`. See:
 
+- `IgnoredByWorld`
+- `IgnoresVelocity`
 - `IgnoresGravity`
-- `IgnoresGroundCollisions`
+- `IgnoredByCollisions`
+- `IgnoresAllCollisions`
+- `IgnoresNonSolidCollisions`
+- `IgnoresSolidCollisions`
 
 You can implement your own mixins on `StatusComponent` which control pieces of
 logic in your own game.
@@ -169,9 +254,85 @@ Specialized ground tiles:
   properties `LeftTop` and `RightTop`. For example, a 16x16 pixel tile with
   `LeftTop = 0` and `RightTop = 8` indicates slope that is ascending when moving
   from left-to-right.
-- **Platforms** (name may change) for terrain the physical entities can move up
-  (e.g. jump) through from below but still land on. These tiles must have their
-  `class` property set to `"Platform"`.
+- **One Way Platforms** for terrain the physical entities can move up (e.g.
+  jump) through from all but one direction. These are implemented via
+  `GroundTileHandler` classes, and can therefore use and `class` you want via
+  passing in a map of custom `groundTileHandlers` when loading the map (see
+  below). The most used is `OneWayTopPlatformHandler` which modifies the tile to
+  be phased through from below and the sides, but solid from the top.
+
+##### Custom ground tile handling
+
+To have complete control over individual tiles in the ground layer, you can use
+the `class` property in the Tiled editor tileset to hook into the
+`groundTileHandlers` you pass in when loading your map.
+
+In your `LeapGame`:
+
+```dart
+await loadWorldAndMap(
+  camera: camera,
+  tiledMapPath: 'map.tmx',
+  groundTileHandlers: {
+    'OneWayTopPlatform': OneWayTopPlatformHandler(),
+    'MyCustomTile': MyCustomTileHandler(),
+  },
+);
+```
+
+And your `MyCustomTileHandler`:
+
+```dart
+class MyCustomTileHandler implements GroundTileHandler {
+  @override
+  LeapMapGroundTile handleGroundTile(LeapMapGroundTile groundTile, LeapMap map) {
+    tile.tags.add('PowerUpTile');
+
+    // Add some extra rendering on top of your special tile.
+    map.add(PowerUpTileAnimationComponent(x: groundTile.x, y: groundTile.y));
+
+    // use the provided tile instance in the map
+    return tile;
+  }
+}
+
+// OR
+
+class MyCustomTileHandler implements GroundTileHandler {
+  @override
+  LeapMapGroundTile handleGroundTile(LeapMapGroundTile groundTile, LeapMap map) {
+    // MyCustomTile constructor must call the super constructor to initialize
+    // the the LeapMapGroundTile properties
+    return MyCustomTile(
+      groundTile,
+      myCustomProperty: groundTile.tile.properties.getValue<int>('PowerValue'),
+    );
+  }
+}
+```
+
+Note that the `class` property is **always** added to each tile's
+`PhysicalEntity.tags`. So, you can check if your player is walking into a
+special type of wall with something like this:
+
+```dart
+class Player extends PhysicalEntity {
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    if (collisionInfo.right && // hitting solid entity on the right
+        input.actionButtonPressed && // custom input handling
+        collisionInfo.rightCollision!.tags.contains('MySpecialTile')) {
+      // right collision has a tag we set from Tiled's tileset `class` property
+      // (tag could also be added by your own custom handling)
+      specialInteraction(collisionInfo.rightCollision!);
+    }
+  }
+
+}
+```
 
 #### Metadata layer
 
@@ -225,7 +386,7 @@ class CoinFactory implements TiledObjectFactory<Coin> {
 
 class Coin extends PhysicalEntity {
   Coin(TiledObject object, this.animation)
-      : super(static: true, collisionType: CollisionType.standard) {
+      : super(static: true) {
     anchor = Anchor.center;
 
     // Use the position from your Tiled map
@@ -308,7 +469,6 @@ class MyLeapGame extends LeapGame {
         groundLayerName: 'Ground',
         metadataLayerName: 'Metadata',
         playerSpawnClass: 'PlayerSpawn',
-        hazardClass: 'Hazard',
         damageProperty: 'Damage',
         platformClass: 'Platform',
         slopeType: 'Slope',
@@ -320,14 +480,57 @@ class MyLeapGame extends LeapGame {
 }
 ```
 
+## Debugging
+
+### Slow motion
+
+`LeapWorld` includes
+[`HasTimeScale`](https://pub.dev/documentation/flame/latest/components/HasTimeScale-mixin.html),
+so you can set `world.timeScale = 0.5` to slow your whole game down to 50% speed
+to make it easier to play test nuanced bugs. (You can use this as slow motion
+for your game too.)
+
+### Render hitbox
+
+`PhysicalEntity` includes a `debugHitbox` property you can set to automatically
+draw a box indicating the exact hitbox the collision detection system is using
+for your entity.
+
+```dart
+class MyPlayer extends PhysicalEntity {
+
+  @override
+  void update(double dt) {
+    // Draw entity's hitbox
+    debugHitbox = true;
+  }
+
+}
+```
+
+### Render collisions
+
+`PhysicalEntity` includes a `debugCollisions` property you can set to
+automatically draw a box indicating the hitbox of all other entities it is
+currently colliding with.
+
+```dart
+class MyPlayer extends PhysicalEntity {
+
+  @override
+  void update(double dt) {
+    // Draw entity's collisions
+    debugCollisions = true;
+  }
+
+}
+```
+
 ## Roadmap 🚧
 
 - Improved collision detection API.
   - The current API is fairly awkward, see `CollisionInfo`.
   - There is no great way to detect collision start or collision end.
-- Add more robust and reusable base class for players/enemies/etc. (`Character`
-  class).
-  - Integrated with sprite animations based on character state
 - Improved API for `PhysicalEntity`, `addImpulse` etc.
 - Lots of code clean-up to make usage of Leap more ergonomic and configurable.
 

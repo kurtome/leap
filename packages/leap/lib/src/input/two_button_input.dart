@@ -73,9 +73,6 @@ class TwoButtonTapInput extends PositionComponent
   TapUpEvent? upEvent;
   TapDownEvent? downEvent;
 
-  @override
-  bool get debugMode => true;
-
   bool get isPressed => downEvent != null && upEvent == null;
 
   bool get isPressedLeft {
@@ -89,9 +86,9 @@ class TwoButtonTapInput extends PositionComponent
   bool get isPressedRight => isPressed && !isPressedLeft;
 
   @override
-  Future<void> onLoad() async {
-    size = game.world.map.size;
-    return super.onLoad();
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    this.size.setFrom(size);
   }
 
   @override

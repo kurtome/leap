@@ -21,9 +21,32 @@ class StatusComponent extends PositionComponent {
 }
 
 /// A status mixin which indicates the parent entity should not
+/// be considered part of the physical world anymore. This means
+/// it will not be moved by gravity or velocity (unless you manually
+/// update the position) and it will be completely ignored by the collision
+/// system so nothing else will collide with it.
+mixin IgnoredByWorld on StatusComponent {}
+
+/// A status mixin which indicates the parent entity should not
 /// be affected by gravity while the status is present.
 mixin IgnoresGravity on StatusComponent {}
 
 /// A status mixin which indicates the parent entity should not
-/// collide with ground.
-mixin IgnoresGroundCollisions on StatusComponent {}
+/// be automatically moved by its velocity.
+mixin IgnoresVelocity on StatusComponent {}
+
+/// A status mixin which indicates the parent entity should not
+/// be eligible to collide with by others.
+mixin IgnoredByCollisions on StatusComponent {}
+
+/// A status mixin which indicates the parent entity should not
+/// collide attempt to collide with other things.
+mixin IgnoresCollisions on StatusComponent {}
+
+/// A status mixin which indicates the parent entity should not
+/// collide with solids (ground).
+mixin IgnoresSolidCollisions on StatusComponent {}
+
+/// A status mixin which indicates the parent entity should not
+/// collide with non-solids.
+mixin IgnoresNonSolidCollisions on StatusComponent {}

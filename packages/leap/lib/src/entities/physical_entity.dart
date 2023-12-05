@@ -1,5 +1,7 @@
 import 'package:flame/components.dart';
+import 'package:flame/extensions.dart';
 import 'package:flame_behaviors/flame_behaviors.dart';
+import 'package:flutter/material.dart';
 import 'package:leap/leap.dart';
 
 /// A component which has a physical representation in the world, with
@@ -8,7 +10,7 @@ import 'package:leap/leap.dart';
 /// [static] components can be collided with but never move and have a much
 /// smaller performance impact on the game loop.
 abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
-    with HasGameRef<TGame>, TrackedComponent<PhysicalEntity, TGame> {
+    with HasGameRef<TGame> {
   /// Position object to store the x/y components.
   final bool static;
 
@@ -19,6 +21,18 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// normal physics engine / collision detection calculations.
   final Set<String> solidTags = {};
 
+  /// When this is considered solid, phase through from above
+  bool isSolidFromTop = true;
+
+  /// When this is considered solid, phase through from below
+  bool isSolidFromBottom = true;
+
+  /// When this is considered solid, phase through from left
+  bool isSolidFromLeft = true;
+
+  /// When this is considered solid, phase through from right
+  bool isSolidFromRight = true;
+
   /// Status effects which can control aspects of the leap engine (gravity,
   /// collisions, etc.), or be used for fully custom handling.
   ///
@@ -27,9 +41,6 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   ///  2. For some uses adding the same status twice could be valid
   List<StatusComponent> get statuses => _statuses;
   final List<StatusComponent> _statuses = [];
-
-  /// Collision detection tags.
-  final CollisionType collisionType;
 
   /// Position object to store the x/y components.
   final Vector2 velocity = Vector2.zero();
@@ -40,14 +51,8 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// Multiplier on standard gravity, see [LeapWorld].
   double gravityRate = 1;
 
-  /// When health reaches 0, [isDead] will be true.
-  /// This needs to be used by child classes to have any effect.
-  int health;
-
   PhysicalEntity({
-    this.health = 10,
     this.static = false,
-    this.collisionType = CollisionType.none,
     Iterable<Behavior<PhysicalEntity>>? behaviors,
     super.priority,
     super.position,
@@ -59,19 +64,74 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
           ),
         );
 
+  /// Draws a rect over the hitbox when this is true.
+  bool debugHitbox = false;
+
+  /// Draws a rect over the hitbox of collisions when is true.
+  bool debugCollisions = false;
+
+  _DebugHitboxComponent? _debugHitboxComponent;
+  _DebugCollisionsComponent? _debugCollisionsComponent;
+
+  @override
+  @mustCallSuper
+  void update(double dt) {
+    super.update(dt);
+
+    _updateDebugHitbox();
+  }
+
+  void _updateDebugHitbox() {
+    // Adds a visualization for the entity's hitbox dynamically
+    if (debugHitbox) {
+      if (_debugHitboxComponent == null) {
+        _debugHitboxComponent = _DebugHitboxComponent();
+        add(_debugHitboxComponent!);
+      }
+      _debugHitboxComponent!.width = width;
+      _debugHitboxComponent!.height = height;
+    } else {
+      if (_debugHitboxComponent != null) {
+        _debugHitboxComponent!.removeFromParent();
+        _debugHitboxComponent = null;
+      }
+    }
+
+    // Adds a visualization for the entity's collisions dynamically
+    if (debugCollisions) {
+      if (_debugCollisionsComponent == null) {
+        _debugCollisionsComponent = _DebugCollisionsComponent();
+        add(_debugCollisionsComponent!);
+      }
+    } else {
+      if (_debugCollisionsComponent != null) {
+        _debugCollisionsComponent!.removeFromParent();
+        _debugCollisionsComponent = null;
+      }
+    }
+  }
+
+  @override
+  @mustCallSuper
+  void onMount() {
+    super.onMount();
+    game.world.physicalEntityMounted(this);
+  }
+
+  @override
+  @mustCallSuper
+  void onRemove() {
+    super.onRemove();
+    game.world.physicalEntityRemoved(this);
+  }
+
   /// Can only be accessed after component tree has been to the [LeapGame].
-  LeapMap get map => gameRef.leapMap;
+  LeapMap get map => game.leapMap;
 
   LeapWorld get world => game.world;
 
   /// Tile size (width and height) in pixels
-  double get tileSize => gameRef.tileSize;
-
-  /// Whether or not this is "alive" (or not destroyed) in the game
-  bool get isAlive => health > 0;
-
-  /// Whether or not this is "dead" (or destroyed) in the game.
-  bool get isDead => !isAlive;
+  double get tileSize => game.tileSize;
 
   /// Leftmost point.
   double get left {
@@ -117,8 +177,12 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// Defined so it can be overridden by slopes [LeapMapGroundTile]
   bool get isSlopeFromRight => false;
 
-  /// How much damage this does as a hazard.
-  int get hazardDamage => 0;
+  /// How much damage this does by default to other entities.
+  /// This property has no affect on its own, it is for custom logic.
+  /// Typically this is applied as the result of a collision, if
+  /// the colliding entity has a [tags] value that indicates it is
+  /// a "Hazard" or "Spikes" or "Enemy" etc.
+  int hazardDamage = 0;
 
   /// Topmost point.
   double get top {
@@ -219,4 +283,44 @@ Iterable<Behavior>? _physicalBehaviors({
     behaviors.addAll(extra);
   }
   return behaviors;
+}
+
+/// Component added as a child to ensure it is drawn on top of the
+/// entity's standard rendering.
+class _DebugHitboxComponent extends PositionComponent {
+  final _paint = Paint()..color = Colors.green.withOpacity(0.6);
+
+  @override
+  int get priority => 9998;
+
+  @override
+  void render(Canvas canvas) {
+    canvas.drawRect(size.toRect(), _paint);
+  }
+}
+
+/// Component added as a child to ensure it is drawn on top of the
+/// entity's standard rendering.
+class _DebugCollisionsComponent extends PositionComponent
+    with HasAncestor<PhysicalEntity> {
+  final _paint = Paint()..color = Colors.red.withOpacity(0.6);
+
+  @override
+  int get priority => 9999;
+
+  @override
+  void render(Canvas canvas) {
+    for (final collision in ancestor.collisionInfo.allCollisions) {
+      final left = collision.x - ancestor.x;
+      final top = collision.y - ancestor.y;
+      final rect = Rect.fromLTRB(
+        left,
+        top,
+        left + collision.width,
+        top + collision.height,
+      );
+
+      canvas.drawRect(rect, _paint);
+    }
+  }
 }

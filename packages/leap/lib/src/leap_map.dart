@@ -12,6 +12,7 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
     required this.tiledMap,
     this.tiledOptions = const TiledOptions(),
     this.tiledObjectHandlers = const {},
+    this.groundTileHandlers = const {},
   }) {
     groundLayer = getTileLayer<TileLayer>(
       tiledOptions.groundLayerName,
@@ -43,21 +44,20 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
   /// editor.
   late Map<String, TiledObjectHandler> tiledObjectHandlers;
 
+  /// Handlers for building components or custom logic ground tiles,
+  /// keyed by Tiled "Class" which is settable in the Tiled editor.
+  late Map<String, GroundTileHandler> groundTileHandlers;
+
   @override
   void onMount() {
     groundTiles = LeapMapGroundTile.generate(
-      tiledMap.tileMap.map,
+      this,
       groundLayer,
+      game,
+      groundTileHandlers,
       tiledOptions: tiledOptions,
     );
     add(tiledMap);
-    for (final column in groundTiles) {
-      for (final groundTile in column) {
-        if (groundTile != null) {
-          add(groundTile);
-        }
-      }
-    }
 
     /// Object layers
     final objectLayers = tiledMap.tileMap.map.layers
@@ -66,9 +66,9 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
         .cast<ObjectGroup>();
     for (final layer in objectLayers) {
       for (final obj in layer.objects) {
-        final factory = tiledObjectHandlers[obj.class_];
-        if (factory != null) {
-          factory.handleObject(obj, layer, this);
+        final handler = tiledObjectHandlers[obj.class_];
+        if (handler != null) {
+          handler.handleObject(obj, layer, this);
         }
       }
     }
@@ -114,6 +114,7 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
     Images? images,
     TiledOptions tiledOptions = const TiledOptions(),
     Map<String, TiledObjectHandler> tiledObjectHandlers = const {},
+    Map<String, GroundTileHandler> groundTileHandlers = const {},
   }) async {
     final tiledMap = await TiledComponent.load(
       tiledMapPath,
@@ -134,6 +135,7 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
       tiledMap: tiledMap,
       tiledOptions: tiledOptions,
       tiledObjectHandlers: tiledObjectHandlers,
+      groundTileHandlers: groundTileHandlers,
     );
   }
 }
@@ -144,8 +146,15 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
 /// For the purposes of collision detection, the hitbox is assumed to be the
 /// entire tile (except when [isSlope] is `true`).
 class LeapMapGroundTile extends PhysicalEntity {
-  final TiledOptions tiledOptions;
+  LeapGame gameOverride;
 
+  @override
+  LeapGame get game => gameOverride;
+
+  @override
+  LeapGame get gameRef => gameOverride;
+
+  final TiledOptions tiledOptions;
   final Tile tile;
 
   /// Coordinates on the tile grid.
@@ -174,21 +183,17 @@ class LeapMapGroundTile extends PhysicalEntity {
   bool get isSlope => _isSlope;
   late bool _isSlope;
 
-  /// Damage to apply when colliding and this is a hazard
-  @override
-  int get hazardDamage {
-    final damage = tile.properties.getValue<int>(
-      tiledOptions.damageProperty,
-    );
-    return damage ?? 0;
-  }
-
   LeapMapGroundTile(
     this.tile,
     this._gridX,
-    this._gridY, {
+    this._gridY,
+    this.gameOverride, {
     this.tiledOptions = const TiledOptions(),
-  }) : super(static: true, collisionType: CollisionType.tilemapGround) {
+  }) : super(static: true) {
+    width = game.tileSize;
+    height = game.tileSize;
+    position = Vector2(tileSize * _gridX, tileSize * _gridY);
+
     _isSlope = tile.type == tiledOptions.slopeType;
     _rightTop = tile.properties.getValue<int>(
       tiledOptions.slopeRightTopProperty,
@@ -199,24 +204,17 @@ class LeapMapGroundTile extends PhysicalEntity {
 
     tags.add(CommonTags.ground);
 
-    // Hazards (like spikes) damage on collision.
-    if (tile.class_ == tiledOptions.hazardClass) {
-      tags.add(CommonTags.hazard);
+    // Always add the tile's Class property as tag to make it easy
+    // to add small bits of behavior to characters during updates
+    // with collisions.
+    if (tile.class_ != null && tile.class_ != '') {
+      tags.add(tile.class_!);
     }
 
-    // Platforms only collide from above so the player can jump through them
-    // and land on top.
-    if (tile.class_ == tiledOptions.platformClass) {
-      tags.add(CommonTags.platform);
-    }
-  }
-
-  @override
-  void onMount() {
-    super.onMount();
-    width = tileSize;
-    height = tileSize;
-    position = Vector2(tileSize * gridX, tileSize * gridY);
+    hazardDamage = tile.properties.getValue<int>(
+          tiledOptions.damageProperty,
+        ) ??
+        0;
   }
 
   /// Is this a slop going up from left-to-right.
@@ -252,8 +250,10 @@ class LeapMapGroundTile extends PhysicalEntity {
 
   /// Builds the tile grid full of ground tiles based on [groundLayer].
   static List<List<LeapMapGroundTile?>> generate(
-    TiledMap tileMap,
-    TileLayer groundLayer, {
+    LeapMap leapMap,
+    TileLayer groundLayer,
+    LeapGame game,
+    Map<String, GroundTileHandler> groundTileHandlers, {
     TiledOptions tiledOptions = const TiledOptions(),
   }) {
     final groundTiles = List.generate(
@@ -261,6 +261,7 @@ class LeapMapGroundTile extends PhysicalEntity {
       (_) => List<LeapMapGroundTile?>.filled(groundLayer.height, null),
     );
 
+    final tileMap = leapMap.tiledMap.tileMap.map;
     for (var x = 0; x < groundLayer.width; x++) {
       for (var y = 0; y < groundLayer.height; y++) {
         final gid = groundLayer.tileData![y][x].tile;
@@ -268,12 +269,18 @@ class LeapMapGroundTile extends PhysicalEntity {
           continue;
         }
         final tile = tileMap.tileByGid(gid)!;
-        groundTiles[x][y] = LeapMapGroundTile(
+        var groundTile = LeapMapGroundTile(
           tile,
           x,
           y,
+          game,
           tiledOptions: tiledOptions,
         );
+        final handler = groundTileHandlers[tile.class_];
+        if (handler != null) {
+          groundTile = handler.handleGroundTile(groundTile, leapMap);
+        }
+        groundTiles[x][y] = groundTile;
       }
     }
     return groundTiles;

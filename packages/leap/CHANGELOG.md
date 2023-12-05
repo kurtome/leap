@@ -1,3 +1,19 @@
+## 0.5.0
+
+> Note: This release has breaking changes.
+
+ - **FEAT**: adding character base class ([#35](https://github.com/kurtome/leap/issues/35)). ([802a735a](https://github.com/kurtome/leap/commit/802a735af6d4e274640c8fd9e3ccc695b5e44bd7))
+ - **BREAKING** **FEAT**: refactoring collision info (again) and adding character animations ([#36](https://github.com/kurtome/leap/issues/36)). ([0fbefd66](https://github.com/kurtome/leap/commit/0fbefd660916a8ed8ba3e5a9d4a85784383a4a2c))
+
+## 0.4.0
+
+> Note: This release has breaking changes.
+
+ - **FEAT**: allow useAtlas and layerPaintFactory to be configured through TiledOptions ([#27](https://github.com/kurtome/leap/issues/27)). ([02f2be0c](https://github.com/kurtome/leap/commit/02f2be0c9d47cf2ce51ee2109fbe21a42dcd7457))
+ - **BREAKING** **FEAT**: ground tiles clean-up and custom handling ([#34](https://github.com/kurtome/leap/issues/34)). ([225b830a](https://github.com/kurtome/leap/commit/225b830a554988bc55ad3f3dcd10fa44139fc0b0))
+ - **BREAKING** **FEAT**: Refactoring collision detection for simplified API and improved performance ([#32](https://github.com/kurtome/leap/issues/32)). ([4b767231](https://github.com/kurtome/leap/commit/4b767231e6ce0df68b52757adca08e7519ef01c2))
+ - **BREAKING** **FEAT**: StatusComponent system, ladders, and more inputs ([#28](https://github.com/kurtome/leap/issues/28)). ([eafe653f](https://github.com/kurtome/leap/commit/eafe653f60ad123241b810717caff4fdef8ef363))
+
 ## 0.3.1
 
  - **FIX**: walking down slopes not working properly ([#24](https://github.com/kurtome/leap/issues/24)). ([b88b13be](https://github.com/kurtome/leap/commit/b88b13be2d36a07955014e897236b30ebd37f6d9))

@@ -33,6 +33,7 @@ class ExamplePlatformerLeapGame extends LeapGame
   Player? player;
   late final ThreeButtonInput input;
   late final Map<String, TiledObjectHandler> tiledObjectHandlers;
+  late final Map<String, GroundTileHandler> groundTileHandlers;
 
   static const _levels = [
     'map_menu.tmx',
@@ -46,6 +47,7 @@ class ExamplePlatformerLeapGame extends LeapGame
     return loadWorldAndMap(
       tiledMapPath: _currentLevel,
       tiledObjectHandlers: tiledObjectHandlers,
+      groundTileHandlers: groundTileHandlers,
     );
   }
 
@@ -59,6 +61,10 @@ class ExamplePlatformerLeapGame extends LeapGame
       'BasicLadder': await BasicLadderFactory.createFactory(),
       'InfoText': InfoTextFactory(),
       'Door': DoorFactory(),
+    };
+
+    groundTileHandlers = {
+      'OneWayTopPlatform': OneWayTopPlatformHandler(),
     };
 
     // Default the camera size to the bounds of the Tiled map.
@@ -87,7 +93,7 @@ class ExamplePlatformerLeapGame extends LeapGame
     );
 
     player = Player();
-    world.add(player = Player());
+    world.add(player!);
     camera.follow(player!);
 
     if (!FlameAudio.bgm.isPlaying) {

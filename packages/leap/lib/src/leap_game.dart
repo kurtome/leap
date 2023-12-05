@@ -1,13 +1,10 @@
-import 'dart:ui';
-
 import 'package:flame/cache.dart';
 import 'package:flame/game.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:leap/leap.dart';
 
 /// A [FlameGame] with all the Leap built-ins.
-class LeapGame extends FlameGame<LeapWorld>
-    with HasTrackedComponents<LeapWorld> {
+class LeapGame extends FlameGame<LeapWorld> {
   LeapGame({
     required this.tileSize,
     this.appState = AppLifecycleState.resumed,
@@ -71,6 +68,7 @@ class LeapGame extends FlameGame<LeapWorld>
     AssetBundle? bundle,
     Images? images,
     Map<String, TiledObjectHandler> tiledObjectHandlers = const {},
+    Map<String, GroundTileHandler> groundTileHandlers = const {},
     LeapMapTransition? transitionComponent,
   }) async {
     final currentMap = _leapMap;
@@ -95,6 +93,7 @@ class LeapGame extends FlameGame<LeapWorld>
       images: images,
       tiledOptions: configuration.tiled,
       tiledObjectHandlers: tiledObjectHandlers,
+      groundTileHandlers: groundTileHandlers,
     );
     onMapLoaded(_leapMap!);
 
