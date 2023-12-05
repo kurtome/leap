@@ -30,6 +30,8 @@ class TiledOptions {
     this.tsxPackingFilter,
     this.useAtlas = true,
     this.layerPaintFactory,
+    this.atlasPackingSpacingX = 0,
+    this.atlasPackingSpacingY = 0,
   });
 
   /// Which layer name should be used for the player, defaults to "Ground".
@@ -89,4 +91,12 @@ class TiledOptions {
   /// When ommited, resorts to Flame Tiled one, which creates a
   /// a white Paint with the layer opacity value.
   final Paint Function(double opacity)? layerPaintFactory;
+
+  /// The horizontal spacing between tilesets in the atlas texture,
+  /// defaults to 0.
+  final double atlasPackingSpacingX;
+
+  /// The vertical between tilesets in the atlas texture,
+  /// defaults to 0.
+  final double atlasPackingSpacingY;
 }
