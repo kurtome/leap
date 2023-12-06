@@ -2,7 +2,7 @@
 
 [![Pub](https://img.shields.io/pub/v/leap.svg?style=popout)](https://pub.dev/packages/leap)
 [![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
-[![Power by Flame](https://img.shields.io/badge/Powered%20by-%F0%9F%94%A5-orange.svg)](https://flame-engine.org/)
+[![Powered by Flame](https://img.shields.io/badge/Powered%20by-%F0%9F%94%A5-orange.svg)](https://flame-engine.org)
 
 An opinionated toolkit for creating 2D platformers on top of the
 [Flame engine](https://flame-engine.org/).
