@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-12-05
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`leap` - `v0.5.1`](#leap---v051)
+
+---
+
+#### `leap` - `v0.5.1`
+
+ - **FEAT**: Adding atlas packing spacing option to TiledOptions ([#31](https://github.com/kurtome/leap/issues/31)). ([8bc04b2c](https://github.com/kurtome/leap/commit/8bc04b2cac209ea5d9d2fad78d411a8f653fa2cb))
+
+
 ## 2023-12-04
 
 ### Changes
