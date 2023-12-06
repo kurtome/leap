@@ -1,3 +1,7 @@
+## 0.5.2
+
+ - Bump "leap" to `0.5.2`.
+
 ## 0.5.1
 
  - **FEAT**: Adding atlas packing spacing option to TiledOptions ([#31](https://github.com/kurtome/leap/issues/31)). ([8bc04b2c](https://github.com/kurtome/leap/commit/8bc04b2cac209ea5d9d2fad78d411a8f653fa2cb))
