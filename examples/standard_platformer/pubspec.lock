@@ -201,7 +201,7 @@ packages:
       path: "../../packages/leap"
       relative: true
     source: path
-    version: "0.4.0"
+    version: "0.5.0"
   material_color_utilities:
     dependency: transitive
     description:
@@ -282,14 +282,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
-  pathxp:
-    dependency: transitive
-    description:
-      name: pathxp
-      sha256: "61ec381bcc57b158cdd87350e95ba2e8fc4ffaf76168999829b70d422b4f2fd4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0"
   petitparser:
     dependency: transitive
     description:

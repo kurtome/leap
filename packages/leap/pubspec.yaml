@@ -8,12 +8,11 @@ environment:
   flutter: 3.13.2
 
 dependencies:
-  flame: ^1.10.0
+  flame: ^1.11.0
   flame_behaviors: ^1.0.0
   flame_tiled: ^1.18.0
   flutter:
     sdk: flutter
-  pathxp: ^0.4.0
   tiled: ^0.10.1
 
 dev_dependencies:
