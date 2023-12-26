@@ -1,3 +1,7 @@
+## 0.5.3
+
+ - misc bug fixes
+
 ## 0.5.2+1
 
  - **FIX**: misc clean-up ([#40](https://github.com/kurtome/leap/issues/40)). ([800529ac](https://github.com/kurtome/leap/commit/800529acee9ad8798a68337c95f6536635fca94b))

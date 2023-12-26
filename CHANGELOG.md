@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`leap` - `v0.5.3`](#leap---v053)
+
+---
+
+#### `leap` - `v0.5.3`
+
+ - misc bug fixes
+
+
+## 2023-12-25
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`leap` - `v0.5.2+1`](#leap---v0521)
 
 ---
