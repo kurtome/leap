@@ -185,7 +185,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         prevCollisionInfo.downCollision!.gridX >= 0 &&
         prevCollisionInfo.downCollision!.gridY >= 0) {
       final prevDown = prevCollisionInfo.downCollision!;
-      if (velocity.x > 0) {
+      if (velocity.x > 0 && prevDown.gridX < map.groundTiles.length - 1) {
         // Walking down slope to the right.
         final nextSlopeYDelta = prevDown.rightTop == 0 ? 1 : 0;
         final nextSlope = map.groundTiles[prevDown.gridX + 1]
@@ -195,7 +195,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         } else if (nextSlope != null && nextSlope.isSlopeFromRight) {
           collisionInfo.addDownCollision(nextSlope);
         }
-      } else if (velocity.x < 0) {
+      } else if (velocity.x < 0 && prevDown.gridX >= 1) {
         // Walking down slope to the left.
         final nextSlopeYDelta = prevDown.leftTop == 0 ? 1 : 0;
         final nextSlope = map.groundTiles[prevDown.gridX - 1]
