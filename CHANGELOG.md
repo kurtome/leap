@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-12-25
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`leap` - `v0.5.2+1`](#leap---v0521)
+
+---
+
+#### `leap` - `v0.5.2+1`
+
+ - **FIX**: misc clean-up ([#40](https://github.com/kurtome/leap/issues/40)). ([800529ac](https://github.com/kurtome/leap/commit/800529acee9ad8798a68337c95f6536635fca94b))
+
+
 ## 2023-12-05
 
 ### Changes
