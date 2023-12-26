@@ -1,6 +1,7 @@
 import 'dart:developer' as developer;
 
 import 'package:flame/extensions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:leap/leap.dart';
 import 'package:tiled/tiled.dart';
 
@@ -9,10 +10,11 @@ import 'package:tiled/tiled.dart';
 abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
   MovingPlatform({
     required Vector2 initialPosition,
-    required double tileSize,
-    required this.tilePath,
     required this.moveSpeed,
+    required this.tilePath,
     this.loopMode = MovingPlatformLoopMode.reverseAndLoop,
+    this.tiledObject,
+    super.size,
     // moving platforms should update before other entities so anything
     // standing on top of it from the previous frame can be properly moved
     // with the platform.
@@ -21,24 +23,21 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
     tags.add(CommonTags.ground);
 
     position = initialPosition;
-
-    // Snap to the closes position on the tile grid
-    position.x = position.x - position.x % tileSize;
-    position.y = position.y - position.y % tileSize;
-
-    this.positionPath = _calculatePositionPath(position, tilePath, tileSize);
   }
 
   MovingPlatform.fromTiledObject(
     TiledObject tiledObject,
-    double tileSize,
   ) : this(
           initialPosition: Vector2(tiledObject.x, tiledObject.y),
+          size: Vector2(tiledObject.width, tiledObject.height),
           moveSpeed: _parseMoveSpeed(tiledObject),
           tilePath: _parseTilePath(tiledObject),
           loopMode: _parseLoopMode(tiledObject),
-          tileSize: tileSize,
+          tiledObject: tiledObject,
         );
+
+  /// [TiledObject] this was built from
+  final TiledObject? tiledObject;
 
   /// Move speed in tiles per second
   final Vector2 moveSpeed;
@@ -65,6 +64,14 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
   bool _stopped = false;
 
   @override
+  @mustCallSuper
+  void onLoad() {
+    if (tiledObject != null) {}
+    this.positionPath = _calculatePositionPath(position, tilePath, tileSize);
+  }
+
+  @override
+  @mustCallSuper
   void update(double dt) {
     super.update(dt);
 

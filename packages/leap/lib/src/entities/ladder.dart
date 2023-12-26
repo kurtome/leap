@@ -8,6 +8,7 @@ abstract class Ladder<T extends LeapGame> extends PhysicalEntity<T> {
     super.position,
     super.size,
     this.topExtraHitbox = 0,
+    this.tiledObject,
   }) : super(static: true) {
     y = y - topExtraHitbox;
     height = height + topExtraHitbox;
@@ -23,6 +24,7 @@ abstract class Ladder<T extends LeapGame> extends PhysicalEntity<T> {
             tiledObject.height,
           ),
           topExtraHitbox: topExtraHitbox,
+          tiledObject: tiledObject,
         );
 
   // Extra hitbox is to make it easier for the ladder hitbox to
@@ -32,6 +34,9 @@ abstract class Ladder<T extends LeapGame> extends PhysicalEntity<T> {
 
   /// The actual top of the ladder
   double get logicalTop => top + topExtraHitbox;
+
+  /// [TiledObject] this was built from
+  final TiledObject? tiledObject;
 }
 
 /// The possible ladder movement states.
