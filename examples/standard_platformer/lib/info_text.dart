@@ -23,7 +23,7 @@ class InfoText extends PhysicalEntity<ExamplePlatformerLeapGame> {
       text: text,
       position: Vector2(-16, -48),
       boxConfig:
-          TextBoxConfig(dismissDelay: 3, margins: const EdgeInsets.all(4)),
+          const TextBoxConfig(dismissDelay: 3, margins: EdgeInsets.all(4)),
       textRenderer: TextPaint(
         style: TextStyle(
           fontSize: 8,
