@@ -1,3 +1,7 @@
+## 0.5.4
+
+ - **FEAT**: upgrading flame to 1.18 ([#44](https://github.com/kurtome/leap/issues/44)). ([dd0b81ab](https://github.com/kurtome/leap/commit/dd0b81ab7249d73153810fd20ecc0828ff6434aa))
+
 ## 0.5.3
 
  - misc bug fixes
