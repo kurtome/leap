@@ -22,8 +22,8 @@ class WelcomeDialog extends TextBoxComponent {
           textRenderer: TextPaint(style: textStyle),
           anchor: Anchor.center,
           // center
-          boxConfig: TextBoxConfig(
-            margins: const EdgeInsets.all(4),
+          boxConfig: const TextBoxConfig(
+            margins: EdgeInsets.all(4),
             timePerChar: 0.06,
             dismissDelay: 3,
           ),
