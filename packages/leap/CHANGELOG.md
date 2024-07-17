@@ -1,3 +1,9 @@
+## 0.6.0
+
+> Note: This release has breaking changes.
+
+ - **BREAKING** **FIX**: pubspec flutter version must a minimum ([#45](https://github.com/kurtome/leap/issues/45)). ([a5cc357d](https://github.com/kurtome/leap/commit/a5cc357d9c2a6aa9b583e22c66c731bef88ffa61))
+
 ## 0.5.4
 
  - **FEAT**: upgrading flame to 1.18 ([#44](https://github.com/kurtome/leap/issues/44)). ([dd0b81ab](https://github.com/kurtome/leap/commit/dd0b81ab7249d73153810fd20ecc0828ff6434aa))
