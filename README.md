@@ -250,10 +250,10 @@ width and height of the tile.
 Specialized ground tiles:
 
 - **Slopes** for terrain the physical can walk up/down like a hill. These tiles
-  must have their `class` property set to `"Slope"` and two custom `int`
-  properties `LeftTop` and `RightTop`. For example, a 16x16 pixel tile with
-  `LeftTop = 0` and `RightTop = 8` indicates slope that is ascending when moving
-  from left-to-right.
+  must have two custom `int` properties `LeftTop` and `RightTop`. For example, a
+  16x16 pixel tile with `LeftTop = 0` and `RightTop = 8` indicates slope that is
+  ascending when moving from left-to-right. Alternatively the tile can have
+  `LeftBottom` and `RightBottom` for pitched (sloped on the bottom) tile.
 - **One Way Platforms** for terrain the physical entities can move up (e.g.
   jump) through from all but one direction. These are implemented via
   `GroundTileHandler` classes, and can therefore use and `class` you want via
