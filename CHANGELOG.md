@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-07-21
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`leap` - `v0.6.1`](#leap---v061)
+
+---
+
+#### `leap` - `v0.6.1`
+
+ - **FEAT**: adding support for pitched tiles (sloped ceilings) ([#46](https://github.com/kurtome/leap/issues/46)). ([12e90080](https://github.com/kurtome/leap/commit/12e90080af865af5e416c6c6afa52e7644beae80))
+
+
 ## 2024-07-17
 
 ### Changes

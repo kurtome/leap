@@ -1,3 +1,7 @@
+## 0.6.1
+
+ - **FEAT**: adding support for pitched tiles (sloped ceilings) ([#46](https://github.com/kurtome/leap/issues/46)). ([12e90080](https://github.com/kurtome/leap/commit/12e90080af865af5e416c6c6afa52e7644beae80))
+
 ## 0.6.0
 
 > Note: This release has breaking changes.
