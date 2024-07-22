@@ -168,13 +168,13 @@ class LeapMapGroundTile extends PhysicalEntity {
 
   /// Topmost point on the left side, important for slopes.
   @override
-  int? get leftTop => _leftTop;
-  int? _leftTop;
+  int? get leftTopOffset => _leftTopOffset;
+  int? _leftTopOffset;
 
   /// Topmost point on the right side, important for slopes.
   @override
-  int? get rightTop => _rightTop;
-  int? _rightTop;
+  int? get rightTopOffset => _rightTopOffset;
+  int? _rightTopOffset;
 
   /// Is this a sloped section of ground? If so, this is handled specially
   /// in collision detection to ensure player (or other characters) can walk
@@ -182,6 +182,23 @@ class LeapMapGroundTile extends PhysicalEntity {
   @override
   bool get isSlope => _isSlope;
   late bool _isSlope;
+
+  /// Is this a pitched (sloped on the bottom) section of ground?
+  /// If so, this is handled specially in collision detection to
+  /// ensure player (or other characters) can walk up and down it properly.
+  @override
+  bool get isPitch => _isPitch;
+  late bool _isPitch;
+
+  /// Bottommost point on the left side, for pitched ceilings.
+  @override
+  int? get leftBottomOffset => _leftBottomOffset;
+  int? _leftBottomOffset;
+
+  /// Bottommost point on the right side, for pitched ceilings.
+  @override
+  int? get rightBottomOffset => _rightBottomOffset;
+  int? _rightBottomOffset;
 
   LeapMapGroundTile(
     this.tile,
@@ -194,13 +211,21 @@ class LeapMapGroundTile extends PhysicalEntity {
     height = game.tileSize;
     position = Vector2(tileSize * _gridX, tileSize * _gridY);
 
-    _isSlope = tile.type == tiledOptions.slopeType;
-    _rightTop = tile.properties.getValue<int>(
-      tiledOptions.slopeRightTopProperty,
+    _rightTopOffset = tile.properties.getValue<int>(
+      tiledOptions.rightTopProperty,
     );
-    _leftTop = tile.properties.getValue<int>(
-      tiledOptions.slopeLeftTopProperty,
+    _leftTopOffset = tile.properties.getValue<int>(
+      tiledOptions.leftTopProperty,
     );
+    _isSlope = _rightTopOffset != null && _leftTopOffset != null;
+
+    _rightBottomOffset = tile.properties.getValue<int>(
+      tiledOptions.rightBottomProperty,
+    );
+    _leftBottomOffset = tile.properties.getValue<int>(
+      tiledOptions.leftBottomProperty,
+    );
+    _isPitch = _rightBottomOffset != null && _leftBottomOffset != null;
 
     tags.add(CommonTags.ground);
 
@@ -217,16 +242,28 @@ class LeapMapGroundTile extends PhysicalEntity {
         0;
   }
 
-  /// Is this a slop going up from left-to-right.
+  /// Is this a slope going up from left-to-right.
   @override
   bool get isSlopeFromLeft {
-    return isSlope && (leftTop! < rightTop!);
+    return isSlope && (leftTopOffset! < rightTopOffset!);
   }
 
-  /// Is this a slop going up from right-to-left.
+  /// Is this a slope going up from right-to-left.
   @override
   bool get isSlopeFromRight {
-    return isSlope && (leftTop! > rightTop!);
+    return isSlope && (leftTopOffset! > rightTopOffset!);
+  }
+
+  /// Is this a vaulted (sloped on the bottom) going up from left-to-right.
+  @override
+  bool get isPitchFromLeft {
+    return isPitch && (leftBottomOffset! > rightBottomOffset!);
+  }
+
+  /// Is this a vaulted (sloped on the bottom) going up from right-to-left.
+  @override
+  bool get isPitchFromRight {
+    return isPitch && (leftBottomOffset! < rightBottomOffset!);
   }
 
   /// The topmost point on this slope that current is within the
@@ -234,18 +271,41 @@ class LeapMapGroundTile extends PhysicalEntity {
   @override
   double relativeTop(PhysicalEntity other) {
     if (isSlopeFromLeft) {
-      final delta = rightTop! - leftTop!;
+      final delta = rightTopOffset! - leftTopOffset!;
       final fromLeftPx = other.right - left;
       final ratio = (fromLeftPx / tileSize).clamp(0, 1);
-      return (bottom - leftTop!) - (delta * ratio);
+      final result = (bottom - leftTopOffset!) - (delta * ratio);
+      return result;
     } else if (isSlopeFromRight) {
-      final delta = leftTop! - rightTop!;
+      final delta = leftTopOffset! - rightTopOffset!;
       final fromRightPx = other.left - left;
       final ratio = 1 - (fromRightPx / tileSize).clamp(0, 1);
-      return (bottom - rightTop!) - (delta * ratio);
+      final result = bottom - (rightTopOffset! + (delta * ratio));
+      return result;
     }
 
     return top;
+  }
+
+  /// The bottommost point on this that current is within the
+  /// horizontal bounds of [other].
+  @override
+  double relativeBottom(PhysicalEntity other) {
+    if (isPitchFromLeft) {
+      final delta = leftBottomOffset! - rightBottomOffset!;
+      final fromLeftPx = other.left - left;
+      final ratio = 1 - (fromLeftPx / tileSize).clamp(0, 1);
+      final result = top + (rightBottomOffset! + (delta * ratio));
+      return result;
+    } else if (isPitchFromRight) {
+      final delta = rightBottomOffset! - leftBottomOffset!;
+      final fromRightPx = right - other.right;
+      final ratio = 1 - (fromRightPx / tileSize).clamp(0, 1);
+      final result = top + (leftBottomOffset! + (delta * ratio));
+      return result;
+    }
+
+    return bottom;
   }
 
   /// Builds the tile grid full of ground tiles based on [groundLayer].

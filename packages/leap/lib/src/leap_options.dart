@@ -22,9 +22,10 @@ class TiledOptions {
     this.playerSpawnClass = 'PlayerSpawn',
     this.damageProperty = 'Damage',
     this.platformClass = 'Platform',
-    this.slopeType = 'Slope',
-    this.slopeRightTopProperty = 'RightTop',
-    this.slopeLeftTopProperty = 'LeftTop',
+    this.rightTopProperty = 'RightTop',
+    this.leftTopProperty = 'LeftTop',
+    this.rightBottomProperty = 'RightBottom',
+    this.leftBottomProperty = 'LeftBottom',
     this.atlasMaxX,
     this.atlasMaxY,
     this.tsxPackingFilter,
@@ -50,16 +51,21 @@ class TiledOptions {
   /// Which class name represents platform objects, defaults to "Platform".
   final String platformClass;
 
-  /// Which property name represents the slope type, defaults to "Slope".
-  final String slopeType;
-
-  /// Which property name represents the slope left bottom, defaults to
+  /// Which property name represents the left top, defaults to
   /// "RightTop".
-  final String slopeRightTopProperty;
+  final String rightTopProperty;
 
-  /// Which property name represents the slope right bottom, defaults to
+  /// Which property name represents the right top, defaults to
   /// "LeftTop".
-  final String slopeLeftTopProperty;
+  final String leftTopProperty;
+
+  /// Which property name represents the left bottom, defaults to
+  /// "RightBottom".
+  final String rightBottomProperty;
+
+  /// Which property name represents the right bottom, defaults to
+  /// "LeftBottom".
+  final String leftBottomProperty;
 
   /// The max width of the atlas texture, defaults to Flame Tiled default
   /// value when omitted.

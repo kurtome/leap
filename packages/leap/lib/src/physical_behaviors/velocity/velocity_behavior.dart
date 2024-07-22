@@ -16,7 +16,7 @@ class VelocityBehavior extends PhysicalBehavior {
     if (collisionInfo.up) {
       // Set the top of this to the bottom of the collision on top.
       velocity.y = 0;
-      top = collisionInfo.upCollision!.bottom;
+      top = collisionInfo.upCollision!.relativeBottom(parent);
     }
     if (collisionInfo.down) {
       // Set the bottom of this to the top of the collision underneath.
@@ -25,10 +25,14 @@ class VelocityBehavior extends PhysicalBehavior {
     }
     if (collisionInfo.right) {
       if (collisionInfo.rightCollision!.isSlopeFromLeft) {
-        // Special handling for jumping while walking uphill.
         bottom = math.min(
           bottom,
           collisionInfo.rightCollision!.relativeTop(parent),
+        );
+      } else if (collisionInfo.rightCollision!.isPitchFromRight) {
+        top = math.max(
+          top,
+          collisionInfo.rightCollision!.relativeBottom(parent),
         );
       } else {
         velocity.x = 0;
@@ -37,10 +41,14 @@ class VelocityBehavior extends PhysicalBehavior {
     }
     if (collisionInfo.left) {
       if (collisionInfo.leftCollision!.isSlopeFromRight) {
-        // Special handling for jumping while walking uphill.
         bottom = math.min(
           bottom,
           collisionInfo.leftCollision!.relativeTop(parent),
+        );
+      } else if (collisionInfo.leftCollision!.isPitchFromLeft) {
+        top = math.max(
+          top,
+          collisionInfo.leftCollision!.relativeBottom(parent),
         );
       } else {
         velocity.x = 0;
