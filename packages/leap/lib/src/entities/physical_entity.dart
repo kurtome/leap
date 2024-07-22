@@ -156,26 +156,46 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// horizontal position.
   double relativeTop(PhysicalEntity other) => top;
 
-  /// Defined so it can be overridden by slopes [LeapMapGroundTile]
+  /// Defined so it can be overridden by vaulted ceilings, relative bottom takes
+  /// into account the topmost point that could intersect [other] based on its
+  /// horizontal position.
+  double relativeBottom(PhysicalEntity other) => bottom;
+
+  /// Defined so it can be overridden by [LeapMapGroundTile]
   bool get isSlope => false;
 
-  /// Defined so it can be overridden by slopes [LeapMapGroundTile]
-  int? get rightTop => null;
+  /// Defined so it can be overridden by [LeapMapGroundTile]
+  bool get isPitch => false;
 
-  /// Defined so it can be overridden by slopes [LeapMapGroundTile]
-  int? get leftTop => null;
+  /// Defined so it can be overridden by [LeapMapGroundTile]
+  int? get rightTopOffset => null;
 
-  /// Defined so it can be overridden by slopes [LeapMapGroundTile]
+  /// Defined so it can be overridden by [LeapMapGroundTile]
+  int? get leftTopOffset => null;
+
+  /// Defined so it can be overridden by [LeapMapGroundTile]
+  int? get rightBottomOffset => null;
+
+  /// Defined so it can be overridden by [LeapMapGroundTile]
+  int? get leftBottomOffset => null;
+
+  /// Defined so it can be overridden by [LeapMapGroundTile]
   int get gridX => -1;
 
-  /// Defined so it can be overridden by slopes [LeapMapGroundTile]
+  /// Defined so it can be overridden by [LeapMapGroundTile]
   int get gridY => -1;
 
-  /// Defined so it can be overridden by slopes [LeapMapGroundTile]
+  /// Defined so it can be overridden by [LeapMapGroundTile]
   bool get isSlopeFromLeft => false;
 
-  /// Defined so it can be overridden by slopes [LeapMapGroundTile]
+  /// Defined so it can be overridden by [LeapMapGroundTile]
   bool get isSlopeFromRight => false;
+
+  /// Defined so it can be overridden by [LeapMapGroundTile]
+  bool get isPitchFromLeft => false;
+
+  /// Defined so it can be overridden by [LeapMapGroundTile]
+  bool get isPitchFromRight => false;
 
   /// How much damage this does by default to other entities.
   /// This property has no affect on its own, it is for custom logic.

@@ -94,6 +94,13 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
           } else {
             collisionInfo.addRightCollision(firstRightHit);
           }
+        } else if (firstRightHit.isPitchFromRight) {
+          if (velocity.y <= 0) {
+            // Ignore pitch above while moving down.
+            collisionInfo.addUpCollision(firstRightHit);
+          } else {
+            collisionInfo.addRightCollision(firstRightHit);
+          }
         } else if (firstRightHit.left >= right) {
           _tmpHits
               .where((c) => c.left == firstRightHit.left)
@@ -120,6 +127,14 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
           } else {
             collisionInfo.addLeftCollision(firstLeftHit);
           }
+        } else if (firstLeftHit.isPitchFromLeft) {
+          // Ignore pitch above while moving downward, should not collide
+          // on left.
+          if (velocity.y <= 0) {
+            collisionInfo.addUpCollision(firstLeftHit);
+          } else {
+            collisionInfo.addLeftCollision(firstLeftHit);
+          }
         } else if (firstLeftHit.right <= left) {
           _tmpHits
               .where((c) => c.right == firstLeftHit.right)
@@ -136,7 +151,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         !collisionInfo.onSlope) {
       // Moving down.
       _calculateSolidHits((c) {
-        return c.bottom > bottom &&
+        return c.relativeBottom(_hitboxProxy) > bottom &&
             c.isSolidFromTop &&
             // For one-way platforms from underneath, make sure this is
             // currently above it so this doesn't pop up on top of it
@@ -153,11 +168,17 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
           } else if (!a.isSlope && b.isSlope) {
             return 1;
           }
-          return a.relativeTop(_hitboxProxy).compareTo(b.top);
+          return a
+              .relativeTop(_hitboxProxy)
+              .compareTo(b.relativeTop(_hitboxProxy));
         });
         final firstDown = _tmpHits.first;
         _tmpHits
-            .where((h) => h.top == firstDown.top)
+            .where(
+              (h) =>
+                  h.relativeTop(_hitboxProxy) ==
+                  firstDown.relativeTop(_hitboxProxy),
+            )
             .forEach(collisionInfo.addDownCollision);
       }
     }
@@ -165,14 +186,18 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     if (velocity.y < 0) {
       // Moving up.
       _calculateSolidHits((c) {
-        return c.top <= top &&
+        return c.relativeTop(_hitboxProxy) <= top &&
             // Bottom edge of this the below top of c.
-            c.bottom >= _hitboxProxy.top &&
+            c.relativeBottom(_hitboxProxy) >= _hitboxProxy.top &&
             c.isSolidFromBottom;
       });
 
       if (_tmpHits.isNotEmpty) {
-        _tmpHits.sort((a, b) => a.bottom.compareTo(b.bottom));
+        _tmpHits.sort(
+          (a, b) => a.relativeBottom(_hitboxProxy).compareTo(
+                b.relativeBottom(_hitboxProxy),
+              ),
+        );
         _tmpHits.forEach(collisionInfo.addUpCollision);
       }
     }
@@ -187,7 +212,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
       final prevDown = prevCollisionInfo.downCollision!;
       if (velocity.x > 0 && prevDown.gridX < map.groundTiles.length - 1) {
         // Walking down slope to the right.
-        final nextSlopeYDelta = prevDown.rightTop == 0 ? 1 : 0;
+        final nextSlopeYDelta = prevDown.rightTopOffset == 0 ? 1 : 0;
         final nextSlope = map.groundTiles[prevDown.gridX + 1]
             [prevDown.gridY + nextSlopeYDelta];
         if (prevDown.right >= left) {
@@ -197,7 +222,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         }
       } else if (velocity.x < 0 && prevDown.gridX >= 1) {
         // Walking down slope to the left.
-        final nextSlopeYDelta = prevDown.leftTop == 0 ? 1 : 0;
+        final nextSlopeYDelta = prevDown.leftTopOffset == 0 ? 1 : 0;
         final nextSlope = map.groundTiles[prevDown.gridX - 1]
             [prevDown.gridY + nextSlopeYDelta];
         if (prevDown.left <= right) {
@@ -267,10 +292,10 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     // in that direction and collided with something.
 
     if (collisionInfo.up) {
-      _hitboxProxy.top = collisionInfo.upCollision!.bottom;
+      _hitboxProxy.top = collisionInfo.upCollision!.relativeBottom(parent);
     }
     if (collisionInfo.down) {
-      _hitboxProxy.bottom = collisionInfo.downCollision!.top;
+      _hitboxProxy.bottom = collisionInfo.downCollision!.relativeTop(parent);
     }
     if (collisionInfo.left) {
       _hitboxProxy.left = collisionInfo.leftCollision!.right;
@@ -346,11 +371,12 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
       throw AssertionError('Collision detection requires Anchor.topLeft');
     }
 
-    final bHeight = b.bottom - b.relativeTop(a);
+    final bBottom = b.relativeBottom(a);
+    final bHeight = bBottom - b.relativeTop(a);
     // This works by checking if the distance between the objects is less than
     // their combined width (meaning they must overlap).
     return ((a.centerX - b.centerX).abs() * 2 < (a.width + b.width)) &&
-        ((a.centerY - (b.bottom - (bHeight / 2))).abs() * 2 <
+        ((a.centerY - (bBottom - (bHeight / 2))).abs() * 2 <
             (a.height + bHeight));
   }
 }
