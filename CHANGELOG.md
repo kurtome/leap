@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-08-10
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`leap` - `v0.6.2`](#leap---v062)
+
+---
+
+#### `leap` - `v0.6.2`
+
+ - **FEAT**: LeapWorld clean-up and other fixes ([#47](https://github.com/kurtome/leap/issues/47)). ([a1a9979f](https://github.com/kurtome/leap/commit/a1a9979fc1026fdf1a724e8eb9f0331ac6c0ce88))
+
+
 ## 2024-07-21
 
 ### Changes

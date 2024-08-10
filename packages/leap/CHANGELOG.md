@@ -1,3 +1,7 @@
+## 0.6.2
+
+ - **FEAT**: LeapWorld clean-up and other fixes ([#47](https://github.com/kurtome/leap/issues/47)). ([a1a9979f](https://github.com/kurtome/leap/commit/a1a9979fc1026fdf1a724e8eb9f0331ac6c0ce88))
+
 ## 0.6.1
 
  - **FEAT**: adding support for pitched tiles (sloped ceilings) ([#46](https://github.com/kurtome/leap/issues/46)). ([12e90080](https://github.com/kurtome/leap/commit/12e90080af865af5e416c6c6afa52e7644beae80))
