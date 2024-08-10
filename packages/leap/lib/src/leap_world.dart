@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:math' as math;
 
 import 'package:flame/components.dart';
+import 'package:flutter/foundation.dart';
 import 'package:leap/leap.dart';
 
 /// The world component encapsulates the physics engine
@@ -10,20 +11,33 @@ import 'package:leap/leap.dart';
 /// Any [PhysicalEntity] added anywhere in the [LeapGame] component tree
 /// will automatically be part of the world via [physicals].
 class LeapWorld extends World with HasGameRef<LeapGame>, HasTimeScale {
-  LeapWorld({this.tileSize = 16})
-      : gravity = tileSize * 32,
-        maxVelocity = tileSize * 20;
+  LeapWorld();
 
   /// Tile size (width and height) in pixels.
-  final double tileSize;
+  double get tileSize => game.tileSize;
 
   /// Gravity to apply to physical components per-second.
   late double gravity;
 
-  /// Maximum velocity of physical components per-second.
-  late double maxVelocity;
+  /// Maximum velocity from gravity of physical components per-second.
+  late double maxGravityVelocity;
 
   LeapMap get map => gameRef.leapMap;
+
+  /// Called as soon as the [LeapGame.tileSize] is known, and any time it
+  /// changes.
+  @mustCallSuper
+  void onTileSize(double tileSize) {
+    // Setup default physics constants
+    gravity = tileSize * 32;
+    maxGravityVelocity = tileSize * 20;
+  }
+
+  @override
+  @mustCallSuper
+  void onLoad() {
+    super.onLoad();
+  }
 
   @override
   void update(double dt) {
@@ -37,7 +51,7 @@ class LeapWorld extends World with HasGameRef<LeapGame>, HasTimeScale {
     )) {
       final y = physical.velocity.y;
       final desiredVelocity = (gAccel * physical.gravityRate) + y;
-      physical.velocity.y = math.min(desiredVelocity, maxVelocity);
+      physical.velocity.y = math.min(desiredVelocity, maxGravityVelocity);
     }
     super.update(dt);
   }

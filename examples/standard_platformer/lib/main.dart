@@ -28,7 +28,7 @@ class ExamplePlatformerLeapGame extends LeapGame
     with TapCallbacks, HasKeyboardHandlerComponents {
   ExamplePlatformerLeapGame({
     required super.tileSize,
-  });
+  }) : super(world: LeapWorld());
 
   Player? player;
   late final ThreeButtonInput input;

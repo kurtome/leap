@@ -4,16 +4,25 @@ import 'package:flutter/widgets.dart';
 import 'package:leap/leap.dart';
 
 /// A [FlameGame] with all the Leap built-ins.
-class LeapGame extends FlameGame<LeapWorld> {
+class LeapGame<TWorld extends LeapWorld> extends FlameGame<TWorld> {
   LeapGame({
-    required this.tileSize,
+    required double tileSize,
+    required super.world,
     this.appState = AppLifecycleState.resumed,
     this.configuration = const LeapConfiguration(),
-  }) : super(world: LeapWorld(tileSize: tileSize));
+  }) {
+    _tileSize = tileSize;
+    world.onTileSize(this.tileSize);
+  }
 
   /// Size of each tile in the Tiled [LeapMap].
   /// Many pieces of the system use this as a base unit for distance.
-  final double tileSize;
+  late double _tileSize;
+  double get tileSize => _tileSize;
+  set tileSize(double ts) {
+    _tileSize = ts;
+    world.onTileSize(this.tileSize);
+  }
 
   /// The current leap map. This can be changed via [loadWorldAndMap]
   LeapMap get leapMap {

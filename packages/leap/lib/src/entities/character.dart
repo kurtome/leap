@@ -54,6 +54,14 @@ class Character<T extends LeapGame> extends PhysicalEntity<T> {
     }
   }
 
+  /// Removes health without going below 0. [amount] must be positive.
+  ///
+  /// Can be overriden to have more fine grained control over health mechanics.
+  void damage(int amount) {
+    assert(amount > 0);
+    health = (health - amount).clamp(0, health);
+  }
+
   /// Called when this entity dies, typically due to health dropping below one.
   ///
   /// This will be invoked after this has been marked for removal
