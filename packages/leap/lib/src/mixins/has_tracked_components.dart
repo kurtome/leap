@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:leap/leap.dart';
 
+@Deprecated('no longer in use')
 mixin HasTrackedComponents<W extends LeapWorld> on FlameGame<W> {
   final Map<Type, dynamic> allTrackedComponents = <Type, dynamic>{};
 
@@ -14,6 +15,7 @@ mixin HasTrackedComponents<W extends LeapWorld> on FlameGame<W> {
   }
 }
 
+@Deprecated('no longer in use')
 mixin TrackedComponent<K, T extends HasTrackedComponents> on HasGameRef<T> {
   @override
   void onMount() {

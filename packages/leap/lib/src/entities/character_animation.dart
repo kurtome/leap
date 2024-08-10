@@ -24,6 +24,7 @@ class CharacterAnimation<TKey, TChar extends Character>
     this.hitboxAnchor = Anchor.bottomCenter,
     super.animations,
     super.autoResize = true, // probably want to auto-resize
+    super.autoResetTicker = true,
     super.removeOnFinish,
     super.playing,
     super.paint,
@@ -46,18 +47,9 @@ class CharacterAnimation<TKey, TChar extends Character>
   /// The parent character this is added to.
   TChar get character => ancestor;
 
-  TKey? _prevCurrent;
-
   @override
   @mustCallSuper
   void update(double dt) {
-    if (_prevCurrent != current) {
-      // Assume that we want to start the new animation at the beginning,
-      // not wherever it last left off.
-      animationTicker?.reset();
-    }
-    _prevCurrent = current;
-
     if (character.anchor != Anchor.topLeft) {
       throw Exception(
         'Character must have topLeft anchor instead of ${character.anchor}.',

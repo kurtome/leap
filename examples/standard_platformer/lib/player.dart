@@ -328,7 +328,7 @@ class PlayerSpriteAnimation extends CharacterAnimation<_AnimationState, Player>
         }
       } else {
         // In the air.
-        if (character.velocity.y > (game.world.maxVelocity / 4)) {
+        if (character.velocity.y > (game.world.maxGravityVelocity / 4)) {
           current = _AnimationState.fall;
         } else if (character.velocity.y < 0) {
           current = _AnimationState.jump;

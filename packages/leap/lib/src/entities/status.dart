@@ -1,5 +1,7 @@
 import 'package:flame/components.dart';
+import 'package:flutter/foundation.dart';
 import 'package:leap/leap.dart';
+import 'package:leap/src/entities/physical_entity.dart';
 
 /// A base for building status effects pertaining to [PhysicalEntity]. Effects
 /// which could are reusable are typically implemented as mixins
@@ -8,15 +10,22 @@ import 'package:leap/leap.dart';
 ///
 /// It is the responsibility of code affected by these status effects to check
 /// if the entity has any relevant status before exucuting relevant logic.
-class StatusComponent extends PositionComponent {
+class StatusComponent<T extends PhysicalEntity> extends PositionComponent
+    with HasAncestor<T> {
+  T get entity => ancestor;
+
   @override
+  @mustCallSuper
   void onMount() {
-    (parent! as PhysicalEntity).onStatusMount(this);
+    super.onMount();
+    entity.onStatusMount(this);
   }
 
   @override
+  @mustCallSuper
   void onRemove() {
-    (parent! as PhysicalEntity).onStatusRemove(this);
+    entity.onStatusRemove(this);
+    super.onRemove();
   }
 }
 
