@@ -15,9 +15,7 @@ class Character<T extends LeapGame> extends PhysicalEntity<T> {
     super.priority,
     super.position,
     super.size,
-  }) : super() {
-    _wasAlive = isAlive;
-  }
+  });
 
   /// The health of this character, when positive this is "alive".
   int health;
@@ -37,10 +35,8 @@ class Character<T extends LeapGame> extends PhysicalEntity<T> {
   /// Whether or not this is "dead" (or destroyed) in the game.
   bool get isDead => !isAlive;
 
-  bool _wasAlive = true;
-
   /// Indicates that this was alive on the previous [update] loop
-  bool get wasAlive => _wasAlive;
+  bool wasAlive = true;
 
   CharacterAnimation? _characterAnimation;
   CharacterAnimation? get characterAnimation => _characterAnimation;
@@ -72,6 +68,13 @@ class Character<T extends LeapGame> extends PhysicalEntity<T> {
 
   @override
   @mustCallSuper
+  void updateTree(double dt) {
+    super.updateTree(dt);
+    wasAlive = isAlive;
+  }
+
+  @override
+  @mustCallSuper
   void update(double dt) {
     super.update(dt);
 
@@ -88,7 +91,5 @@ class Character<T extends LeapGame> extends PhysicalEntity<T> {
       _removingFromDeath = false;
       removeFromParent();
     }
-
-    _wasAlive = isAlive;
   }
 }
