@@ -6,10 +6,7 @@ import 'package:leap/leap.dart';
 /// Contains all the logic for the collision detection system,
 /// updates the [velocity], [x], [y], and [collisionInfo] of the as needed.
 class CollisionDetectionBehavior extends PhysicalBehavior {
-  CollisionDetectionBehavior() : prevCollisionInfo = CollisionInfo();
-
-  /// The previous collision information of the entity.
-  final CollisionInfo prevCollisionInfo;
+  CollisionDetectionBehavior();
 
   /// All potential hits for this `update` cycle
   final List<PhysicalEntity> _potentialHits = [];

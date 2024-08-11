@@ -33,7 +33,6 @@ class CharacterAnimation<TKey, TChar extends Character>
     super.scale,
     super.angle,
     super.nativeAngle,
-    super.anchor,
     super.children,
     super.priority,
     super.key,
