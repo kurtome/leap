@@ -5,6 +5,10 @@ import 'package:leap/leap.dart';
 /// Base class for behaviors on [PhysicalEntity].
 abstract class PhysicalBehavior<T extends PhysicalEntity> extends Behavior<T> {
   CollisionInfo get collisionInfo => parent.collisionInfo;
+  CollisionInfo get prevCollisionInfo => parent.prevCollisionInfo;
+
+  Vector2 get position => parent.position;
+  Vector2 get prevPosition => parent.prevPosition;
 
   double get x => parent.x;
   double get y => parent.y;

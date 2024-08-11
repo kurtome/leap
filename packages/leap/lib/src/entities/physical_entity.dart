@@ -48,6 +48,12 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   /// Collision detection status from the latest [update].
   final CollisionInfo collisionInfo = CollisionInfo();
 
+  /// [collisionInfo] from last game tick
+  final CollisionInfo prevCollisionInfo = CollisionInfo();
+
+  /// [position] from last game tick
+  final Vector2 prevPosition = Vector2.zero();
+
   /// Multiplier on standard gravity, see [LeapWorld].
   double gravityRate = 1;
 
@@ -72,6 +78,16 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
 
   _DebugHitboxComponent? _debugHitboxComponent;
   _DebugCollisionsComponent? _debugCollisionsComponent;
+
+  @override
+  @mustCallSuper
+  void updateTree(double dt) {
+    // `super.updateTree` calls `this.update` and then updates all children,
+    // which is where collision detection and position updates happen
+    super.updateTree(dt);
+
+    prevPosition.setFrom(position);
+  }
 
   @override
   @mustCallSuper
@@ -213,6 +229,11 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
     y = newTop;
   }
 
+  /// [top] from last game tick
+  double get prevTop {
+    return prevPosition.y;
+  }
+
   /// Bottommost point.
   double get bottom {
     return y + height;
@@ -220,6 +241,11 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
 
   set bottom(double newBottom) {
     y = newBottom - height;
+  }
+
+  /// [bottom] from last game tick
+  double get prevBottom {
+    return prevPosition.y + height;
   }
 
   /// Horizontal grid coordinate of the leftmost point on this.
