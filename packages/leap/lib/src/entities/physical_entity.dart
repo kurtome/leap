@@ -9,6 +9,9 @@ import 'package:leap/leap.dart';
 ///
 /// [static] components can be collided with but never move and have a much
 /// smaller performance impact on the game loop.
+///
+/// See [update] for informatoin on ordering your logic, you may want to
+/// use [updateAfter] or a [Behavior]
 abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
     with HasGameRef<TGame> {
   /// Position object to store the x/y components.
@@ -85,16 +88,23 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
     // `super.updateTree` calls `this.update` and then updates all children,
     // which is where collision detection and position updates happen
     super.updateTree(dt);
-
-    prevPosition.setFrom(position);
+    // after [this.update] and children are updated
+    updateAfter(dt);
   }
 
+  /// Note that this is called BEFORE behaviors and other child components,
+  /// therefore you may prefer to use [updateAfter] or add a [Behavior]
   @override
   @mustCallSuper
   void update(double dt) {
     super.update(dt);
+  }
 
+  /// after [update] and children are updated
+  @mustCallSuper
+  void updateAfter(double dt) {
     _updateDebugHitbox();
+    prevPosition.setFrom(position);
   }
 
   void _updateDebugHitbox() {

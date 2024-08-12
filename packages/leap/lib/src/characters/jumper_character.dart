@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:leap/src/characters/jumper_behavior.dart';
 import 'package:leap/src/entities/entities.dart';
 import 'package:leap/src/leap_game.dart';
 
+/// An example base class for a jumping player character
 class JumperCharacter<TGame extends LeapGame> extends Character<TGame> {
   JumperCharacter({super.removeOnDeath, super.health})
       : super(behaviors: [JumperBehavior()]);
@@ -12,6 +14,9 @@ class JumperCharacter<TGame extends LeapGame> extends Character<TGame> {
   /// Indicates the character is actively jumping (not just in the air).
   /// Typically this means the jump button is being held down.
   bool jumping = false;
+
+  /// Was [jumping] in previous game tick
+  bool wasJumping = false;
 
   /// When true moves at [walkSpeed] in the direction the
   /// character is facing.
@@ -40,6 +45,7 @@ class JumperCharacter<TGame extends LeapGame> extends Character<TGame> {
   bool get isOnGround => collisionInfo.down;
 
   @override
+  @mustCallSuper
   void update(double dt) {
     super.update(dt);
 
@@ -50,5 +56,12 @@ class JumperCharacter<TGame extends LeapGame> extends Character<TGame> {
         characterAnimation!.scale.x = characterAnimation!.scale.x.abs();
       }
     }
+  }
+
+  @override
+  @mustCallSuper
+  void updateAfter(double dt) {
+    wasJumping = jumping;
+    super.updateAfter(dt);
   }
 }

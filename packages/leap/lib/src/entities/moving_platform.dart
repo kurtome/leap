@@ -72,17 +72,12 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
 
   @override
   @mustCallSuper
-  void update(double dt) {
-    super.update(dt);
-
+  void updateAfter(double dt) {
     if (!_stopped) {
-      final prevX = x;
-      final prevY = y;
-
       _updatePositionAndLoop(dt);
 
-      final deltaX = x - prevX;
-      final deltaY = y - prevY;
+      final deltaX = x - prevPosition.x;
+      final deltaY = y - prevPosition.y;
       // Update the position of anything on top of this platform. Ideally
       // this happens before the other entity's collision logic
       world.physicals
@@ -92,6 +87,8 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
         element.y += deltaY;
       });
     }
+
+    super.updateAfter(dt);
   }
 
   void _updatePositionAndLoop(double dt) {

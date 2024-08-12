@@ -44,12 +44,7 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
   }
 
   @override
-  void update(double dt) {
-    super.update(dt);
-
-    final wasAlive = isAlive;
-    final wasJumping = jumping;
-
+  void updateAfter(double dt) {
     updateHandleInput(dt);
 
     updateCollisionInteractions(dt);
@@ -71,6 +66,8 @@ class Player extends JumperCharacter<ExamplePlatformerLeapGame> {
     if (!wasJumping && jumping) {
       FlameAudio.play('jump.wav');
     }
+
+    super.updateAfter(dt);
   }
 
   void resetPosition() {
