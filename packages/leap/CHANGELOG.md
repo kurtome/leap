@@ -1,3 +1,11 @@
+## 0.7.0
+
+> Note: This release has breaking changes.
+
+ - **FIX**: wasAlive now happens after children update ([#49](https://github.com/kurtome/leap/issues/49)). ([85180b11](https://github.com/kurtome/leap/commit/85180b117b25e6a6844e3e0e1bfefb62d69df12c))
+ - **FEAT**: adding prevPosition to physical entity ([#48](https://github.com/kurtome/leap/issues/48)). ([14077a41](https://github.com/kurtome/leap/commit/14077a4105d89ccefc57df243a0a4444d3dce806))
+ - **BREAKING** **FIX**: moving some entity logic to updateAfter ([#50](https://github.com/kurtome/leap/issues/50)). ([bd3aa33c](https://github.com/kurtome/leap/commit/bd3aa33cad022d8edce951abb994da82351fd58c))
+
 ## 0.6.2
 
  - **FEAT**: LeapWorld clean-up and other fixes ([#47](https://github.com/kurtome/leap/issues/47)). ([a1a9979f](https://github.com/kurtome/leap/commit/a1a9979fc1026fdf1a724e8eb9f0331ac6c0ce88))

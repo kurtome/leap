@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-08-11
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`leap` - `v0.7.0`](#leap---v070)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `leap` - `v0.7.0`
+
+ - **FIX**: wasAlive now happens after children update ([#49](https://github.com/kurtome/leap/issues/49)). ([85180b11](https://github.com/kurtome/leap/commit/85180b117b25e6a6844e3e0e1bfefb62d69df12c))
+ - **FEAT**: adding prevPosition to physical entity ([#48](https://github.com/kurtome/leap/issues/48)). ([14077a41](https://github.com/kurtome/leap/commit/14077a4105d89ccefc57df243a0a4444d3dce806))
+ - **BREAKING** **FIX**: moving some entity logic to updateAfter ([#50](https://github.com/kurtome/leap/issues/50)). ([bd3aa33c](https://github.com/kurtome/leap/commit/bd3aa33cad022d8edce951abb994da82351fd58c))
+
+
 ## 2024-08-10
 
 ### Changes
