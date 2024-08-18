@@ -104,9 +104,8 @@ class LeapGame<TWorld extends LeapWorld> extends FlameGame<TWorld> {
       tiledObjectHandlers: tiledObjectHandlers,
       groundTileHandlers: groundTileHandlers,
     );
-    onMapLoaded(_leapMap!);
-
     await world.add(leapMap);
+    onMapLoaded(_leapMap!);
 
     if (mapTransition != null) {
       mapTransition.outro();
