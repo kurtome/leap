@@ -2,10 +2,9 @@ import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flutter/foundation.dart';
 import 'package:leap/leap.dart';
-import 'package:leap_standard_platformer/main.dart';
 import 'package:tiled/tiled.dart';
 
-class SnowyMovingPlatform extends MovingPlatform<ExamplePlatformerLeapGame> {
+class SnowyMovingPlatform extends MovingPlatform {
   SnowyMovingPlatform(super.tiledObject) : super.fromTiledObject() {
     width = 16 * 6;
     height = 16 * 2;

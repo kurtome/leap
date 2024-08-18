@@ -10,10 +10,19 @@ import 'package:leap/leap.dart';
 /// [static] components can be collided with but never move and have a much
 /// smaller performance impact on the game loop.
 ///
-/// See [update] for informatoin on ordering your logic, you may want to
-/// use [updateAfter] or a [Behavior]
-abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
-    with HasGameRef<TGame> {
+/// Sub-classes should add [GravityAccelerationBehavior],
+/// [CollisionDetectionBehavior], and [ApplyVelocityBehavior] unless they
+/// are [static]. It is important for acceleration (velocity changes) from
+/// gravity and the entity's own movement to be applied in behaviors before
+/// collision detection since that is driven off of the entity velocity.
+/// [ApplyVelocityBehavior] should come last when after velocty updates
+/// due to acceleration and entity state. Example ordering:
+///  1. Acceleration behaviors (including [GravityAccelerationBehavior])
+///  2. [CollisionDetectionBehavior]
+///  3. Entity's custom reactions to collisions and state changes
+///  4. [ApplyVelocityBehavior]
+///  5. Rendering related state changes (sprite positioning etc.)
+abstract class PhysicalEntity extends PositionedEntity {
   /// Position object to store the x/y components.
   final bool static;
 
@@ -62,22 +71,36 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
 
   PhysicalEntity({
     this.static = false,
-    Iterable<Behavior<PhysicalEntity>>? behaviors,
-    super.priority,
     super.position,
     super.size,
-  }) : super(
-          behaviors: _physicalBehaviors(
-            static: static,
-            extra: behaviors,
-          ),
-        );
+    super.scale,
+    super.angle,
+    super.nativeAngle,
+    super.anchor,
+    super.children,
+    super.priority,
+    super.key,
+    super.behaviors,
+  });
 
   /// Draws a rect over the hitbox when this is true.
   bool debugHitbox = false;
 
   /// Draws a rect over the hitbox of collisions when is true.
   bool debugCollisions = false;
+
+  /// Set in [onLoad], sub-classes can use [HasGameRef] as well if they
+  /// want to specify the game type OR create a `game` getter that casts
+  /// [leapGame] to the appropriate type.
+  late LeapGame leapGame;
+
+  /// Can only be accessed after [onLoad], sub-classes can use
+  /// [HasWorldReference] if they prefer to specify the world type OR
+  /// create a `game` getter that casts [leapGame] to the appropriate type.
+  LeapWorld get leapWorld => leapGame.world;
+
+  /// Can only be accessed after [onLoad]
+  LeapMap get leapMap => leapGame.leapMap;
 
   _DebugHitboxComponent? _debugHitboxComponent;
   _DebugCollisionsComponent? _debugCollisionsComponent;
@@ -139,25 +162,27 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
 
   @override
   @mustCallSuper
+  void onLoad() {
+    super.onLoad();
+    leapGame = findGame()! as LeapGame;
+  }
+
+  @override
+  @mustCallSuper
   void onMount() {
     super.onMount();
-    game.world.physicalEntityMounted(this);
+    leapWorld.physicalEntityMounted(this);
   }
 
   @override
   @mustCallSuper
   void onRemove() {
     super.onRemove();
-    game.world.physicalEntityRemoved(this);
+    leapGame.world.physicalEntityRemoved(this);
   }
 
-  /// Can only be accessed after component tree has been to the [LeapGame].
-  LeapMap get map => game.leapMap;
-
-  LeapWorld get world => game.world;
-
   /// Tile size (width and height) in pixels
-  double get tileSize => game.tileSize;
+  double get tileSize => leapGame.tileSize;
 
   /// Leftmost point.
   double get left {
@@ -325,20 +350,6 @@ abstract class PhysicalEntity<TGame extends LeapGame> extends PositionedEntity
   TStatus? getStatus<TStatus extends StatusComponent>() {
     return statuses.whereType<TStatus>().firstOrNull;
   }
-}
-
-Iterable<Behavior>? _physicalBehaviors({
-  required bool static,
-  required Iterable<Behavior<PositionedEntity>>? extra,
-}) {
-  final behaviors = <Behavior<PositionedEntity>>[];
-  if (!static) {
-    behaviors.addAll([CollisionDetectionBehavior(), VelocityBehavior()]);
-  }
-  if (extra != null) {
-    behaviors.addAll(extra);
-  }
-  return behaviors;
 }
 
 /// Component added as a child to ensure it is drawn on top of the

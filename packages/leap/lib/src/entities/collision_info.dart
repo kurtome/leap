@@ -10,7 +10,7 @@ import 'package:leap/leap.dart';
 /// or movable obstacles.
 /// Pretty much anything that normal physical entities can't phase through.
 /// Any time an entity collides with another solid entity, the
-/// [VelocityBehavior] handles properly updating the position so they never
+/// [ApplyVelocityBehavior] handles properly updating the position so they never
 /// overlap, but they will still be considered a collision.
 ///
 /// Non-solid collisions are other entities which overlap with the

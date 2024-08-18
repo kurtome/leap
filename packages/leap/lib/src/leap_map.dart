@@ -1,7 +1,7 @@
 import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 import 'package:flame_tiled/flame_tiled.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:leap/leap.dart';
 
 /// This component encapsulates the Tiled map, and in particular builds the
@@ -49,7 +49,10 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
   late Map<String, GroundTileHandler> groundTileHandlers;
 
   @override
+  @mustCallSuper
   void onMount() {
+    super.onMount();
+
     groundTiles = LeapMapGroundTile.generate(
       this,
       groundLayer,
@@ -72,7 +75,6 @@ class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
         }
       }
     }
-    return super.onMount();
   }
 
   /// Convenience method for accessing Tiled layers in the [tiledMap].
@@ -149,10 +151,7 @@ class LeapMapGroundTile extends PhysicalEntity {
   LeapGame gameOverride;
 
   @override
-  LeapGame get game => gameOverride;
-
-  @override
-  LeapGame get gameRef => gameOverride;
+  LeapGame get leapGame => gameOverride;
 
   final TiledOptions tiledOptions;
   final Tile tile;
@@ -207,8 +206,8 @@ class LeapMapGroundTile extends PhysicalEntity {
     this.gameOverride, {
     this.tiledOptions = const TiledOptions(),
   }) : super(static: true) {
-    width = game.tileSize;
-    height = game.tileSize;
+    width = leapGame.tileSize;
+    height = leapGame.tileSize;
     position = Vector2(tileSize * _gridX, tileSize * _gridY);
 
     _rightTopOffset = tile.properties.getValue<int>(
