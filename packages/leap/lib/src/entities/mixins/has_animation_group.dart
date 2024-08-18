@@ -4,5 +4,5 @@ import 'package:leap/src/entities/physical_entity.dart';
 mixin HasAnimationGroup on PhysicalEntity {
   AnchoredAnimationGroup get animationGroup;
 
-  bool get animationFacesLeft => false;
+  bool animationFacesLeft = false;
 }
