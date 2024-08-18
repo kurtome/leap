@@ -3,7 +3,7 @@ import 'package:leap/leap.dart';
 import 'package:tiled/tiled.dart';
 
 /// A vertical ladder that entities (usually the player) can climb up/down.
-abstract class Ladder<T extends LeapGame> extends PhysicalEntity<T> {
+abstract class Ladder extends PhysicalEntity {
   Ladder({
     super.position,
     super.size,
@@ -52,7 +52,7 @@ class OnLadderStatus<T extends LeapGame> extends StatusComponent
     with HasGameReference<T>, IgnoresGravity, IgnoresSolidCollisions {
   OnLadderStatus(this.ladder);
 
-  final Ladder<T> ladder;
+  final Ladder ladder;
   LadderMovement _movement = LadderMovement.stopped;
   LadderMovement get movement => _movement;
   set movement(LadderMovement movement) {
@@ -68,19 +68,17 @@ class OnLadderStatus<T extends LeapGame> extends StatusComponent
   void update(double dt) {
     super.update(dt);
 
-    final parentEntity = parent! as PhysicalEntity;
-
-    if (!parentEntity.collisionInfo.allCollisions.contains(ladder)) {
+    if (!parent.collisionInfo.allCollisions.contains(ladder)) {
       // No longer on the ladder
       removeFromParent();
-      parentEntity.velocity.y = 0;
-      parentEntity.velocity.x = 0;
-    } else if (parentEntity.centerY < ladder.logicalTop &&
+      parent.velocity.y = 0;
+      parent.velocity.x = 0;
+    } else if (parent.centerY < ladder.logicalTop &&
         movement == LadderMovement.up) {
       // Over halfway off the top
-      parentEntity.bottom = ladder.logicalTop;
+      parent.bottom = ladder.logicalTop;
       removeFromParent();
-    } else if (parentEntity.centerY > ladder.bottom &&
+    } else if (parent.centerY > ladder.bottom &&
         movement == LadderMovement.down) {
       // Over halfway off the bottom
       removeFromParent();
@@ -88,19 +86,19 @@ class OnLadderStatus<T extends LeapGame> extends StatusComponent
       // Still on the ladder.
 
       // Center the parent and stop x movement
-      parentEntity.velocity.x = 0;
-      parentEntity.centerX = ladder.centerX;
+      parent.velocity.x = 0;
+      parent.centerX = ladder.centerX;
 
       // Update ladder y movement.
       switch (movement) {
         case LadderMovement.up:
-          parentEntity.velocity.y = -moveSpeed;
+          parent.velocity.y = -moveSpeed;
           break;
         case LadderMovement.down:
-          parentEntity.velocity.y = moveSpeed;
+          parent.velocity.y = moveSpeed;
           break;
         case LadderMovement.stopped:
-          parentEntity.velocity.y = 0;
+          parent.velocity.y = 0;
           break;
         default:
       }
@@ -113,11 +111,10 @@ class OnLadderStatus<T extends LeapGame> extends StatusComponent
     moveSpeed = game.world.gravity / 10;
 
     // Update the y position to be fully on the ladder
-    final parentEntity = parent! as PhysicalEntity;
-    if (parentEntity.centerY < ladder.logicalTop) {
-      parentEntity.centerY = ladder.logicalTop;
-    } else if (parentEntity.centerY > ladder.bottom) {
-      parentEntity.centerY = ladder.bottom;
+    if (parent.centerY < ladder.logicalTop) {
+      parent.centerY = ladder.logicalTop;
+    } else if (parent.centerY > ladder.bottom) {
+      parent.centerY = ladder.bottom;
     }
   }
 }

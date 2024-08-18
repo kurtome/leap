@@ -2,10 +2,9 @@ import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/image_composition.dart';
 import 'package:leap/leap.dart';
-import 'package:leap_standard_platformer/main.dart';
 import 'package:tiled/tiled.dart';
 
-class BasicLadder extends Ladder<ExamplePlatformerLeapGame> {
+class BasicLadder extends Ladder {
   BasicLadder(Image tileset, {required super.tiledObject})
       : super.fromTiledObject(topExtraHitbox: 4) {
     width = 16 * 2; // this is the width of our ladder sprite

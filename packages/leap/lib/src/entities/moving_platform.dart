@@ -7,7 +7,7 @@ import 'package:tiled/tiled.dart';
 
 /// A base class for moving platforms, which behave the same as
 /// groun tiles but move around, typically on a set path.
-abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
+abstract class MovingPlatform extends PhysicalEntity {
   MovingPlatform({
     required Vector2 initialPosition,
     required this.moveSpeed,
@@ -18,7 +18,7 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
     // moving platforms should update before other entities so anything
     // standing on top of it from the previous frame can be properly moved
     // with the platform.
-    super.priority = 1,
+    super.priority = 2,
   }) : super(static: true) {
     tags.add(CommonTags.ground);
 
@@ -66,8 +66,8 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
   @override
   @mustCallSuper
   void onLoad() {
-    if (tiledObject != null) {}
-    this.positionPath = _calculatePositionPath(position, tilePath, tileSize);
+    super.onLoad();
+    positionPath = _calculatePositionPath(position, tilePath, tileSize);
   }
 
   @override
@@ -80,7 +80,7 @@ abstract class MovingPlatform<T extends LeapGame> extends PhysicalEntity<T> {
       final deltaY = y - prevPosition.y;
       // Update the position of anything on top of this platform. Ideally
       // this happens before the other entity's collision logic
-      world.physicals
+      leapWorld.physicals
           .where((other) => other.collisionInfo.downCollision == this)
           .forEach((element) {
         element.x += deltaX;

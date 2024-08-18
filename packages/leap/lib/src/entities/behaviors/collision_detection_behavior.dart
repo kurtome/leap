@@ -5,8 +5,9 @@ import 'package:leap/leap.dart';
 
 /// Contains all the logic for the collision detection system,
 /// updates the [velocity], [x], [y], and [collisionInfo] of the as needed.
-class CollisionDetectionBehavior extends PhysicalBehavior {
-  CollisionDetectionBehavior();
+class CollisionDetectionBehavior extends PhysicalBehavior
+    with HasGameRef<LeapGame> {
+  CollisionDetectionBehavior({super.priority});
 
   /// All potential hits for this `update` cycle
   final List<PhysicalEntity> _potentialHits = [];
@@ -20,7 +21,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
   @override
   void onMount() {
     super.onMount();
-    _hitboxProxy.overrideGameRef = parent.gameRef;
+    _hitboxProxy.overrideGameRef = gameRef;
   }
 
   @override
@@ -207,10 +208,10 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
         prevCollisionInfo.downCollision!.gridX >= 0 &&
         prevCollisionInfo.downCollision!.gridY >= 0) {
       final prevDown = prevCollisionInfo.downCollision!;
-      if (velocity.x > 0 && prevDown.gridX < map.groundTiles.length - 1) {
+      if (velocity.x > 0 && prevDown.gridX < leapMap.groundTiles.length - 1) {
         // Walking down slope to the right.
         final nextSlopeYDelta = prevDown.rightTopOffset == 0 ? 1 : 0;
-        final nextSlope = map.groundTiles[prevDown.gridX + 1]
+        final nextSlope = leapMap.groundTiles[prevDown.gridX + 1]
             [prevDown.gridY + nextSlopeYDelta];
         if (prevDown.right >= left) {
           collisionInfo.addDownCollision(prevDown);
@@ -220,7 +221,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
       } else if (velocity.x < 0 && prevDown.gridX >= 1) {
         // Walking down slope to the left.
         final nextSlopeYDelta = prevDown.leftTopOffset == 0 ? 1 : 0;
-        final nextSlope = map.groundTiles[prevDown.gridX - 1]
+        final nextSlope = leapMap.groundTiles[prevDown.gridX - 1]
             [prevDown.gridY + nextSlopeYDelta];
         if (prevDown.left <= right) {
           collisionInfo.addDownCollision(prevDown);
@@ -323,7 +324,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     // Find the world phyiscal entity potential hits.
 
     _proxyHitboxForPotentialHits(dt);
-    final physicals = world.physicals.where(
+    final physicals = leapWorld.physicals.where(
       (p) =>
           p != parent &&
           p.statuses
@@ -342,8 +343,8 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
     // because there can be A LOT of tiles.
 
     // Find the edges of the map.
-    final maxXTile = map.groundTiles.length - 1;
-    final maxYTile = map.groundTiles[0].length - 1;
+    final maxXTile = leapMap.groundTiles.length - 1;
+    final maxYTile = leapMap.groundTiles[0].length - 1;
 
     // Find the edges of this physical component, in tile space.
     final leftTile = math.max(0, _hitboxProxy.gridLeft - 1);
@@ -353,7 +354,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior {
 
     for (var j = leftTile; j <= rightTile; j++) {
       for (var i = topTile; i <= bottomTile; i++) {
-        final tile = map.groundTiles[j][i];
+        final tile = leapMap.groundTiles[j][i];
         if (tile != null) {
           _potentialHits.add(tile);
         }
@@ -388,8 +389,10 @@ class _HitboxProxyComponent extends PhysicalEntity {
   late LeapGame overrideGameRef;
 
   @override
-  LeapGame get gameRef => overrideGameRef;
+  LeapGame get leapGame => overrideGameRef;
 
-  @override
-  LeapGame get game => overrideGameRef;
+  void gameLoaded(LeapGame overrideGameRef) {
+    this.overrideGameRef = overrideGameRef;
+    onLoad();
+  }
 }

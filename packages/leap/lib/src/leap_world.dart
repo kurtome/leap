@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:math' as math;
 
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
@@ -40,19 +39,8 @@ class LeapWorld extends World with HasGameRef<LeapGame>, HasTimeScale {
   }
 
   @override
+  @mustCallSuper
   void update(double dt) {
-    final gAccel = gravity * dt;
-    for (final physical in physicals.where(
-      (p) =>
-          !p.static &&
-          p.statuses
-              .where((s) => s is IgnoresGravity || s is IgnoredByWorld)
-              .isEmpty,
-    )) {
-      final y = physical.velocity.y;
-      final desiredVelocity = (gAccel * physical.gravityRate) + y;
-      physical.velocity.y = math.min(desiredVelocity, maxGravityVelocity);
-    }
     super.update(dt);
   }
 

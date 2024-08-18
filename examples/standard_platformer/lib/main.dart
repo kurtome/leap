@@ -25,7 +25,7 @@ void main() {
 }
 
 class ExamplePlatformerLeapGame extends LeapGame
-    with TapCallbacks, HasKeyboardHandlerComponents {
+    with SingleGameInstance, TapCallbacks, HasKeyboardHandlerComponents {
   ExamplePlatformerLeapGame({
     required super.tileSize,
   }) : super(world: LeapWorld());
@@ -53,7 +53,7 @@ class ExamplePlatformerLeapGame extends LeapGame
 
   @override
   Future<void> onLoad() async {
-    await super.onLoad();
+    super.onLoad();
 
     tiledObjectHandlers = {
       'Coin': await CoinFactory.createFactory(),
@@ -76,7 +76,11 @@ class ExamplePlatformerLeapGame extends LeapGame
 
     input = ThreeButtonInput();
     add(input);
+  }
 
+  @override
+  Future<void> onMount() async {
+    super.onMount();
     await _loadLevel();
 
     // Don't let the camera move outside the bounds of the map, inset

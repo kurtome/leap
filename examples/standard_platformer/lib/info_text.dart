@@ -1,10 +1,9 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:leap/leap.dart';
-import 'package:leap_standard_platformer/main.dart';
 import 'package:tiled/tiled.dart';
 
-class InfoText extends PhysicalEntity<ExamplePlatformerLeapGame> {
+class InfoText extends PhysicalEntity {
   InfoText(TiledObject object)
       : super(
           position: Vector2(object.x, object.y),

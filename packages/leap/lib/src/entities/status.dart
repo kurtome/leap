@@ -11,20 +11,18 @@ import 'package:leap/src/entities/physical_entity.dart';
 /// It is the responsibility of code affected by these status effects to check
 /// if the entity has any relevant status before exucuting relevant logic.
 class StatusComponent<T extends PhysicalEntity> extends PositionComponent
-    with HasAncestor<T> {
-  T get entity => ancestor;
-
+    with ParentIsA<T> {
   @override
   @mustCallSuper
   void onMount() {
     super.onMount();
-    entity.onStatusMount(this);
+    parent.onStatusMount(this);
   }
 
   @override
   @mustCallSuper
   void onRemove() {
-    entity.onStatusRemove(this);
+    parent.onStatusRemove(this);
     super.onRemove();
   }
 }

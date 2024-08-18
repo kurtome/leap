@@ -1,11 +1,11 @@
 import 'dart:math';
 
 import 'package:leap/src/characters/jumper_character.dart';
+import 'package:leap/src/entities/behaviors/physical_behavior.dart';
 import 'package:leap/src/entities/ladder.dart';
-import 'package:leap/src/physical_behaviors/physical_behavior.dart';
 
-/// Updates the [JumperCharacter] movement logic.
-class JumperBehavior extends PhysicalBehavior<JumperCharacter> {
+/// Updates [velocity] for jumper's movement.
+class JumperAccelerationBehavior extends PhysicalBehavior<JumperCharacter> {
   @override
   void update(double dt) {
     super.update(dt);
@@ -19,10 +19,15 @@ class JumperBehavior extends PhysicalBehavior<JumperCharacter> {
   }
 
   void updateNormal(double dt) {
+    if (parent.isDead) {
+      velocity.setZero();
+      return;
+    }
+
     if (parent.jumping) {
-      if (parent.isOnGround) {
+      if (parent.collisionInfo.down) {
         velocity.y = -parent.minJumpImpulse;
-        if (parent.walking) {
+        if (parent.isWalking) {
           parent.gravityRate = 1.0;
         } else {
           parent.gravityRate = 1.4;
@@ -30,15 +35,15 @@ class JumperBehavior extends PhysicalBehavior<JumperCharacter> {
       } else {
         velocity.y = min(-parent.minJumpImpulse * 0.7, velocity.y);
       }
-    } else if (!parent.isOnGround) {
+    } else if (!parent.collisionInfo.down) {
       parent.gravityRate = 2.2;
     } else {
       parent.gravityRate = 1;
     }
 
     // Only apply walking acceleration when on ground
-    if (parent.isOnGround) {
-      if (parent.walking) {
+    if (parent.collisionInfo.down) {
+      if (parent.isWalking) {
         if (parent.faceLeft) {
           velocity.x = -parent.walkSpeed;
         } else {
@@ -59,7 +64,9 @@ class JumperBehavior extends PhysicalBehavior<JumperCharacter> {
   }
 
   void updateClimbingLadder(double dt, OnLadderStatus ladderStatus) {
-    if (parent.jumping) {
+    if (parent.isDead) {
+      ladderStatus.removeFromParent();
+    } else if (parent.jumping) {
       ladderStatus.removeFromParent();
       velocity.y = -parent.minJumpImpulse;
     }
