@@ -6,15 +6,17 @@ class AnimationVelocityFlipBehavior
     extends PhysicalBehavior<HasAnimationGroup> {
   @override
   void update(double dt) {
-    final animationFacesLeft = parent.animationFacesLeft;
+    final spriteFacesLeft = parent.spriteFacesLeft;
     final animationGroup = parent.animationGroup;
 
     // Update sprite for direction
-    if ((!animationFacesLeft && velocity.x < 0) ||
-        (animationFacesLeft && velocity.x > 0)) {
+    final lookDirection = parent.spriteLookDirection;
+    if ((!spriteFacesLeft && lookDirection == SpriteLookDirection.left) ||
+        (spriteFacesLeft && lookDirection == SpriteLookDirection.right)) {
       animationGroup.scale.x = -animationGroup.scale.x.abs();
-    } else if ((!animationFacesLeft && velocity.x > 0) ||
-        (animationFacesLeft && velocity.x < 0)) {
+    } else if ((!spriteFacesLeft &&
+            lookDirection == SpriteLookDirection.right) ||
+        (spriteFacesLeft && lookDirection == SpriteLookDirection.left)) {
       animationGroup.scale.x = animationGroup.scale.x.abs();
     }
   }
