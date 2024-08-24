@@ -13,6 +13,7 @@ abstract class PhysicalBehavior<T extends PhysicalEntity> extends Behavior<T> {
   CollisionInfo get collisionInfo => parent.collisionInfo;
   CollisionInfo get prevCollisionInfo => parent.prevCollisionInfo;
 
+  LeapGame get leapGame => parent.leapGame;
   LeapMap get leapMap => parent.leapMap;
   LeapWorld get leapWorld => parent.leapWorld;
 
