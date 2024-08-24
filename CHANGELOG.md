@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-08-24
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`leap` - `v0.8.0`](#leap---v080)
+
+Packages with other changes:
+
+ - There are no other changes in this release.
+
+---
+
+#### `leap` - `v0.8.0`
+
+ - **FIX**: world loading order bug ([#53](https://github.com/kurtome/leap/issues/53)). ([2711d39d](https://github.com/kurtome/leap/commit/2711d39d0a071de72449a89923cdda8ec3676656))
+ - **FEAT**: adding more options to has_animation_group ([#54](https://github.com/kurtome/leap/issues/54)). ([6be5eba4](https://github.com/kurtome/leap/commit/6be5eba4e76a7d1f1f58aacbb2b27d2c69e4c0a6))
+ - **FEAT**: adding constructor params to PhysicalBehavior ([#51](https://github.com/kurtome/leap/issues/51)). ([87157005](https://github.com/kurtome/leap/commit/87157005003123a9aaead5b87fbeb4fc082f8bfc))
+ - **BREAKING** **FEAT**: Refactor everything to use behaviors, and simplify base classes ([#52](https://github.com/kurtome/leap/issues/52)). ([b5eef12d](https://github.com/kurtome/leap/commit/b5eef12d17c9a483ee955707af3f8d710a0f694f))
+
+
 ## 2024-08-11
 
 ### Changes
