@@ -7,7 +7,7 @@ class ApplyVelocityBehavior extends PhysicalBehavior {
 
   @override
   void update(double dt) {
-    super.update(dt);
+    parent.prevPosition.setFrom(position);
 
     if (parent.statuses
         .where((s) => s is IgnoredByWorld || s is IgnoresVelocity)

@@ -63,7 +63,9 @@ abstract class PhysicalEntity extends PositionedEntity {
   /// [collisionInfo] from last game tick
   final CollisionInfo prevCollisionInfo = CollisionInfo();
 
-  /// [position] from last game tick
+  /// [position] from last game tick.
+  /// Typically set by [ApplyVelocityBehavior], but if an entity
+  /// manages its own position state it should set this itself
   final Vector2 prevPosition = Vector2.zero();
 
   /// Multiplier on standard gravity, see [LeapWorld].
@@ -127,7 +129,6 @@ abstract class PhysicalEntity extends PositionedEntity {
   @mustCallSuper
   void updateAfter(double dt) {
     _updateDebugHitbox();
-    prevPosition.setFrom(position);
   }
 
   void _updateDebugHitbox() {

@@ -20,6 +20,12 @@ abstract class MovingPlatform extends PhysicalEntity {
     // with the platform.
     super.priority = 2,
   }) : super(static: true) {
+    // Behaviors
+    add(_ApplySpeedBehavior());
+    add(ApplyVelocityBehavior());
+    add(_PreventOvershotPositionBehavior());
+    add(_MoveEntitiesAtopBehavior());
+
     tags.add(CommonTags.ground);
 
     position = initialPosition;
@@ -56,6 +62,8 @@ abstract class MovingPlatform extends PhysicalEntity {
   /// at the front (index 0).
   late final List<Vector2> positionPath;
 
+  Vector2 get nextPosition => positionPath[_nextPathNode];
+
   /// What to do when reaching the end of the tilePath.
   final MovingPlatformLoopMode loopMode;
 
@@ -68,75 +76,6 @@ abstract class MovingPlatform extends PhysicalEntity {
   void onLoad() {
     super.onLoad();
     positionPath = _calculatePositionPath(position, tilePath, tileSize);
-  }
-
-  @override
-  @mustCallSuper
-  void updateAfter(double dt) {
-    if (!_stopped) {
-      _updatePositionAndLoop(dt);
-
-      final deltaX = x - prevPosition.x;
-      final deltaY = y - prevPosition.y;
-      // Update the position of anything on top of this platform. Ideally
-      // this happens before the other entity's collision logic
-      leapWorld.physicals
-          .where((other) => other.collisionInfo.downCollision == this)
-          .forEach((element) {
-        element.x += deltaX;
-        element.y += deltaY;
-      });
-    }
-
-    super.updateAfter(dt);
-  }
-
-  void _updatePositionAndLoop(double dt) {
-    if (position == positionPath[_nextPathNode]) {
-      if (_reversing) {
-        _nextPathNode -= 1;
-      } else {
-        _nextPathNode += 1;
-      }
-
-      if (_nextPathNode < 0) {
-        _reversing = false;
-        _nextPathNode = 1;
-      }
-      if (_nextPathNode >= positionPath.length) {
-        switch (loopMode) {
-          case MovingPlatformLoopMode.none:
-            _stopped = true;
-          case MovingPlatformLoopMode.resetAndLoop:
-            position.x = positionPath[0].x;
-            position.y = positionPath[0].y;
-            _nextPathNode = 1;
-          case MovingPlatformLoopMode.reverseAndLoop:
-            _reversing = true;
-            _nextPathNode = positionPath.length - 2;
-        }
-      }
-    }
-
-    final nextPosition = positionPath[_nextPathNode];
-
-    final lastX = position.x;
-    if (nextPosition.x > x) {
-      position.x += dt * moveSpeed.x * tileSize;
-      position.x = position.x.clamp(lastX, nextPosition.x);
-    } else {
-      position.x -= dt * moveSpeed.x * tileSize;
-      position.x = position.x.clamp(nextPosition.x, lastX);
-    }
-
-    final lastY = position.y;
-    if (nextPosition.y > y) {
-      position.y += dt * moveSpeed.y * tileSize;
-      position.y = position.y.clamp(lastY, nextPosition.y);
-    } else {
-      position.y -= dt * moveSpeed.y * tileSize;
-      position.y = position.y.clamp(nextPosition.y, lastY);
-    }
   }
 
   static Vector2 _parseMoveSpeed(TiledObject tiledObject) {
@@ -216,4 +155,91 @@ enum MovingPlatformLoopMode {
   /// Traverse the path in reverse to the initial position, and then
   /// start the path again.
   reverseAndLoop,
+}
+
+class _ApplySpeedBehavior extends PhysicalBehavior<MovingPlatform> {
+  @override
+  void update(double dt) {
+    if (parent._stopped) {
+      return;
+    }
+
+    if (position == parent.positionPath[parent._nextPathNode]) {
+      if (parent._reversing) {
+        parent._nextPathNode -= 1;
+      } else {
+        parent._nextPathNode += 1;
+      }
+
+      if (parent._nextPathNode < 0) {
+        parent._reversing = false;
+        parent._nextPathNode = 1;
+      }
+      if (parent._nextPathNode >= parent.positionPath.length) {
+        switch (parent.loopMode) {
+          case MovingPlatformLoopMode.none:
+            parent._stopped = true;
+          case MovingPlatformLoopMode.resetAndLoop:
+            position.x = parent.positionPath[0].x;
+            position.y = parent.positionPath[0].y;
+            parent._nextPathNode = 1;
+          case MovingPlatformLoopMode.reverseAndLoop:
+            parent._reversing = true;
+            parent._nextPathNode = parent.positionPath.length - 2;
+        }
+      }
+    }
+
+    if (parent.nextPosition.x > parent.x) {
+      velocity.x = parent.moveSpeed.x * parent.tileSize;
+    } else {
+      velocity.x = -parent.moveSpeed.x * parent.tileSize;
+    }
+
+    if (parent.nextPosition.y > parent.y) {
+      velocity.y = parent.moveSpeed.y * parent.tileSize;
+    } else {
+      velocity.y = -parent.moveSpeed.y * parent.tileSize;
+    }
+  }
+}
+
+class _MoveEntitiesAtopBehavior extends PhysicalBehavior<MovingPlatform> {
+  @override
+  void update(double dt) {
+    if (!parent._stopped) {
+      final deltaX = x - prevPosition.x;
+      final deltaY = y - prevPosition.y;
+      // Update the position of anything on top of this platform. Ideally
+      // this happens before the other entity's collision logic
+      leapWorld.physicals
+          .where((other) => other.collisionInfo.downCollision == parent)
+          .forEach((element) {
+        element.x += deltaX;
+        element.y += deltaY;
+      });
+    }
+  }
+}
+
+class _PreventOvershotPositionBehavior
+    extends PhysicalBehavior<MovingPlatform> {
+  @override
+  void update(double dt) {
+    if (parent.nextPosition.x > parent.prevPosition.x) {
+      position.x =
+          position.x.clamp(parent.prevPosition.x, parent.nextPosition.x);
+    } else {
+      position.x =
+          position.x.clamp(parent.nextPosition.x, parent.prevPosition.x);
+    }
+
+    if (parent.nextPosition.y > parent.prevPosition.y) {
+      position.y =
+          position.y.clamp(parent.prevPosition.y, parent.nextPosition.y);
+    } else {
+      position.y =
+          position.y.clamp(parent.nextPosition.y, parent.prevPosition.y);
+    }
+  }
 }
