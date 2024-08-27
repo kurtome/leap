@@ -213,7 +213,11 @@ class _MoveEntitiesAtopBehavior extends PhysicalBehavior<MovingPlatform> {
       // Update the position of anything on top of this platform. Ideally
       // this happens before the other entity's collision logic
       leapWorld.physicals
-          .where((other) => other.collisionInfo.downCollision == parent)
+          .where(
+        (other) =>
+            other.isSolidFromBottom &&
+            other.collisionInfo.downCollision == parent,
+      )
           .forEach((element) {
         element.x += deltaX;
         element.y += deltaY;
