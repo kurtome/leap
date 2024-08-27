@@ -118,7 +118,7 @@ class MyLeapGame extends LeapGame with HasTappables, HasKeyboardHandlerComponent
   Future<void> onLoad() async {
     await super.onLoad();
 
-    // "map.tmx" should be a Tiled map the meets the Leap requirements defined below
+    // "map.tmx" should be a Tiled map that meets the Leap requirements defined below
     await loadWorldAndMap('map.tmx', 16);
     setFixedViewportInTiles(32, 16);
 
