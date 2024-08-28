@@ -7,6 +7,8 @@
 An opinionated toolkit for creating 2D platformers on top of the
 [Flame engine](https://flame-engine.org/).
 
+Join the [`#leap` channel in the Flame Discord to discuss](https://discord.gg/mTNKQGjh9K).
+
 ## WARNING library under development
 
 Be aware that this is still under development and is likely to change
