@@ -11,7 +11,7 @@ abstract interface class GroundTileHandler {
   /// Implementers have full flexibility,
   /// but generally want do one of the following:
   /// 1. Modify properties of [tile], add tags
-  /// 2. Return a custom immplementation of [LeapMapGroundTile]
+  /// 2. Return a custom implementation of [LeapMapGroundTile]
   /// 3. Create an additional PhysicalEntity with custom behavior at the same
   ///    location as the tile.
   LeapMapGroundTile handleGroundTile(LeapMapGroundTile tile, LeapMap map);
