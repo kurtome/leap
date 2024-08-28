@@ -120,7 +120,7 @@ class MyLeapGame extends LeapGame with HasTappables, HasKeyboardHandlerComponent
   Future<void> onLoad() async {
     await super.onLoad();
 
-    // "map.tmx" should be a Tiled map the meets the Leap requirements defined below
+    // "map.tmx" should be a Tiled map that meets the Leap requirements defined below
     await loadWorldAndMap('map.tmx', 16);
     setFixedViewportInTiles(32, 16);
 
@@ -150,28 +150,28 @@ it dies.
 
 Characters are typically rendered visually as a `SpriteAnimation`, however most
 likely there is a different animation for different states of the character.
-That's where `CharacterAnimation` comes in.
+That's where `AnchoredAnimationGroup` comes in.
 
-A `CharacterAnimation` is a specialized `SpriteAnimationGroupComponent`, so you
+A `AnchoredAnimationGroup` is a specialized `SpriteAnimationGroupComponent`, so you
 can set all the animations as map on the component and then update the current
 animation with the key in the map for the correct animation.
 
 Typically you want to make use of this by making a subclass of
-`CharacterAnimation` so all the logic relevant to picking the current animation
+`AnchoredAnimationGroup` so all the logic relevant to picking the current animation
 is self contained.
 
 For example:
 
 ```dart
-class Player extends Character {
+class Player extends JumperCharacter with HasAnimationGroup {
     Player() {
-        characterAnimation = PlayerAnimation();
+        animationGroup = PlayerAnimation();
     }
 }
 
 enum _AnimationState { walk, jump }
 
-class PlayerAnimation extends CharacterAnimation<_AnimationState, Player> {
+class PlayerAnimation extends AnchoredAnimationGroup<_AnimationState, Player> {
     @override
     Future<void> onLoad() async {
         animations = {
@@ -193,20 +193,21 @@ class PlayerAnimation extends CharacterAnimation<_AnimationState, Player> {
 }
 ```
 
-`CharacterAnimation` also automatically handles positioning the animation to be
-centered on the parent's hitbox. The positioning can be changed with the
+`AnchoredAnimationGroup` also automatically handles positioning the animation
+to be centered on the parent's hitbox. The positioning can be changed with the
 `hitboxAnchor` property.
 
-`CharacterAnimation` must be added as child of a `Character` component, and
-typically is set to the `characterAnimation` property as well.
+`AnchoredAnimationGroup` must be added via the `HasAnimationGroup` mixin in a
+`PhysicalEntity` component, and typically is set to the `animationGroup`
+property as well.
 
 ##### Death animations
 
 The recommended way to handle death animations is to set `removeOnDeath = true`
 and `finishAnimationBeforeRemove = true`. You will also need to:
 
-1. Have a `CharacterAnimation` set on the character, and make sure it sets the
-   `current` animation to whichever death animation you need.
+1. Have a `AnchoredAnimationGroup` set on the character, and make sure it sets
+   the `current` animation to whichever death animation you need.
 2. Make sure the death animation has `loop = false` so it doesn't play forever.
 3. Make sure the rest of your game doesn't interact with it as if it is still
    alive. The recommened approach for this is to add a custom `Status` to it,
