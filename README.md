@@ -7,7 +7,8 @@
 An opinionated toolkit for creating 2D platformers on top of the
 [Flame engine](https://flame-engine.org/).
 
-Join the [`#leap` channel in the Flame Discord to discuss](https://discord.gg/mTNKQGjh9K).
+Join the
+[`#leap` channel in the Flame Discord to discuss](https://discord.gg/mTNKQGjh9K).
 
 ## WARNING library under development
 
@@ -146,25 +147,36 @@ health reaches zero (or negative). It's also possible to set
 `removeOnDeath = true` to automatically remove the character from the game when
 it dies.
 
-##### Character animations
+##### Entity animations and behaviors
 
-Characters are typically rendered visually as a `SpriteAnimation`, however most
+Entities are typically rendered visually as a `SpriteAnimation`, however most
 likely there is a different animation for different states of the character.
 That's where `AnchoredAnimationGroup` comes in.
 
-A `AnchoredAnimationGroup` is a specialized `SpriteAnimationGroupComponent`, so you
-can set all the animations as map on the component and then update the current
-animation with the key in the map for the correct animation.
+A `AnchoredAnimationGroup` is a specialized `SpriteAnimationGroupComponent`, so
+you can set all the animations as map on the component and then update the
+current animation with the key in the map for the correct animation.
 
 Typically you want to make use of this by making a subclass of
-`AnchoredAnimationGroup` so all the logic relevant to picking the current animation
-is self contained.
+`AnchoredAnimationGroup` so all the logic relevant to picking the current
+animation is self contained.
 
 For example:
 
 ```dart
 class Player extends JumperCharacter with HasAnimationGroup {
     Player() {
+        // Behaviors that run before physics
+        ...
+        // Physics
+        add(GravityAccelerationBehavior());
+        add(CollisionDetectionBehavior());
+        // Behaviors that run after physics
+        ...
+        add(ApplyVelocityBehavior());
+        // Rendering related behaviors
+        add(AnimationVelocityFlipBehavior());
+
         animationGroup = PlayerAnimation();
     }
 }
@@ -193,8 +205,8 @@ class PlayerAnimation extends AnchoredAnimationGroup<_AnimationState, Player> {
 }
 ```
 
-`AnchoredAnimationGroup` also automatically handles positioning the animation
-to be centered on the parent's hitbox. The positioning can be changed with the
+`AnchoredAnimationGroup` also automatically handles positioning the animation to
+be centered on the parent's hitbox. The positioning can be changed with the
 `hitboxAnchor` property.
 
 `AnchoredAnimationGroup` must be added via the `HasAnimationGroup` mixin in a
@@ -203,8 +215,9 @@ property as well.
 
 ##### Death animations
 
-The recommended way to handle death animations is to set `removeOnDeath = true`
-and `finishAnimationBeforeRemove = true`. You will also need to:
+The recommended way to handle death animations is to add the
+`RemoveOnDeathBehavior` or the `RemoveAfterDeathAnimationBehavior`. If you
+depend on the death animation finishing, you will also need to:
 
 1. Have a `AnchoredAnimationGroup` set on the character, and make sure it sets
    the `current` animation to whichever death animation you need.
@@ -238,6 +251,54 @@ the parent `PhysicalEntity`. See:
 
 You can implement your own mixins on `StatusComponent` which control pieces of
 logic in your own game.
+
+### Resetting the map on player death
+
+It's pretty common want to reset the map when the player dies. The recommended
+patter is to reload the map in the `Game` class and add:
+
+```dart
+class MyGame {
+  ...
+
+  Future<void> reloadLevel() async {
+    await loadWorldAndMap(
+      tiledMapPath: 'map.tmx',
+      tiledObjectHandlers: tiledObjectHandlers,
+    );
+
+    // Don't let the camera move outside the bounds of the map, inset
+    // by half the viewport size to the edge of the camera if flush with the
+    // edge of the map.
+    final inset = camera.viewport.virtualSize;
+    camera.setBounds(
+      Rectangle.fromLTWH(
+        inset.x / 2,
+        inset.y / 2,
+        leapMap.width - inset.x,
+        leapMap.height - inset.y,
+      ),
+    );
+  }
+
+
+  @override
+  void onMapUnload(LeapMap map) {
+    player?.removeFromParent();
+  }
+
+  @override
+  void onMapLoaded(LeapMap map) {
+    if (player != null) {
+      world.add(player!);
+      player!.resetPosition();
+    }
+  }
+}
+```
+
+And make sure to call `game.reloadLevel()` from the `Player` when the player
+dies.
 
 ### Tiled map integration
 
