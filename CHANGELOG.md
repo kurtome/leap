@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-08-28
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`leap` - `v0.8.0+1`](#leap---v0801)
+
+---
+
+#### `leap` - `v0.8.0+1`
+
+ - **FIX**: fixing prevPosition updating ([#55](https://github.com/kurtome/leap/issues/55)). ([64170f29](https://github.com/kurtome/leap/commit/64170f29324b92304dbc5208d5f55b048c39f8dc))
+ - **DOCS**(readme): update player implementation ([#56](https://github.com/kurtome/leap/issues/56)). ([869fbd7c](https://github.com/kurtome/leap/commit/869fbd7c3c3ecd5c3ae6e959c1eac7cf7d09978a))
+
+
 ## 2024-08-24
 
 ### Changes
