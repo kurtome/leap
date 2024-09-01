@@ -55,7 +55,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior
   void _nonSolidCollisionDetection(double dt) {
     // Now that we have up/down/left/right collisions from solid detection phase,
     // we can re-check which potential hits would still collide even.
-    _proxyHitboxForNonSolidHits();
+    _proxyHitboxForNonSolidHits(dt);
     for (final other in _potentialHits) {
       if (!parent.isOtherSolid(other) && intersectsOther(_hitboxProxy, other)) {
         collisionInfo.addNonSolidCollision(other);
@@ -240,14 +240,14 @@ class CollisionDetectionBehavior extends PhysicalBehavior
     _hitboxProxy.height = height;
     _hitboxProxy.width = width;
 
-    if (velocity.y > 0) {
+    if (velocity.y >= 0) {
       _hitboxProxy.y = y;
     } else {
       _hitboxProxy.y = y + velocity.y * dt;
     }
     _hitboxProxy.height = height + velocity.y.abs() * dt;
 
-    if (velocity.x > 0) {
+    if (velocity.x >= 0) {
       _hitboxProxy.x = x;
     } else {
       _hitboxProxy.x = x + velocity.x * dt;
@@ -260,7 +260,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior
     _hitboxProxy.x = x;
     _hitboxProxy.width = width;
 
-    if (velocity.y > 0) {
+    if (velocity.y >= 0) {
       _hitboxProxy.y = y;
     } else {
       _hitboxProxy.y = y + velocity.y * dt;
@@ -273,7 +273,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior
     _hitboxProxy.y = y;
     _hitboxProxy.height = height;
 
-    if (velocity.x > 0) {
+    if (velocity.x >= 0) {
       _hitboxProxy.x = x;
     } else {
       _hitboxProxy.x = x + velocity.x * dt;
@@ -281,11 +281,8 @@ class CollisionDetectionBehavior extends PhysicalBehavior
     _hitboxProxy.width = width + velocity.x.abs() * dt;
   }
 
-  void _proxyHitboxForNonSolidHits() {
-    _hitboxProxy.x = x;
-    _hitboxProxy.y = y;
-    _hitboxProxy.width = width;
-    _hitboxProxy.height = height;
+  void _proxyHitboxForNonSolidHits(double dt) {
+    _proxyHitboxForPotentialHits(dt);
 
     // This is intended to run after solid collision detection.
     // So, up/down/left/right will only be set if this is moving
