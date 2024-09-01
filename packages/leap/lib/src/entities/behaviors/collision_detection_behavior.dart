@@ -18,6 +18,8 @@ class CollisionDetectionBehavior extends PhysicalBehavior
   /// Used to test intersections.
   final _hitboxProxy = _HitboxProxyComponent();
 
+  final _tmpIgnoreTags = <String>{};
+
   @override
   void onMount() {
     super.onMount();
@@ -331,8 +333,20 @@ class CollisionDetectionBehavior extends PhysicalBehavior
               .where((s) => s is IgnoredByWorld || s is IgnoredByCollisions)
               .isEmpty,
     );
+
+    _tmpIgnoreTags.clear();
+    parent.statuses.whereType<IgnoresCollisionTags>().forEach((status) {
+      _tmpIgnoreTags.addAll(status.ignoreTags);
+    });
     for (final other in physicals) {
-      if (!other.isRemoving && intersectsOther(_hitboxProxy, other)) {
+      var skip = false;
+      for (final tag in other.tags) {
+        if (_tmpIgnoreTags.contains(tag)) {
+          skip = true;
+        }
+      }
+      skip |= other.isRemoving;
+      if (!skip && intersectsOther(_hitboxProxy, other)) {
         _potentialHits.add(other);
       }
     }

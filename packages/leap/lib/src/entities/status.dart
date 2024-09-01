@@ -60,3 +60,9 @@ mixin IgnoresSolidCollisions on EntityStatus {}
 /// A status mixin which indicates the parent entity should not
 /// collide with non-solids.
 mixin IgnoresNonSolidCollisions on EntityStatus {}
+
+/// A status mixin which indicates the parent entity should not
+/// collide with any other entities which have a tag in [ignoreTags]
+mixin IgnoresCollisionTags on EntityStatus {
+  final ignoreTags = <String>{};
+}
