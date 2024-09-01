@@ -4,25 +4,28 @@ import 'package:leap/leap.dart';
 import 'package:leap/src/entities/physical_entity.dart';
 
 /// A base for building status effects pertaining to [PhysicalEntity]. Effects
-/// which could are reusable are typically implemented as mixins
-/// (see [IgnoresGravity]), whereas fully custom statuses may simply extend this
-/// and have no mixins.
+/// could be implemented as mixins (see [IgnoresGravity]), whereas fully custom
+/// statuses may simply extend this and have no mixins.
 ///
 /// It is the responsibility of code affected by these status effects to check
 /// if the entity has any relevant status before exucuting relevant logic.
-class StatusComponent<T extends PhysicalEntity> extends PositionComponent
-    with ParentIsA<T> {
+class EntityStatus extends Component {
+  // The entity this was added to, only valid when mounted
+  late PhysicalEntity entity;
+
   @override
   @mustCallSuper
   void onMount() {
     super.onMount();
-    parent.onStatusMount(this);
+    assert(parent is PhysicalEntity, 'parent must be PhysicalEntity');
+    entity = parent! as PhysicalEntity;
+    entity.onStatusMount(this);
   }
 
   @override
   @mustCallSuper
   void onRemove() {
-    parent.onStatusRemove(this);
+    entity.onStatusRemove(this);
     super.onRemove();
   }
 }
@@ -32,28 +35,28 @@ class StatusComponent<T extends PhysicalEntity> extends PositionComponent
 /// it will not be moved by gravity or velocity (unless you manually
 /// update the position) and it will be completely ignored by the collision
 /// system so nothing else will collide with it.
-mixin IgnoredByWorld on StatusComponent {}
+mixin IgnoredByWorld on EntityStatus {}
 
 /// A status mixin which indicates the parent entity should not
 /// be affected by gravity while the status is present.
-mixin IgnoresGravity on StatusComponent {}
+mixin IgnoresGravity on EntityStatus {}
 
 /// A status mixin which indicates the parent entity should not
 /// be automatically moved by its velocity.
-mixin IgnoresVelocity on StatusComponent {}
+mixin IgnoresVelocity on EntityStatus {}
 
 /// A status mixin which indicates the parent entity should not
 /// be eligible to collide with by others.
-mixin IgnoredByCollisions on StatusComponent {}
+mixin IgnoredByCollisions on EntityStatus {}
 
 /// A status mixin which indicates the parent entity should not
 /// collide attempt to collide with other things.
-mixin IgnoresCollisions on StatusComponent {}
+mixin IgnoresCollisions on EntityStatus {}
 
 /// A status mixin which indicates the parent entity should not
 /// collide with solids (ground).
-mixin IgnoresSolidCollisions on StatusComponent {}
+mixin IgnoresSolidCollisions on EntityStatus {}
 
 /// A status mixin which indicates the parent entity should not
 /// collide with non-solids.
-mixin IgnoresNonSolidCollisions on StatusComponent {}
+mixin IgnoresNonSolidCollisions on EntityStatus {}

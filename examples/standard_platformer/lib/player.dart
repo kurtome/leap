@@ -22,6 +22,7 @@ class Player extends JumperCharacter
     add(PlayerDamageBehavior());
     add(PlayerInputBehavior());
     add(PlayerCollisionBehavior());
+    add(OnLadderMovementBehavior());
     add(PlayerDeathBehavior());
     // Apply velocity to position (respecting collisions)
     add(ApplyVelocityBehavior());

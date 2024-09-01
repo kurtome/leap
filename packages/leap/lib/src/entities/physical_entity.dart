@@ -51,8 +51,8 @@ abstract class PhysicalEntity extends PositionedEntity {
   /// This is a list instead of a set for two reasons:
   ///  1. For some uses status order could be important
   ///  2. For some uses adding the same status twice could be valid
-  List<StatusComponent> get statuses => _statuses;
-  final List<StatusComponent> _statuses = [];
+  List<EntityStatus> get statuses => _statuses;
+  final List<EntityStatus> _statuses = [];
 
   /// Position object to store the x/y components.
   final Vector2 velocity = Vector2.zero();
@@ -330,25 +330,25 @@ abstract class PhysicalEntity extends PositionedEntity {
     return solidTags.intersection(other.tags).isNotEmpty;
   }
 
-  /// Invoked when a child [StatusComponent] is mounted, this is designed
-  /// to be called only by [StatusComponent.onMount]
-  void onStatusMount(StatusComponent status) {
+  /// Invoked when a child [EntityStatus] is mounted, this is designed
+  /// to be called only by [EntityStatus.onMount]
+  void onStatusMount(EntityStatus status) {
     _statuses.add(status);
   }
 
-  /// Invoked when a child [StatusComponent] is mounted, this is designed
-  /// to be called only by [StatusComponent.onRemove]
-  void onStatusRemove(StatusComponent status) {
+  /// Invoked when a child [EntityStatus] is mounted, this is designed
+  /// to be called only by [EntityStatus.onRemove]
+  void onStatusRemove(EntityStatus status) {
     _statuses.remove(status);
   }
 
   /// Whether or not this has a status of type [TStatus].
-  bool hasStatus<TStatus extends StatusComponent>() {
+  bool hasStatus<TStatus extends EntityStatus>() {
     return statuses.whereType<TStatus>().isNotEmpty;
   }
 
   /// Gets the first status having type [TStatus] or null if there is none.
-  TStatus? getStatus<TStatus extends StatusComponent>() {
+  TStatus? getStatus<TStatus extends EntityStatus>() {
     return statuses.whereType<TStatus>().firstOrNull;
   }
 }
