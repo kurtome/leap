@@ -1,3 +1,9 @@
+## 0.8.1
+
+ - **FIX**: non-solid collisions no not account for velocity properly ([#64](https://github.com/kurtome/leap/issues/64)). ([c33024e5](https://github.com/kurtome/leap/commit/c33024e5ca2638710d632ea859712f7090a88c22))
+ - **FEAT**: adding IgnoresCollisionTags status ([#63](https://github.com/kurtome/leap/issues/63)). ([de882d63](https://github.com/kurtome/leap/commit/de882d63d5fc95f7639ea94f5abcd5123f1ce954))
+ - **FEAT**: improving StatusComponent including rename to EntityStatus ([#62](https://github.com/kurtome/leap/issues/62)). ([4a53ceaa](https://github.com/kurtome/leap/commit/4a53ceaa774b4c098e2dbe8ac6ed89f8488ae548))
+
 ## 0.8.0+1
 
  - **FIX**: fixing prevPosition updating ([#55](https://github.com/kurtome/leap/issues/55)). ([64170f29](https://github.com/kurtome/leap/commit/64170f29324b92304dbc5208d5f55b048c39f8dc))

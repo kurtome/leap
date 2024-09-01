@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-09-01
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`leap` - `v0.8.1`](#leap---v081)
+
+---
+
+#### `leap` - `v0.8.1`
+
+ - **FIX**: non-solid collisions no not account for velocity properly ([#64](https://github.com/kurtome/leap/issues/64)). ([c33024e5](https://github.com/kurtome/leap/commit/c33024e5ca2638710d632ea859712f7090a88c22))
+ - **FEAT**: adding IgnoresCollisionTags status ([#63](https://github.com/kurtome/leap/issues/63)). ([de882d63](https://github.com/kurtome/leap/commit/de882d63d5fc95f7639ea94f5abcd5123f1ce954))
+ - **FEAT**: improving StatusComponent including rename to EntityStatus ([#62](https://github.com/kurtome/leap/issues/62)). ([4a53ceaa](https://github.com/kurtome/leap/commit/4a53ceaa774b4c098e2dbe8ac6ed89f8488ae548))
+
+
 ## 2024-08-28
 
 ### Changes
