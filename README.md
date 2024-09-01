@@ -229,7 +229,7 @@ depend on the death animation finishing, you will also need to:
 
 #### Status effect system
 
-`PhysicalEntity` components can have statuses (`StatusComponent`) which modify
+`PhysicalEntity` components can have statuses (`EntityStatus`) which modify
 their behavior. Statuses affect the component they are added to. For example,
 you could implement a `StarPowerStatus` which when added to your player
 component makes them flash colors become invincible.
@@ -238,7 +238,7 @@ Since statuses are themselves components, they can maintain their own state and
 handle updating themselves or their parent `PhysicalEntity` components. See
 `OnLadderStatus` for an example of this.
 
-There are mixins on `StatusComponent` which affect the Leap engine's handling of
+There are mixins on `EntityStatus` which affect the Leap engine's handling of
 the parent `PhysicalEntity`. See:
 
 - `IgnoredByWorld`
@@ -249,7 +249,7 @@ the parent `PhysicalEntity`. See:
 - `IgnoresNonSolidCollisions`
 - `IgnoresSolidCollisions`
 
-You can implement your own mixins on `StatusComponent` which control pieces of
+You can implement your own mixins on `EntityStatus` which control pieces of
 logic in your own game.
 
 ### Resetting the map on player death
