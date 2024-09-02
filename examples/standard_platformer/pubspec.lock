@@ -21,10 +21,10 @@ packages:
     dependency: transitive
     description:
       name: audioplayers
-      sha256: "752039d6aa752597c98ec212e9759519061759e402e7da59a511f39d43aa07d2"
+      sha256: c346ba5a39dc208f1bab55fc239855f573d69b0e832402114bf0b793622adc4d
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "6.1.0"
   audioplayers_android:
     dependency: transitive
     description:
@@ -61,10 +61,10 @@ packages:
     dependency: transitive
     description:
       name: audioplayers_web
-      sha256: db8fc420dadf80da18e2286c18e746fb4c3b2c5adbf0c963299dde046828886d
+      sha256: "3609bdf0e05e66a3d9750ee40b1e37f2a622c4edb796cc600b53a90a30a2ace4"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.0"
+    version: "5.0.1"
   audioplayers_windows:
     dependency: transitive
     description:
@@ -125,34 +125,34 @@ packages:
     dependency: "direct main"
     description:
       name: flame
-      sha256: "79133dc46a3ff870950f41d0dc1598414e7bd7ae2c29bd9f0a9de208d9a70cb7"
+      sha256: e6873a8540a197a9bfe251e10c9e1f200329041d6e6d70df2cf38aa681cf2ef7
       url: "https://pub.dev"
     source: hosted
-    version: "1.18.0"
+    version: "1.19.0"
   flame_audio:
     dependency: "direct main"
     description:
       name: flame_audio
-      sha256: "32e5788945469cebb807e741027e645a737e2618afc9b682e7f48607e0637f48"
+      sha256: a86839f1448bbf9e2cd9c5d396be8dfc745428a9d27db6dfcdd9680466d8370e
       url: "https://pub.dev"
     source: hosted
-    version: "2.10.2"
+    version: "2.10.3"
   flame_behaviors:
     dependency: transitive
     description:
       name: flame_behaviors
-      sha256: "177aa671df88ecdaf01c28e8f6fbdb83a69ce923dc7c1b551cfc1b34df0386c7"
+      sha256: d0ba1953b06e83978679df6f03c429b1102c4426b6590129113b0f7ede2ee75a
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   flame_lint:
     dependency: "direct dev"
     description:
       name: flame_lint
-      sha256: "69f30090f947a45948c0d8c7205f8ffa4b9745360d427d2de98bc69def9b7c42"
+      sha256: b5bdef4193438b3d6b5827aece830eb295e6b75620570d5013c93f7bef2cb279
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "1.2.1"
   flame_tiled:
     dependency: "direct main"
     description:
@@ -192,15 +192,15 @@ packages:
       path: "../../packages/leap"
       relative: true
     source: path
-    version: "0.8.0"
+    version: "0.8.1"
   lints:
     dependency: transitive
     description:
       name: lints
-      sha256: cbf8d4b858bb0134ef3ef87841abdf8d63bfc255c266b7bf6b39daa1085c4290
+      sha256: "976c774dd944a42e83e2467f4cc670daef7eed6295b10b36ae8c85bcbf828235"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "4.0.0"
   material_color_utilities:
     dependency: transitive
     description:
@@ -221,10 +221,10 @@ packages:
     dependency: transitive
     description:
       name: ordered_set
-      sha256: "1bfaaaee0419e43ecc9eaebd410eb4bd5039657b72011de75ff3e2915c9aac60"
+      sha256: "984658d0c28c69516ed22f780db7511932a223339463a16c0cc48b3055e926c4"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.3"
+    version: "6.0.1"
   path:
     dependency: transitive
     description:
@@ -370,10 +370,10 @@ packages:
     dependency: transitive
     description:
       name: uuid
-      sha256: "83d37c7ad7aaf9aa8e275490669535c8080377cfa7a7004c24dfac53afffaa90"
+      sha256: f33d6bb662f0e4f79dcd7ada2e6170f3b3a2530c28fc41f49a411ddedd576a77
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.2"
+    version: "4.5.0"
   vector_math:
     dependency: transitive
     description:
@@ -386,10 +386,10 @@ packages:
     dependency: transitive
     description:
       name: web
-      sha256: "97da13628db363c635202ad97068d47c5b8aa555808e7a9411963c533b449b27"
+      sha256: d43c1d6b787bf0afad444700ae7f4db8827f701bc61c255ac8d328c6f4d52062
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.1"
+    version: "1.0.0"
   xdg_directories:
     dependency: transitive
     description:
