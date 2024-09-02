@@ -22,6 +22,7 @@ class AnchoredAnimationGroup<TKey, TChar extends PositionedEntity>
     extends SpriteAnimationGroupComponent<TKey> with ParentIsA<TChar> {
   AnchoredAnimationGroup({
     this.spriteAnchor = Anchor.bottomCenter,
+    Vector2? spriteOffset,
     super.animations,
     super.autoResize = true, // probably want to auto-resize
     super.autoResetTicker = true,
@@ -36,12 +37,17 @@ class AnchoredAnimationGroup<TKey, TChar extends PositionedEntity>
     super.children,
     super.priority,
     super.key,
-  });
+  }) {
+    this.spriteOffset = spriteOffset ?? Vector2.zero();
+  }
 
   /// Where the sprite should be in relation to the parent.
   /// For example, [Anchor.bottomCenter] means the parent should be
   /// flush with the bottom of the animation and centered horizontally.
   Anchor spriteAnchor;
+
+  /// Adds an additional offset after the anchored positioning
+  late Vector2 spriteOffset;
 
   @override
   @mustCallSuper
@@ -63,6 +69,10 @@ class AnchoredAnimationGroup<TKey, TChar extends PositionedEntity>
     // that may have caused a resize.
     x = (parent.width - width * scale.x) * spriteAnchor.x;
     y = (parent.height - height * scale.y) * spriteAnchor.y;
+
+    // apply the offset after the normal calculations
+    x += spriteOffset.x;
+    y += spriteOffset.y;
 
     super.update(dt);
   }
