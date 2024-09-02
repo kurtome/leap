@@ -1,3 +1,8 @@
+## 0.8.2
+
+ - **FEAT**: entities can override the global max gravity Y velocity ([#67](https://github.com/kurtome/leap/issues/67)). ([418b9df3](https://github.com/kurtome/leap/commit/418b9df3629fc451f4731fad440e4efae25db369))
+ - **FEAT**: adding spriteOffset to AnchoredAnimationGroup ([#66](https://github.com/kurtome/leap/issues/66)). ([e9770d80](https://github.com/kurtome/leap/commit/e9770d8016ae37873048a09668f69f8d24a7c8dd))
+
 ## 0.8.1+1
 
  - **REFACTOR**: update dependencies ([#65](https://github.com/kurtome/leap/issues/65)). ([ff42a6d4](https://github.com/kurtome/leap/commit/ff42a6d434dfe4161229a1dfa1b222c9d55ef70a))

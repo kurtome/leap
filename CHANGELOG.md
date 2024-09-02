@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-09-02
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`leap` - `v0.8.2`](#leap---v082)
+
+---
+
+#### `leap` - `v0.8.2`
+
+ - **FEAT**: entities can override the global max gravity Y velocity ([#67](https://github.com/kurtome/leap/issues/67)). ([418b9df3](https://github.com/kurtome/leap/commit/418b9df3629fc451f4731fad440e4efae25db369))
+ - **FEAT**: adding spriteOffset to AnchoredAnimationGroup ([#66](https://github.com/kurtome/leap/issues/66)). ([e9770d80](https://github.com/kurtome/leap/commit/e9770d8016ae37873048a09668f69f8d24a7c8dd))
+
+
 ## 2024-09-01
 
 ### Changes
