@@ -15,6 +15,27 @@ Packages with breaking changes:
 
 Packages with other changes:
 
+ - [`leap` - `v0.8.1+1`](#leap---v0811)
+
+---
+
+#### `leap` - `v0.8.1+1`
+
+ - **REFACTOR**: update dependencies ([#65](https://github.com/kurtome/leap/issues/65)). ([ff42a6d4](https://github.com/kurtome/leap/commit/ff42a6d434dfe4161229a1dfa1b222c9d55ef70a))
+
+
+## 2024-09-01
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
  - [`leap` - `v0.8.1`](#leap---v081)
 
 ---

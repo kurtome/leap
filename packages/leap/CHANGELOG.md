@@ -1,3 +1,7 @@
+## 0.8.1+1
+
+ - **REFACTOR**: update dependencies ([#65](https://github.com/kurtome/leap/issues/65)). ([ff42a6d4](https://github.com/kurtome/leap/commit/ff42a6d434dfe4161229a1dfa1b222c9d55ef70a))
+
 ## 0.8.1
 
  - **FIX**: non-solid collisions no not account for velocity properly ([#64](https://github.com/kurtome/leap/issues/64)). ([c33024e5](https://github.com/kurtome/leap/commit/c33024e5ca2638710d632ea859712f7090a88c22))
