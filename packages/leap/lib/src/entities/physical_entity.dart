@@ -68,8 +68,15 @@ abstract class PhysicalEntity extends PositionedEntity {
   /// manages its own position state it should set this itself
   final Vector2 prevPosition = Vector2.zero();
 
-  /// Multiplier on standard gravity, see [LeapWorld].
+  /// Multiplier on standard gravity, see [GravityAccelerationBehavior].
   double gravityRate = 1;
+
+  /// Override the world [maxGravityVelocity] just for this entity
+  double? maxGravityVelocityOverride;
+
+  /// Capped downward velocity (positive y), see [GravityAccelerationBehavior]
+  double get maxGravityVelocity =>
+      maxGravityVelocityOverride ?? leapWorld.maxGravityVelocity;
 
   PhysicalEntity({
     this.static = false,

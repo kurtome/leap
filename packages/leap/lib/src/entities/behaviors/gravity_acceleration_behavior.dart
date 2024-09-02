@@ -16,6 +16,8 @@ class GravityAccelerationBehavior extends PhysicalBehavior {
     final gAccel = world.gravity * dt;
     final y = parent.velocity.y;
     final desiredVelocity = (gAccel * parent.gravityRate) + y;
-    parent.velocity.y = min(desiredVelocity, world.maxGravityVelocity);
+
+    // Max out at termincal velocity
+    parent.velocity.y = min(desiredVelocity, parent.maxGravityVelocity);
   }
 }
