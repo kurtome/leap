@@ -18,8 +18,8 @@ import 'package:flutter/foundation.dart';
 /// [animations] should be set in [onLoad] if they require asset loading.
 /// It is also possible to use this without a subclass by simply setting
 /// the [current] value in the parent's [update].
-class AnchoredAnimationGroup<TKey, TChar extends PositionedEntity>
-    extends SpriteAnimationGroupComponent<TKey> with ParentIsA<TChar> {
+class AnchoredAnimationGroup<TKey, TParent extends PositionComponent>
+    extends SpriteAnimationGroupComponent<TKey> with ParentIsA<TParent> {
   AnchoredAnimationGroup({
     this.spriteAnchor = Anchor.bottomCenter,
     Vector2? spriteOffset,
@@ -49,9 +49,16 @@ class AnchoredAnimationGroup<TKey, TChar extends PositionedEntity>
   /// Adds an additional offset after the anchored positioning
   late Vector2 spriteOffset;
 
+  /// Whether or not the current animation is done.
+  bool get animationDone => animationTicker?.done() ?? false;
+
   @override
   @mustCallSuper
-  void update(double dt) {
+  void updateTree(double dt) {
+    // The x, y calculations should happen after any children update the
+    // anchor and offset.
+    super.updateTree(dt);
+
     if (parent.anchor != Anchor.topLeft) {
       throw Exception(
         'Parent must have topLeft anchor instead of ${parent.anchor}.',
@@ -73,7 +80,5 @@ class AnchoredAnimationGroup<TKey, TChar extends PositionedEntity>
     // apply the offset after the normal calculations
     x += spriteOffset.x;
     y += spriteOffset.y;
-
-    super.update(dt);
   }
 }
