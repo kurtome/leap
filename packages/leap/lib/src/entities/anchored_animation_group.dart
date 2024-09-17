@@ -19,7 +19,8 @@ import 'package:flutter/foundation.dart';
 /// It is also possible to use this without a subclass by simply setting
 /// the [current] value in the parent's [update].
 class AnchoredAnimationGroup<TKey, TParent extends PositionComponent>
-    extends SpriteAnimationGroupComponent<TKey> with ParentIsA<TParent> {
+    extends SpriteAnimationGroupComponent<TKey>
+    with ParentIsA<TParent>, EntityMixin {
   AnchoredAnimationGroup({
     this.spriteAnchor = Anchor.bottomCenter,
     Vector2? spriteOffset,
