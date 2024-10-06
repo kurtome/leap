@@ -1,5 +1,5 @@
-import 'package:leap/src/entities/anchored_animation_group.dart';
-import 'package:leap/src/entities/physical_entity.dart';
+import 'package:leap/src/entities/entities.dart';
+import 'package:leap/src/utils/direction.dart';
 
 mixin HasAnimationGroup on PhysicalEntity {
   AnchoredAnimationGroup get animationGroup;
@@ -7,28 +7,24 @@ mixin HasAnimationGroup on PhysicalEntity {
   /// Whether or not the sprite sheet is looking left
   bool spriteFacesLeft = false;
 
-  SpriteLookDirection? forceSpriteLookDirection;
+  /// Force the animation to face a particular direction, overriding default
+  /// behavior, for example velocity based looking in
+  /// [AnimationVelocityFlipBehavior]
+  HorizontalDirection? forceSpriteLookDirection;
 
-  /// Whether or not the animation should currently be looking left
-  SpriteLookDirection get spriteLookDirection {
+  /// Whether or not the animation should currently be looking left.
+  /// null indicates direction should remain unchanged.
+  HorizontalDirection? get spriteLookDirection {
     if (forceSpriteLookDirection != null) {
       return forceSpriteLookDirection!;
     }
 
     if (velocity.x == 0) {
-      return SpriteLookDirection.previous;
+      return null;
     } else if (velocity.x < 0) {
-      return SpriteLookDirection.left;
+      return HorizontalDirection.left;
     } else {
-      return SpriteLookDirection.right;
+      return HorizontalDirection.right;
     }
   }
-}
-
-enum SpriteLookDirection {
-  left,
-  right,
-
-  /// [previous] indicates leaving the sprite as is
-  previous
 }

@@ -9,3 +9,4 @@ export 'src/leap_options.dart';
 export 'src/leap_world.dart';
 export 'src/mixins/mixins.dart';
 export 'src/tiled_object_handler.dart';
+export 'src/utils/utils.dart';
