@@ -11,12 +11,12 @@ class AnimationVelocityFlipBehavior
 
     // Update sprite for direction
     final lookDirection = parent.spriteLookDirection;
-    if ((!spriteFacesLeft && lookDirection == SpriteLookDirection.left) ||
-        (spriteFacesLeft && lookDirection == SpriteLookDirection.right)) {
+    if ((!spriteFacesLeft && lookDirection == HorizontalDirection.left) ||
+        (spriteFacesLeft && lookDirection == HorizontalDirection.right)) {
       animationGroup.scale.x = -animationGroup.scale.x.abs();
     } else if ((!spriteFacesLeft &&
-            lookDirection == SpriteLookDirection.right) ||
-        (spriteFacesLeft && lookDirection == SpriteLookDirection.left)) {
+            lookDirection == HorizontalDirection.right) ||
+        (spriteFacesLeft && lookDirection == HorizontalDirection.left)) {
       animationGroup.scale.x = animationGroup.scale.x.abs();
     }
   }
