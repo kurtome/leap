@@ -16,21 +16,21 @@ class ApplyVelocityBehavior extends PhysicalBehavior {
     }
 
     // Up collision
-    if (collisionInfo.up && velocity.y < 0) {
+    if (collisionInfo.up && velocity.y <= 0) {
       // Set the top of this to the bottom of the collision on top.
       velocity.y = 0;
       parent.top = collisionInfo.upCollision!.relativeBottom(parent);
     }
 
     // Down collision
-    if (collisionInfo.down && velocity.y > 0) {
+    if (collisionInfo.down && velocity.y >= 0) {
       // Set the bottom of this to the top of the collision underneath.
       velocity.y = 0;
       parent.bottom = collisionInfo.downCollision!.relativeTop(parent);
     }
 
     // Right collision
-    if (collisionInfo.right && velocity.x > 0) {
+    if (collisionInfo.right && velocity.x >= 0) {
       if (collisionInfo.rightCollision!.isSlopeFromLeft) {
         parent.bottom = math.min(
           bottom,
@@ -48,7 +48,7 @@ class ApplyVelocityBehavior extends PhysicalBehavior {
     }
 
     // Left collision
-    if (collisionInfo.left && velocity.x < 0) {
+    if (collisionInfo.left && velocity.x <= 0) {
       if (collisionInfo.leftCollision!.isSlopeFromRight) {
         parent.bottom = math.min(
           bottom,
