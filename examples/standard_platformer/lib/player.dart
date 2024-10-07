@@ -76,7 +76,7 @@ class Player extends JumperCharacter
     velocity.x = 0;
     velocity.y = 0;
     airXVelocity = 0;
-    faceLeft = false;
+    walkDirection = HorizontalDirection.left;
     jumping = false;
 
     FlameAudio.play('spawn.wav');
@@ -165,7 +165,11 @@ class PlayerInputBehavior extends PhysicalBehavior<Player> {
         parent.airXVelocity = parent.walkSpeed;
         parent.isWalking = true;
         // Make sure the player exits the ladder facing the direction jumped
-        parent.faceLeft = parent._input.isPressedLeft;
+        if (parent._input.isPressedLeft) {
+          parent.walkDirection = HorizontalDirection.left;
+        } else {
+          parent.walkDirection = HorizontalDirection.right;
+        }
       }
     }
   }
@@ -175,7 +179,7 @@ class PlayerInputBehavior extends PhysicalBehavior<Player> {
     if (parent._input.justPressed && parent._input.isPressedLeft) {
       // Tapped left.
       if (parent.isWalking) {
-        if (parent.faceLeft) {
+        if (parent.walkDirection == HorizontalDirection.left) {
           // Already moving left.
           if (parent.collisionInfo.down) {
             parent.jumping = true;
@@ -185,12 +189,12 @@ class PlayerInputBehavior extends PhysicalBehavior<Player> {
           if (parent.collisionInfo.down) {
             parent.isWalking = false;
           }
-          parent.faceLeft = true;
+          parent.walkDirection = HorizontalDirection.left;
         }
       } else {
         // Standing still.
         parent.isWalking = true;
-        parent.faceLeft = true;
+        parent.walkDirection = HorizontalDirection.left;
         if (parent.collisionInfo.down) {
           parent.airXVelocity = parent.walkSpeed;
         }
@@ -198,7 +202,7 @@ class PlayerInputBehavior extends PhysicalBehavior<Player> {
     } else if (parent._input.justPressed && parent._input.isPressedRight) {
       // Tapped right.
       if (parent.isWalking) {
-        if (!parent.faceLeft) {
+        if (parent.walkDirection == HorizontalDirection.right) {
           // Already moving right.
           if (parent.collisionInfo.down) {
             parent.jumping = true;
@@ -208,12 +212,12 @@ class PlayerInputBehavior extends PhysicalBehavior<Player> {
           if (parent.collisionInfo.down) {
             parent.isWalking = false;
           }
-          parent.faceLeft = false;
+          parent.walkDirection = HorizontalDirection.right;
         }
       } else {
         // Standing still.
         parent.isWalking = true;
-        parent.faceLeft = false;
+        parent.walkDirection = HorizontalDirection.right;
         if (parent.collisionInfo.down) {
           parent.airXVelocity = parent.walkSpeed;
         }

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:leap/src/characters/jumper_character.dart';
 import 'package:leap/src/entities/behaviors/physical_behavior.dart';
 import 'package:leap/src/entities/ladder.dart';
+import 'package:leap/src/utils/direction.dart';
 
 /// Updates [velocity] for jumper's movement.
 class JumperAccelerationBehavior extends PhysicalBehavior<JumperCharacter> {
@@ -44,7 +45,7 @@ class JumperAccelerationBehavior extends PhysicalBehavior<JumperCharacter> {
     // Only apply walking acceleration when on ground
     if (parent.collisionInfo.down) {
       if (parent.isWalking) {
-        if (parent.faceLeft) {
+        if (parent.walkDirection == HorizontalDirection.left) {
           velocity.x = -parent.walkSpeed;
         } else {
           velocity.x = parent.walkSpeed;
@@ -55,7 +56,7 @@ class JumperAccelerationBehavior extends PhysicalBehavior<JumperCharacter> {
       parent.airXVelocity = velocity.x.abs();
     } else {
       // in the air
-      if (parent.faceLeft) {
+      if (parent.walkDirection == HorizontalDirection.left) {
         velocity.x = -parent.airXVelocity;
       } else {
         velocity.x = parent.airXVelocity;
