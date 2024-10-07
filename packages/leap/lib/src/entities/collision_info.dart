@@ -116,6 +116,13 @@ class CollisionInfo {
     return !up && !down && !left && !right;
   }
 
+  bool get onPitch {
+    if (upCollision != null && upCollision is LeapMapGroundTile) {
+      return (upCollision! as LeapMapGroundTile).isPitch;
+    }
+    return false;
+  }
+
   bool get onSlope {
     if (downCollision != null && downCollision is LeapMapGroundTile) {
       return (downCollision! as LeapMapGroundTile).isSlope;
