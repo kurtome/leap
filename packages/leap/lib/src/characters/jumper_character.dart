@@ -7,6 +7,6 @@ import 'package:leap/src/leap_game.dart';
 /// entity class with similar mixins and add the appropriate
 /// behaviors.
 class JumperCharacter<TGame extends LeapGame> extends PhysicalEntity
-    with HasJumps, HasWalkSpeed, HasFaceLeft, HasHealth {
+    with HasJumps, HasWalkSpeed, HasHealth {
   // No behavior, just mixins and state
 }

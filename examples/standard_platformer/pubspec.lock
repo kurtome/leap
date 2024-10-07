@@ -156,11 +156,10 @@ packages:
   flame_tiled:
     dependency: "direct main"
     description:
-      name: flame_tiled
-      sha256: bb00888e0893413ffeb083e24cee3d5f7c08cbae5d8df551f14a564fdf7c5282
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.20.3"
+      path: "../../../flame/packages/flame_tiled"
+      relative: true
+    source: path
+    version: "1.18.1"
   flutter:
     dependency: "direct main"
     description: flutter

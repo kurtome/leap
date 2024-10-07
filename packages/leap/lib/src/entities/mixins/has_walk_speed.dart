@@ -1,8 +1,8 @@
-import 'package:leap/src/entities/physical_entity.dart';
+import 'package:leap/leap.dart';
 
 mixin HasWalkSpeed on PhysicalEntity {
   /// Wether or not this is currently facing left
-  bool faceLeft = false;
+  HorizontalDirection walkDirection = HorizontalDirection.left;
 
   /// Wether or not walk speed should be applied
   bool isWalking = false;
