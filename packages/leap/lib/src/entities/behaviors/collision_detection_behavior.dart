@@ -88,26 +88,29 @@ class CollisionDetectionBehavior extends PhysicalBehavior
         _tmpHits.sort((a, b) => a.left.compareTo(b.left));
         final firstRightHit = _tmpHits.first;
         if (firstRightHit.isSlopeFromLeft) {
-          if (velocity.y >= 0) {
-            // Ignore slope underneath while moving upwards.
-            collisionInfo.addDownCollision(firstRightHit);
-          } else {
-            collisionInfo.addRightCollision(firstRightHit);
-          }
+          collisionInfo.addDownCollision(firstRightHit);
         } else if (firstRightHit.isPitchFromRight) {
-          if (velocity.y <= 0) {
-            // Ignore pitch above while moving down.
-            collisionInfo.addUpCollision(firstRightHit);
-          } else {
-            collisionInfo.addRightCollision(firstRightHit);
-          }
+          collisionInfo.addUpCollision(firstRightHit);
         } else if (firstRightHit.left >= right) {
-          _tmpHits
-              .where((c) => c.left == firstRightHit.left)
-              .forEach(collisionInfo.addRightCollision);
+          _tmpHits.where((c) => c.left == firstRightHit.left).forEach((c) {
+            if (c.isSlopeFromLeft) {
+              collisionInfo.addDownCollision(c);
+            } else if (prevCollisionInfo.onSlope &&
+                prevCollisionInfo.downCollision!.top == c.top) {
+              collisionInfo.addDownCollision(c);
+            } else if (c.isPitchFromRight) {
+              collisionInfo.addUpCollision(c);
+            } else if (prevCollisionInfo.onPitch &&
+                prevCollisionInfo.upCollision!.bottom == c.bottom) {
+              collisionInfo.addUpCollision(c);
+            } else {
+              collisionInfo.addRightCollision(c);
+            }
+          });
         }
       }
     }
+
     if (velocity.x < 0) {
       // Moving left.
       _calculateSolidHits((c) {
@@ -120,25 +123,25 @@ class CollisionDetectionBehavior extends PhysicalBehavior
         _tmpHits.sort((a, b) => b.right.compareTo(a.right));
         final firstLeftHit = _tmpHits.first;
         if (firstLeftHit.isSlopeFromRight) {
-          // Ignore slope underneath while moving upwards, should not collide
-          // on left.
-          if (velocity.y >= 0) {
-            collisionInfo.addDownCollision(firstLeftHit);
-          } else {
-            collisionInfo.addLeftCollision(firstLeftHit);
-          }
+          collisionInfo.addDownCollision(firstLeftHit);
         } else if (firstLeftHit.isPitchFromLeft) {
-          // Ignore pitch above while moving downward, should not collide
-          // on left.
-          if (velocity.y <= 0) {
-            collisionInfo.addUpCollision(firstLeftHit);
-          } else {
-            collisionInfo.addLeftCollision(firstLeftHit);
-          }
+          collisionInfo.addUpCollision(firstLeftHit);
         } else if (firstLeftHit.right <= left) {
-          _tmpHits
-              .where((c) => c.right == firstLeftHit.right)
-              .forEach(collisionInfo.addLeftCollision);
+          _tmpHits.where((c) => c.right == firstLeftHit.right).forEach((c) {
+            if (c.isSlopeFromRight) {
+              collisionInfo.addDownCollision(c);
+            } else if (prevCollisionInfo.onSlope &&
+                prevCollisionInfo.downCollision!.top == c.top) {
+              collisionInfo.addDownCollision(c);
+            } else if (c.isPitchFromLeft) {
+              collisionInfo.addUpCollision(c);
+            } else if (prevCollisionInfo.onPitch &&
+                prevCollisionInfo.upCollision!.bottom == c.bottom) {
+              collisionInfo.addUpCollision(c);
+            } else {
+              collisionInfo.addLeftCollision(c);
+            }
+          });
         }
       }
     }
