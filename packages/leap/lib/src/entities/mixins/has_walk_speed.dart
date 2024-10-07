@@ -1,4 +1,6 @@
-mixin HasWalkSpeed {
+import 'package:leap/src/entities/physical_entity.dart';
+
+mixin HasWalkSpeed on PhysicalEntity {
   /// Wether or not this is currently facing left
   bool faceLeft = false;
 
