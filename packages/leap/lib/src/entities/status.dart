@@ -1,7 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
 import 'package:leap/leap.dart';
-import 'package:leap/src/entities/physical_entity.dart';
 
 /// A base for building status effects pertaining to [PhysicalEntity]. Effects
 /// could be implemented as mixins (see [IgnoresGravity]), whereas fully custom
@@ -38,11 +37,12 @@ class EntityStatus extends Component {
 mixin IgnoredByWorld on EntityStatus {}
 
 /// A status mixin which indicates the parent entity should not
-/// be affected by gravity while the status is present.
+/// be affected by gravity while the status is present
+/// (via [GravityAccelerationBehavior]).
 mixin IgnoresGravity on EntityStatus {}
 
 /// A status mixin which indicates the parent entity should not
-/// be automatically moved by its velocity.
+/// be automatically moved by its velocity (via [ApplyVelocityBehavior])
 mixin IgnoresVelocity on EntityStatus {}
 
 /// A status mixin which indicates the parent entity should not
