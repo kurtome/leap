@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-11-24
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`leap` - `v0.8.3`](#leap---v083)
+
+---
+
+#### `leap` - `v0.8.3`
+
+ - **FIX**: slope collision detection is inconsistent ([#73](https://github.com/kurtome/leap/issues/73)). ([ced80749](https://github.com/kurtome/leap/commit/ced8074922b30e19409ee4840391fa135d8f0514))
+ - **FIX**: walk speed mixin should be on entity ([#72](https://github.com/kurtome/leap/issues/72)). ([4bdf6188](https://github.com/kurtome/leap/commit/4bdf61887c0bc13100429c8087333301834d346c))
+ - **FIX**: direction enums should be shared accross domains ([#71](https://github.com/kurtome/leap/issues/71)). ([2de6bb98](https://github.com/kurtome/leap/commit/2de6bb982a3a086f62b0dc6c869fc7bcdf254a47))
+ - **FIX**: entities could phase through collisions ([#70](https://github.com/kurtome/leap/issues/70)). ([64b25bff](https://github.com/kurtome/leap/commit/64b25bfff6e9c4de5ecde87bc48b7f2e63ee0d61))
+ - **FIX**: AnchoredAnimationGroup positioning breaks when children change s… ([#68](https://github.com/kurtome/leap/issues/68)). ([514d3138](https://github.com/kurtome/leap/commit/514d3138626b50ffead88b72d7dc563dce79f82c))
+ - **FEAT**: adding ignoreTags property to PhysicalEntity ([#77](https://github.com/kurtome/leap/issues/77)). ([0d98a004](https://github.com/kurtome/leap/commit/0d98a00401744895ac1d9f6ad665969350679053))
+ - **FEAT**: remove static property from entities ([#76](https://github.com/kurtome/leap/issues/76)). ([3df41be8](https://github.com/kurtome/leap/commit/3df41be89ffad20df5e11ae085fc05fc094e443e))
+ - **FEAT**: adding extensions methods for direction enums ([#75](https://github.com/kurtome/leap/issues/75)). ([ebfa2775](https://github.com/kurtome/leap/commit/ebfa27754e18d9b118423290c14cfb33c79f00fc))
+ - **FEAT**: removing faceLeft in favor of direction enums ([#74](https://github.com/kurtome/leap/issues/74)). ([cce48df4](https://github.com/kurtome/leap/commit/cce48df4d51aa8e9177f02cec5be0ea54af0839b))
+ - **FEAT**: adding behavior support to AnchoredAnimationGroup ([#69](https://github.com/kurtome/leap/issues/69)). ([35345853](https://github.com/kurtome/leap/commit/35345853a34050e9b39f16beff03606069071449))
+
+
 ## 2024-09-02
 
 ### Changes
