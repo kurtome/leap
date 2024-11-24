@@ -326,6 +326,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior
     final physicals = leapWorld.physicals.where(
       (p) =>
           p != parent &&
+          p.tags.intersection(parent.ignoreTags).isEmpty &&
           p.statuses
               .where((s) => s is IgnoredByWorld || s is IgnoredByCollisions)
               .isEmpty,
