@@ -27,6 +27,9 @@ abstract class PhysicalEntity extends PositionedEntity {
   /// normal physics engine / collision detection calculations.
   final Set<String> solidTags = {};
 
+  /// Which other entities to ignore during collision detection.
+  final Set<String> ignoreTags = {};
+
   /// When this is considered solid, phase through from above
   bool isSolidFromTop = true;
 
