@@ -7,12 +7,9 @@ import 'package:leap/leap.dart';
 /// A component which has a physical representation in the world, with
 /// collision detection, movement, etc.
 ///
-/// [static] components can be collided with but never move and have a much
-/// smaller performance impact on the game loop.
-///
 /// Sub-classes should add [GravityAccelerationBehavior],
-/// [CollisionDetectionBehavior], and [ApplyVelocityBehavior] unless they
-/// are [static]. It is important for acceleration (velocity changes) from
+/// [CollisionDetectionBehavior], and [ApplyVelocityBehavior].
+/// It is important for acceleration (velocity changes) from
 /// gravity and the entity's own movement to be applied in behaviors before
 /// collision detection since that is driven off of the entity velocity.
 /// [ApplyVelocityBehavior] should come last when after velocty updates
@@ -23,9 +20,6 @@ import 'package:leap/leap.dart';
 ///  4. [ApplyVelocityBehavior]
 ///  5. Rendering related state changes (sprite positioning etc.)
 abstract class PhysicalEntity extends PositionedEntity {
-  /// Position object to store the x/y components.
-  final bool static;
-
   /// Tags for custom logic, also used by [solidTags]
   final Set<String> tags = {};
 
@@ -79,7 +73,6 @@ abstract class PhysicalEntity extends PositionedEntity {
       maxGravityVelocityOverride ?? leapWorld.maxGravityVelocity;
 
   PhysicalEntity({
-    this.static = false,
     super.position,
     super.size,
     super.scale,

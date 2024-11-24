@@ -19,7 +19,7 @@ abstract class MovingPlatform extends PhysicalEntity {
     // standing on top of it from the previous frame can be properly moved
     // with the platform.
     super.priority = 2,
-  }) : super(static: true) {
+  }) {
     // Behaviors
     add(_ApplySpeedBehavior());
     add(ApplyVelocityBehavior());

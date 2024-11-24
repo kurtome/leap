@@ -5,7 +5,7 @@ import 'package:leap/leap.dart';
 import 'package:tiled/tiled.dart';
 
 class Coin extends PhysicalEntity {
-  Coin(TiledObject tiledObject, this.animation) : super(static: true) {
+  Coin(TiledObject tiledObject, this.animation) {
     width = 16;
     height = 16;
     priority = 2;

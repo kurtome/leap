@@ -9,7 +9,7 @@ abstract class Ladder extends PhysicalEntity {
     super.size,
     this.topExtraHitbox = 0,
     this.tiledObject,
-  }) : super(static: true) {
+  }) {
     y = y - topExtraHitbox;
     height = height + topExtraHitbox;
   }

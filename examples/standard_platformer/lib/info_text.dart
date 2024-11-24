@@ -8,7 +8,6 @@ class InfoText extends PhysicalEntity {
       : super(
           position: Vector2(object.x, object.y),
           size: Vector2(object.width, object.height),
-          static: true,
         ) {
     text = object.properties.getValue<String>('Text') ??
         'Lorem ipsum mising text.';

@@ -33,9 +33,6 @@ class CollisionDetectionBehavior extends PhysicalBehavior
     prevCollisionInfo.copyFrom(collisionInfo);
     collisionInfo.reset();
 
-    // NOTE: static entities will never run this behavior, so making entities
-    // static is important for performance
-
     if (isRemoving ||
         parent.statuses
             .where((s) => s is IgnoredByWorld || s is IgnoresCollisions)
@@ -398,7 +395,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior
 /// allowing it to pass through another object due to velocity or long
 /// time step.
 class _HitboxProxyComponent extends PhysicalEntity {
-  _HitboxProxyComponent() : super(static: true);
+  _HitboxProxyComponent();
 
   late LeapGame overrideGameRef;
 
