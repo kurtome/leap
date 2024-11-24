@@ -205,7 +205,7 @@ class LeapMapGroundTile extends PhysicalEntity {
     this._gridY,
     this.gameOverride, {
     this.tiledOptions = const TiledOptions(),
-  }) : super(static: true) {
+  }) {
     width = leapGame.tileSize;
     height = leapGame.tileSize;
     position = Vector2(tileSize * _gridX, tileSize * _gridY);

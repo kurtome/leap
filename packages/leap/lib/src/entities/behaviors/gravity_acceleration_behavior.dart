@@ -5,10 +5,9 @@ import 'package:leap/leap.dart';
 class GravityAccelerationBehavior extends PhysicalBehavior {
   @override
   void update(double dt) {
-    if (parent.static ||
-        parent.statuses
-            .where((s) => s is IgnoresGravity || s is IgnoredByWorld)
-            .isNotEmpty) {
+    if (parent.statuses
+        .where((s) => s is IgnoresGravity || s is IgnoredByWorld)
+        .isNotEmpty) {
       return;
     }
 
