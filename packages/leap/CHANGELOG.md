@@ -1,3 +1,7 @@
+## 0.8.4
+
+ - **FEAT**: adding support for "Tags" property on tiles ([#78](https://github.com/kurtome/leap/issues/78)). ([482eea53](https://github.com/kurtome/leap/commit/482eea535e9bb5aa4dfc6f14d3837d5dfdebae20))
+
 ## 0.8.3
 
  - **FIX**: slope collision detection is inconsistent ([#73](https://github.com/kurtome/leap/issues/73)). ([ced80749](https://github.com/kurtome/leap/commit/ced8074922b30e19409ee4840391fa135d8f0514))

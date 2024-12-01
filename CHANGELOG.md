@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2024-11-30
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`leap` - `v0.8.4`](#leap---v084)
+
+---
+
+#### `leap` - `v0.8.4`
+
+ - **FEAT**: adding support for "Tags" property on tiles ([#78](https://github.com/kurtome/leap/issues/78)). ([482eea53](https://github.com/kurtome/leap/commit/482eea535e9bb5aa4dfc6f14d3837d5dfdebae20))
+
+
 ## 2024-11-24
 
 ### Changes
