@@ -235,6 +235,15 @@ class LeapMapGroundTile extends PhysicalEntity {
       tags.add(tile.class_!);
     }
 
+    // Additionally add any strings in the "Tags" property
+    final tagsProperty = tile.properties
+        .getValue<String>(tiledOptions.tagsProperty)
+        ?.split(',')
+        .map((s) => s.trim());
+    if (tagsProperty != null) {
+      tags.addAll(tagsProperty);
+    }
+
     hazardDamage = tile.properties.getValue<int>(
           tiledOptions.damageProperty,
         ) ??

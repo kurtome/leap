@@ -22,6 +22,7 @@ class TiledOptions {
     this.playerSpawnClass = 'PlayerSpawn',
     this.damageProperty = 'Damage',
     this.platformClass = 'Platform',
+    this.tagsProperty = 'Tags',
     this.rightTopProperty = 'RightTop',
     this.leftTopProperty = 'LeftTop',
     this.rightBottomProperty = 'RightBottom',
@@ -50,6 +51,9 @@ class TiledOptions {
 
   /// Which class name represents platform objects, defaults to "Platform".
   final String platformClass;
+
+  /// Strings to add to `tags`, comma separated
+  final String tagsProperty;
 
   /// Which property name represents the left top, defaults to
   /// "RightTop".
