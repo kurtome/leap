@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2025-05-04
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`leap` - `v0.8.5`](#leap---v085)
+
+---
+
+#### `leap` - `v0.8.5`
+
+ - **FEAT**: upgrade to flame 1.28 ([#81](https://github.com/kurtome/leap/issues/81)). ([8c2c1f68](https://github.com/kurtome/leap/commit/8c2c1f684c5711f415d796c5c9a37e6e7bdf3e16))
+
+
 ## 2024-11-30
 
 ### Changes

@@ -1,3 +1,7 @@
+## 0.8.5
+
+ - **FEAT**: upgrade to flame 1.28 ([#81](https://github.com/kurtome/leap/issues/81)). ([8c2c1f68](https://github.com/kurtome/leap/commit/8c2c1f684c5711f415d796c5c9a37e6e7bdf3e16))
+
 ## 0.8.4
 
  - **FEAT**: adding support for "Tags" property on tiles ([#78](https://github.com/kurtome/leap/issues/78)). ([482eea53](https://github.com/kurtome/leap/commit/482eea535e9bb5aa4dfc6f14d3837d5dfdebae20))
