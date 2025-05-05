@@ -7,7 +7,7 @@ import 'package:leap/leap.dart';
 
 /// Combines touch screen and keyboard input into one API.
 class TwoButtonInput extends Component
-    with HasGameRef<LeapGame>, AppLifecycleAware {
+    with HasGameReference<LeapGame>, AppLifecycleAware {
   late final TwoButtonTapInput _tapInput;
   late final TwoButtonKeyboardInput _keyboardInput;
   double pressedTime = 0;
@@ -27,8 +27,8 @@ class TwoButtonInput extends Component
   }
 
   bool get _appFocused =>
-      gameRef.appState == AppLifecycleState.resumed ||
-      gameRef.appState == AppLifecycleState.detached;
+      game.appState == AppLifecycleState.resumed ||
+      game.appState == AppLifecycleState.detached;
 
   bool get isPressed =>
       _appFocused && (_tapInput.isPressed || _keyboardInput.isPressed);
@@ -64,7 +64,7 @@ class TwoButtonInput extends Component
 }
 
 class TwoButtonTapInput extends PositionComponent
-    with TapCallbacks, HasGameRef<LeapGame> {
+    with TapCallbacks, HasGameReference<LeapGame> {
   TwoButtonTapInput({
     this.upEvent,
     this.downEvent,
@@ -77,8 +77,7 @@ class TwoButtonTapInput extends PositionComponent
 
   bool get isPressedLeft {
     if (downEvent != null) {
-      return isPressed &&
-          downEvent!.devicePosition.x < gameRef.canvasSize.x / 2;
+      return isPressed && downEvent!.devicePosition.x < game.canvasSize.x / 2;
     }
     return false;
   }

@@ -2,7 +2,8 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:leap_standard_platformer/main.dart';
 
-class Hud extends PositionComponent with HasGameRef<ExamplePlatformerLeapGame> {
+class Hud extends PositionComponent
+    with HasGameReference<ExamplePlatformerLeapGame> {
   Hud() {
     final textPaint = TextPaint(style: textStyle);
     textComponent = TextComponent(textRenderer: textPaint);
@@ -24,6 +25,6 @@ class Hud extends PositionComponent with HasGameRef<ExamplePlatformerLeapGame> {
   @override
   void update(double dt) {
     super.update(dt);
-    textComponent.text = 'Coins: ${gameRef.player?.coins ?? 0}';
+    textComponent.text = 'Coins: ${game.player?.coins ?? 0}';
   }
 }

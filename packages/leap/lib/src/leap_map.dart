@@ -6,7 +6,7 @@ import 'package:leap/leap.dart';
 
 /// This component encapsulates the Tiled map, and in particular builds the
 /// grid of ground tiles that make up the terrain of the game.
-class LeapMap extends PositionComponent with HasGameRef<LeapGame> {
+class LeapMap extends PositionComponent with HasGameReference<LeapGame> {
   LeapMap({
     required this.tileSize,
     required this.tiledMap,

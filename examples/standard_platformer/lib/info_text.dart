@@ -25,7 +25,7 @@ class InfoText extends PhysicalEntity {
       textRenderer: TextPaint(
         style: TextStyle(
           fontSize: 8,
-          backgroundColor: Colors.black.withOpacity(0.4),
+          backgroundColor: Colors.black.withValues(alpha: 0.4),
         ),
       ),
     );

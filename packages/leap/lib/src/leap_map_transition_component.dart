@@ -63,7 +63,7 @@ class LeapFadeInOutMapTransition extends LeapMapTransition {
     add(
       RectangleComponent(
         size: game.size.clone(),
-        paint: Paint()..color = color.withOpacity(0),
+        paint: Paint()..color = color.withValues(alpha: 0),
         children: [
           OpacityEffect.to(
             1,

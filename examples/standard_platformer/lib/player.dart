@@ -8,7 +8,10 @@ import 'package:leap_standard_platformer/info_text.dart';
 import 'package:leap_standard_platformer/main.dart';
 
 class Player extends JumperCharacter
-    with HasGameRef<ExamplePlatformerLeapGame>, HasHealth, HasAnimationGroup {
+    with
+        HasGameReference<ExamplePlatformerLeapGame>,
+        HasHealth,
+        HasAnimationGroup {
   Player() {
     // Behaviors, ordering is important for processing
     // collision detection and reacting to inputs
@@ -87,9 +90,9 @@ class Player extends JumperCharacter
   void updateCollisionInteractions(double dt) {}
 
   void _checkForLevelCompletion() {
-    final coinsLeft = gameRef.leapMap.children.whereType<Coin>().length;
+    final coinsLeft = game.leapMap.children.whereType<Coin>().length;
     if (coinsLeft <= 1) {
-      gameRef.levelCleared();
+      game.levelCleared();
     }
   }
 }
@@ -294,12 +297,12 @@ enum _AnimationState { idle, walk, jump, fall, death, ladder }
 
 class PlayerSpriteAnimation
     extends AnchoredAnimationGroup<_AnimationState, Player>
-    with HasGameRef<LeapGame> {
+    with HasGameReference<LeapGame> {
   PlayerSpriteAnimation() : super(scale: Vector2.all(2));
 
   @override
   Future<void>? onLoad() async {
-    final spritesheet = await gameRef.images.load('player_spritesheet.png');
+    final spritesheet = await game.images.load('player_spritesheet.png');
 
     animations = {
       _AnimationState.idle: SpriteAnimation.fromFrameData(
