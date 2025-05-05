@@ -5,15 +5,15 @@ homepage: https://github.com/kurtome/leap
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.13.2"
+  flutter: ">=3.29.2"
 
 dependencies:
-  flame: ^1.18.0
-  flame_behaviors: ^1.0.0
-  flame_tiled: ^1.20.2
+  flame: ^1.28.1
+  flame_behaviors: ^1.2.0
+  flame_tiled: ^3.0.2
   flutter:
     sdk: flutter
-  tiled: ^0.10.2
+  tiled: ^0.11.0
 
 dev_dependencies:
   flame_lint: ^1.1.1

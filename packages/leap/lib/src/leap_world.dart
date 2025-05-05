@@ -9,7 +9,7 @@ import 'package:leap/leap.dart';
 ///
 /// Any [PhysicalEntity] added anywhere in the [LeapGame] component tree
 /// will automatically be part of the world via [physicals].
-class LeapWorld extends World with HasGameRef<LeapGame>, HasTimeScale {
+class LeapWorld extends World with HasGameReference<LeapGame>, HasTimeScale {
   LeapWorld();
 
   /// Tile size (width and height) in pixels.
@@ -21,7 +21,7 @@ class LeapWorld extends World with HasGameRef<LeapGame>, HasTimeScale {
   /// Maximum velocity from gravity of physical components per-second.
   late double maxGravityVelocity;
 
-  LeapMap get map => gameRef.leapMap;
+  LeapMap get map => game.leapMap;
 
   /// Called as soon as the [LeapGame.tileSize] is known, and any time it
   /// changes.

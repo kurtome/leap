@@ -7,7 +7,7 @@ import 'package:leap/leap.dart';
 
 /// Combines touch screen and keyboard input into one API.
 class FourButtonInput extends Component
-    with HasGameRef<LeapGame>, AppLifecycleAware {
+    with HasGameReference<LeapGame>, AppLifecycleAware {
   late final FourButtonTapInput _tapInput;
   late final FourButtonKeyboardInput _keyboardInput;
   double pressedTime = 0;
@@ -70,7 +70,7 @@ class FourButtonInput extends Component
 }
 
 class FourButtonTapInput extends PositionComponent
-    with TapCallbacks, HasGameRef<LeapGame> {
+    with TapCallbacks, HasGameReference<LeapGame> {
   FourButtonTapInput({
     this.upEvent,
     this.downEvent,

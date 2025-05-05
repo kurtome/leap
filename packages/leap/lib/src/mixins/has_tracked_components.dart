@@ -16,18 +16,19 @@ mixin HasTrackedComponents<W extends LeapWorld> on FlameGame<W> {
 }
 
 @Deprecated('no longer in use')
-mixin TrackedComponent<K, T extends HasTrackedComponents> on HasGameRef<T> {
+mixin TrackedComponent<K, T extends HasTrackedComponents>
+    on HasGameReference<T> {
   @override
   void onMount() {
     super.onMount();
-    gameRef.allTrackedComponents
+    game.allTrackedComponents
         .putIfAbsent(K.runtimeType, () => List<K>.empty(growable: true));
-    (gameRef.allTrackedComponents[K.runtimeType]! as List).add(this);
+    (game.allTrackedComponents[K.runtimeType]! as List).add(this);
   }
 
   @override
   void onRemove() {
     super.onRemove();
-    (gameRef.allTrackedComponents[K.runtimeType]! as List).remove(this);
+    (game.allTrackedComponents[K.runtimeType]! as List).remove(this);
   }
 }

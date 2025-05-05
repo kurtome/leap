@@ -31,7 +31,7 @@ class WelcomeDialog extends TextBoxComponent {
     rect = Rect.fromLTWH(0, 0, width, height);
   }
 
-  final bgPaint = Paint()..color = Colors.blueGrey.withOpacity(0.8);
+  final bgPaint = Paint()..color = Colors.blueGrey.withValues(alpha: 0.8);
   final borderPaint = Paint()
     ..color = Colors.black
     ..style = PaintingStyle.stroke

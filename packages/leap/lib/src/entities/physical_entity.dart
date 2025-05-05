@@ -94,7 +94,7 @@ abstract class PhysicalEntity extends PositionedEntity {
   /// Draws a rect over the hitbox of collisions when is true.
   bool debugCollisions = false;
 
-  /// Set in [onLoad], sub-classes can use [HasGameRef] as well if they
+  /// Set in [onLoad], sub-classes can use [HasGameReference] as well if they
   /// want to specify the game type OR create a `game` getter that casts
   /// [leapGame] to the appropriate type.
   late LeapGame leapGame;
@@ -359,7 +359,7 @@ abstract class PhysicalEntity extends PositionedEntity {
 /// Component added as a child to ensure it is drawn on top of the
 /// entity's standard rendering.
 class _DebugHitboxComponent extends PositionComponent {
-  final _paint = Paint()..color = Colors.green.withOpacity(0.6);
+  final _paint = Paint()..color = Colors.green.withValues(alpha: 0.6);
 
   @override
   int get priority => 9998;
@@ -374,7 +374,7 @@ class _DebugHitboxComponent extends PositionComponent {
 /// entity's standard rendering.
 class _DebugCollisionsComponent extends PositionComponent
     with HasAncestor<PhysicalEntity> {
-  final _paint = Paint()..color = Colors.red.withOpacity(0.6);
+  final _paint = Paint()..color = Colors.red.withValues(alpha: 0.6);
 
   @override
   int get priority => 9999;

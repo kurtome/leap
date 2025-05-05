@@ -6,7 +6,7 @@ import 'package:leap/leap.dart';
 /// Contains all the logic for the collision detection system,
 /// updates the [velocity], [x], [y], and [collisionInfo] of the as needed.
 class CollisionDetectionBehavior extends PhysicalBehavior
-    with HasGameRef<LeapGame> {
+    with HasGameReference<LeapGame> {
   CollisionDetectionBehavior({super.priority});
 
   /// All potential hits for this `update` cycle
@@ -23,7 +23,7 @@ class CollisionDetectionBehavior extends PhysicalBehavior
   @override
   void onMount() {
     super.onMount();
-    _hitboxProxy.overrideGameRef = gameRef;
+    _hitboxProxy.overrideGameRef = game;
   }
 
   @override

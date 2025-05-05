@@ -3,7 +3,8 @@ import 'package:leap/leap.dart';
 import 'package:leap_standard_platformer/main.dart';
 import 'package:tiled/tiled.dart';
 
-class Door extends PhysicalEntity with HasGameRef<ExamplePlatformerLeapGame> {
+class Door extends PhysicalEntity
+    with HasGameReference<ExamplePlatformerLeapGame> {
   Door(TiledObject object, ObjectGroup layer)
       : super(
           position: Vector2(object.x, object.y),

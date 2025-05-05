@@ -122,7 +122,6 @@ class OnLadderMovementBehavior extends PhysicalBehavior {
         case LadderMovement.stopped:
           parent.velocity.y = 0;
           break;
-        default:
       }
     }
   }
